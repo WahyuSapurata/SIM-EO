@@ -56,45 +56,6 @@
             </div>
             <!--end::Navbar-->
 
-            <div class="d-grid align-content-center bg-primary px-5 mb-3 text-white"
-                style="justify-items: center; border-radius: 0 0 10px 10px;">
-                <div class="fs-3 fw-bolder" id="clock"></div>
-                <div id="date"></div>
-            </div>
-            <script>
-                function updateClock() {
-                    var now = new Date();
-
-                    var hours = now.getHours();
-                    var minutes = now.getMinutes();
-                    var seconds = now.getSeconds();
-
-                    hours = hours < 10 ? "0" + hours : hours;
-                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                    seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                    var timeString = hours + ":" + minutes + ":" + seconds;
-
-                    document.getElementById("clock").innerHTML = timeString;
-
-                    var options = {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    };
-                    var dateString = now.toLocaleDateString('id', options);
-
-                    document.getElementById("date").innerHTML = dateString;
-                }
-
-                // Panggil fungsi pertama kali untuk menginisialisasi tampilan
-                updateClock();
-
-                // Fungsi untuk memperbarui jam setiap detik
-                setInterval(updateClock, 1000);
-            </script>
-
             <!--begin::Topbar-->
             <div class="d-flex align-items-stretch flex-shrink-0">
 

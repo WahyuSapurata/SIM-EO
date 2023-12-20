@@ -25,12 +25,28 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::group(['prefix' => 'admin', 'middleware' => ['auth'], 'as' => 'admin.'], function () {
         Route::get('/dashboard-admin', 'Dashboard@dashboard_admin')->name('dashboard-admin');
 
-        Route::get('/datauser', 'DataUser@index')->name('datauser');
-        Route::get('/get-datauser', 'DataUser@get')->name('get-datauser');
-        Route::post('/add-datauser', 'DataUser@store')->name('add-datauser');
-        Route::get('/show-datauser/{params}', 'DataUser@show')->name('show-datauser');
-        Route::post('/update-datauser/{params}', 'DataUser@update')->name('update-datauser');
-        Route::delete('/delete-datauser/{params}', 'DataUser@delete')->name('delete-datauser');
+        Route::prefix('master-data')->group(function () {
+            Route::get('/datauser', 'DataUser@index')->name('datauser');
+            Route::get('/get-datauser', 'DataUser@get')->name('get-datauser');
+            Route::post('/add-datauser', 'DataUser@store')->name('add-datauser');
+            Route::get('/show-datauser/{params}', 'DataUser@show')->name('show-datauser');
+            Route::post('/update-datauser/{params}', 'DataUser@update')->name('update-datauser');
+            Route::delete('/delete-datauser/{params}', 'DataUser@delete')->name('delete-datauser');
+
+            Route::get('/datavendor', 'DataVendorController@index')->name('datavendor');
+            Route::get('/get-datavendor', 'DataVendorController@get')->name('get-datavendor');
+            Route::post('/add-datavendor', 'DataVendorController@store')->name('add-datavendor');
+            Route::get('/show-datavendor/{params}', 'DataVendorController@show')->name('show-datavendor');
+            Route::post('/update-datavendor/{params}', 'DataVendorController@update')->name('update-datavendor');
+            Route::delete('/delete-datavendor/{params}', 'DataVendorController@delete')->name('delete-datavendor');
+
+            Route::get('/dataclient', 'DataClientController@index')->name('dataclient');
+            Route::get('/get-dataclient', 'DataClientController@get')->name('get-dataclient');
+            Route::post('/add-dataclient', 'DataClientController@store')->name('add-dataclient');
+            Route::get('/show-dataclient/{params}', 'DataClientController@show')->name('show-dataclient');
+            Route::post('/update-dataclient/{params}', 'DataClientController@update')->name('update-dataclient');
+            Route::delete('/delete-dataclient/{params}', 'DataClientController@delete')->name('delete-dataclient');
+        });
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');

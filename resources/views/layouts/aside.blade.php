@@ -21,6 +21,15 @@
         data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-height="auto"
         data-kt-scroll-dependencies="#kt_aside_logo, #kt_aside_footer" data-kt-scroll-wrappers="#kt_aside_menu"
         data-kt-scroll-offset="0">
+        <script>
+            // Ambil elemen menu menggunakan JavaScript
+            var menu = document.getElementById('kt_aside_menu_wrapper');
+
+            // Set tinggi maksimum dan penanganan overflow menggunakan JavaScript
+            if (menu) {
+                menu.style.maxHeight = '88vh'; // Set tinggi maksimum
+            }
+        </script>
         <!--begin::Menu-->
         <div class="menu menu-column mt-2 menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500"
             id="kt_aside_menu" data-kt-menu="true" style="gap: 3px;">
@@ -37,24 +46,181 @@
                 </a>
             </div>
 
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/penjualandef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Penjualan</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/pembeliandef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Pembelian</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/pengajuandef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Pengajuan</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/invoicedef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Invoice</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/pajakdef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Pajak</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
+            <!--begin::Menu item-->
+            <div class="menu-item">
+                <a class="menu-link" href="">
+                    <span class="menu-icon">
+                        <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <img src="{{ url('/admin/assets/media/icons/aside/admindef.svg') }}" alt="">
+                        </span>
+                        <!--end::Svg Icon-->
+                    </span>
+                    <span class="menu-title" style="color: #FFFFFF;">Admin</span>
+                </a>
+            </div>
+            <!--end::Menu item-->
+
             @if ($role === 'admin')
-                <div class="menu-item">
-                    <a class="menu-link  {{ $path[1] === 'datauser' ? 'active' : '' }}"
-                        href="{{ route('admin.datauser') }}">
+                <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'master-data' ? 'show' : '' }}"
+                    data-kt-menu-trigger="click">
+                    <!--begin::Menu link-->
+                    <a href="#" class="menu-link py-3 {{ $path[1] == 'master-data' ? 'active' : '' }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                             <span class="svg-icon svg-icon-2">
-                                <img src="{{ $path[1] === 'datauser' ? url('admin/assets/media/icons/aside/dataguruact.svg') : url('/admin/assets/media/icons/aside/datagurudef.svg') }}"
+                                <img src="{{ $path[1] == 'master-data' ? url('admin/assets/media/icons/aside/masterdataact.svg') : url('/admin/assets/media/icons/aside/masterdatadef.svg') }}"
                                     alt="">
                             </span>
                             <!--end::Svg Icon-->
                         </span>
                         <span class="menu-title"
-                            style="{{ $path[1] === 'datauser' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
-                            User</span>
+                            style="{{ $path[1] == 'master-data' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Master
+                            Data</span>
+                        <span class="menu-arrow"></span>
                     </a>
+                    <!--end::Menu link-->
+
+                    <!--begin::Menu sub-->
+                    <div class="menu-sub gap-2 menu-sub-accordion my-2">
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'datauser' ? 'active' : '' }}"
+                                href="{{ route('admin.datauser') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'datauser' ? url('admin/assets/media/icons/aside/dataguruact.svg') : url('/admin/assets/media/icons/aside/datagurudef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'datauser' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
+                                    User</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'datavendor' ? 'active' : '' }}"
+                                href="{{ route('admin.datavendor') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'datavendor' ? url('admin/assets/media/icons/aside/datavendoract.svg') : url('/admin/assets/media/icons/aside/datavendordef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'datavendor' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
+                                    Vendor</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'dataclient' ? 'active' : '' }}"
+                                href="{{ route('admin.dataclient') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'dataclient' ? url('admin/assets/media/icons/aside/dataclientact.svg') : url('/admin/assets/media/icons/aside/dataclientdef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'dataclient' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
+                                    Client</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+                    </div>
+                    <!--end::Menu sub-->
+
                 </div>
             @endif
+
+
 
             {{-- @if ($role === 'admin')
                 <div class="menu-item">
