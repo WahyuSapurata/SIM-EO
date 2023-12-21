@@ -46,6 +46,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-dataclient/{params}', 'DataClientController@show')->name('show-dataclient');
             Route::post('/update-dataclient/{params}', 'DataClientController@update')->name('update-dataclient');
             Route::delete('/delete-dataclient/{params}', 'DataClientController@delete')->name('delete-dataclient');
+
+            Route::get('/datapajak', 'DataPajakController@index')->name('datapajak');
+            Route::get('/get-datapajak', 'DataPajakController@get')->name('get-datapajak');
+            Route::post('/add-datapajak', 'DataPajakController@store')->name('add-datapajak');
+            Route::get('/show-datapajak/{params}', 'DataPajakController@show')->name('show-datapajak');
+            Route::post('/update-datapajak/{params}', 'DataPajakController@update')->name('update-datapajak');
+            Route::delete('/delete-datapajak/{params}', 'DataPajakController@delete')->name('delete-datapajak');
         });
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');

@@ -34,7 +34,7 @@ class StoreDataClientRequest extends FormRequest
     public function messages()
     {
         return [
-            'nama_client.required' => 'Kolom nama client owner harus di isi.',
+            'nama_client.required' => 'Kolom nama client harus di isi.',
             'event.required' => 'Kolom event perusahaan harus di isi.',
             'venue.required' => 'Kolom venue perusahaan harus di isi.',
             'project_date.required' => 'Kolom project date.telp harus di isi.',

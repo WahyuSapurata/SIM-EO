@@ -214,6 +214,25 @@
                             </a>
                         </div>
                         <!--end::Menu item-->
+
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'datapajak' ? 'active' : '' }}"
+                                href="{{ route('admin.datapajak') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'datapajak' ? url('admin/assets/media/icons/aside/pajakact.svg') : url('/admin/assets/media/icons/aside/pajakdef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'datapajak' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
+                                    Pajak</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
                     </div>
                     <!--end::Menu sub-->
 
