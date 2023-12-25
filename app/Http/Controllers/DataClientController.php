@@ -11,7 +11,7 @@ class DataClientController extends BaseController
     public function index()
     {
         $module = 'Daftar Client';
-        return view('admin.dataclient.index', compact('module'));
+        return view('procurement.dataclient.index', compact('module'));
     }
 
     public function get()

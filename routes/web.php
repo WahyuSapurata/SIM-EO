@@ -40,13 +40,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('/update-datavendor/{params}', 'DataVendorController@update')->name('update-datavendor');
             Route::delete('/delete-datavendor/{params}', 'DataVendorController@delete')->name('delete-datavendor');
 
-            Route::get('/dataclient', 'DataClientController@index')->name('dataclient');
-            Route::get('/get-dataclient', 'DataClientController@get')->name('get-dataclient');
-            Route::post('/add-dataclient', 'DataClientController@store')->name('add-dataclient');
-            Route::get('/show-dataclient/{params}', 'DataClientController@show')->name('show-dataclient');
-            Route::post('/update-dataclient/{params}', 'DataClientController@update')->name('update-dataclient');
-            Route::delete('/delete-dataclient/{params}', 'DataClientController@delete')->name('delete-dataclient');
-
             Route::get('/datapajak', 'DataPajakController@index')->name('datapajak');
             Route::get('/get-datapajak', 'DataPajakController@get')->name('get-datapajak');
             Route::post('/add-datapajak', 'DataPajakController@store')->name('add-datapajak');
@@ -61,6 +54,23 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
     Route::group(['prefix' => 'procurement', 'middleware' => ['auth'], 'as' => 'procurement.'], function () {
         Route::get('/dashboard-procurement', 'Dashboard@dashboard_procurement')->name('dashboard-procurement');
+
+        Route::get('/dataclient', 'DataClientController@index')->name('dataclient');
+        Route::get('/get-dataclient', 'DataClientController@get')->name('get-dataclient');
+        Route::post('/add-dataclient', 'DataClientController@store')->name('add-dataclient');
+        Route::get('/show-dataclient/{params}', 'DataClientController@show')->name('show-dataclient');
+        Route::post('/update-dataclient/{params}', 'DataClientController@update')->name('update-dataclient');
+        Route::delete('/delete-dataclient/{params}', 'DataClientController@delete')->name('delete-dataclient');
+
+        Route::get('/penjualan', 'PenjualanController@index')->name('penjualan');
+        Route::get('/penjualan/{params}', 'PenjualanController@penjualan')->name('penjualan-params');
+        Route::get('/get-penjualan/{params}', 'PenjualanController@get')->name('get-penjualan');
+        Route::post('/add-penjualan', 'PenjualanController@store')->name('add-penjualan');
+        Route::get('/show-penjualan/{params}', 'PenjualanController@show')->name('show-penjualan');
+        Route::post('/update-penjualan/{params}', 'PenjualanController@update')->name('update-penjualan');
+        Route::delete('/delete-penjualan/{params}', 'PenjualanController@delete')->name('delete-penjualan');
+
+        Route::post('/add-import-penjualan', 'PenjualanController@import_penjualan')->name('add-import-penjualan');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

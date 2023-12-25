@@ -120,9 +120,8 @@
 
                     <div class="mb-10">
                         <label class="form-label">Role</label>
-                        <select name="role" class="form-select" data-control="select2" id="role_select"
+                        <select name="role" class="form-select" data-control="select2" id="from_select"
                             data-placeholder="Pilih jenis inputan">
-
                         </select>
                         <small class="text-danger role_error"></small>
                     </div>
@@ -257,7 +256,7 @@
         ];
 
         $(function() {
-            control.push_select3(role, '#role_select');
+            control.push_select3(role, '#from_select');
             control.initDatatable('/admin/master-data/get-datauser', columns, columnDefs);
         })
     </script>

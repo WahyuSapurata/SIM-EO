@@ -103,7 +103,7 @@ class Control {
         if (type == "Tambah") {
             $(".form-data")[0].reset();
             $("#from_select").val(null).trigger("change");
-            $(".form-select").val(null).trigger("change");
+            // $(".form-select").val(null).trigger("change");
             $(".form-data").attr("data-type", "add");
             $("#img-foto").attr("src", ""); // Gantilah "gambar-preview" dengan id elemen gambar Anda
         } else {
@@ -281,7 +281,7 @@ class Control {
         });
     }
 
-    submitForm(url, role_data = null, module = null, method, formData, route) {
+    submitForm(url, role_data = null, module = null, method, formData) {
         let this_ = this;
         let table_ = this.table;
 
@@ -295,26 +295,32 @@ class Control {
             type: method,
             url: url,
             data: formData,
+            contentType: false,
+            processData: false,
             success: function (response) {
-                console.log(response);
                 $(".text-danger").html("");
-                if (response.success) {
-                    swal.fire({
-                        text: `${module} berhasil di ${role_data}`,
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500,
-                    }).then(function () {
-                        table_.DataTable().ajax.reload();
-                        window.location.href = route;
-                    });
+                if (response.success == true) {
+                    swal
+                        .fire({
+                            text: `${module} berhasil di ${role_data}`,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                        .then(function () {
+                            $("#side_form_close").trigger("click");
+                            $('#kt_modal_1').modal('hide');
+                            table_.DataTable().ajax.reload();
+                            $("form")[0].reset();
+                            $("#from_select").val(null).trigger("change");
+                            // $(".form-select").val(null).trigger("change");
+                        });
                 } else {
                     $("form")[0].reset();
                     $("#from_select").val(null).trigger("change");
-                    $(".form-select").val(null).trigger("change");
                     swal.fire({
-                        title: response.message || "Terjadi kesalahan",
-                        text: response.data || "Mohon coba lagi",
+                        title: response.message,
+                        text: response.data,
                         icon: "warning",
                         showConfirmButton: false,
                         timer: 1500,
@@ -329,7 +335,6 @@ class Control {
             },
         });
     }
-
 
     submitFormMultipartData(url, role_data = null, module = null, method) {
         let this_ = this;
@@ -363,12 +368,12 @@ class Control {
                             table_.DataTable().ajax.reload();
                             $("form")[0].reset();
                             $("#from_select").val(null).trigger("change");
-                            $(".form-select").val(null).trigger("change");
+                            // $(".form-select").val(null).trigger("change");
                         });
                 } else {
                     $("form")[0].reset();
                     $("#from_select").val(null).trigger("change");
-                    $(".form-select").val(null).trigger("change");
+                    // $(".form-select").val(null).trigger("change");
                     swal.fire({
                         title: response.message,
                         text: response.data,
@@ -595,4 +600,47 @@ class Control {
             },
         });
     }
+
+    async initDatatable1(url, columns, columnDefs) {
+        // Destroy the existing DataTable
+        if (this.table && $.fn.DataTable.isDataTable(this.table)) {
+            this.table.DataTable().destroy();
+        }
+
+        await this.table.dataTable().fnClearTable();
+        await this.table.dataTable().fnDraw();
+        await this.table.dataTable().fnDestroy();
+
+        // Initialize a new DataTable
+        const dataTable = this.table.DataTable({
+            responsive: true,
+            pageLength: 10,
+            order: [[0, "desc"]],
+            processing: true,
+            ajax: url,
+            columns: columns,
+            columnDefs: columnDefs,
+            rowCallback: function (row, data, index) {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                var rowIndex = startIndex + index + 1;
+                $('td', row).eq(0).html(rowIndex);
+            },
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var subtotalTotal = 0;
+
+                // Calculate total for 'harga_satuan' column
+                api.column(6, { search: 'applied' }).data().each(function (value) {
+                    // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq;
+                });
+
+                // Update the total row in the footer
+                $('#total-subtotal').html('Rp ' + numeral(subtotalTotal).format('0,0'));
+            },
+
+        });
+    }
+
 }

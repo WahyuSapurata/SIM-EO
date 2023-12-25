@@ -177,25 +177,25 @@
             e.preventDefault();
             let type = $(this).attr('data-type');
             if (type == 'add') {
-                control.submitFormMultipartData('/admin/master-data/add-dataclient', 'Tambah',
+                control.submitFormMultipartData('/procurement/add-dataclient', 'Tambah',
                     'Client',
                     'POST');
             } else {
                 let uuid = $("input[name='uuid']").val();
-                control.submitFormMultipartData('/admin/master-data/update-dataclient/' + uuid, 'Update',
+                control.submitFormMultipartData('/procurement/update-dataclient/' + uuid, 'Update',
                     'Client', 'POST');
             }
         });
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
-            let url = '/admin/master-data/show-dataclient/' + $(this).attr('data-uuid');
+            let url = '/procurement/show-dataclient/' + $(this).attr('data-uuid');
             control.overlay_form('Update', 'Client', url);
         })
 
         $(document).on('click', '.button-delete', function(e) {
             e.preventDefault();
-            let url = '/admin/master-data/delete-dataclient/' + $(this).attr('data-uuid');
+            let url = '/procurement/delete-dataclient/' + $(this).attr('data-uuid');
             let label = $(this).attr('data-label');
             control.ajaxDelete(url, label)
         })
@@ -274,7 +274,7 @@
         }];
 
         $(function() {
-            control.initDatatable('/admin/master-data/get-dataclient', columns, columnDefs);
+            control.initDatatable('/procurement/get-dataclient', columns, columnDefs);
         })
     </script>
 @endsection
