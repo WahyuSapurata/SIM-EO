@@ -71,6 +71,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::delete('/delete-penjualan/{params}', 'PenjualanController@delete')->name('delete-penjualan');
 
         Route::post('/add-import-penjualan', 'PenjualanController@import_penjualan')->name('add-import-penjualan');
+
+        Route::get('/export-excel/{params}', 'ExportExcel@exportToExcel')->name('export-excel');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

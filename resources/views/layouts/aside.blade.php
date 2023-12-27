@@ -119,6 +119,41 @@
             @if ($role === 'admin')
                 <!--begin::Menu item-->
                 <div class="menu-item">
+                    <a class="menu-link {{ $path[1] === 'penjualan' ? 'active' : '' }}"
+                        href="{{ route('procurement.penjualan') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <img src="{{ $path[1] === 'penjualan' ? url('admin/assets/media/icons/aside/penjualanact.svg') : url('/admin/assets/media/icons/aside/penjualandef.svg') }}"
+                                    alt="">
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title"
+                            style="{{ $path[1] === 'penjualan' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Budget
+                            Client</span>
+                    </a>
+                </div>
+                <!--end::Menu item-->
+
+                <!--begin::Menu item-->
+                <div class="menu-item">
+                    <a class="menu-link" href="">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <img src="{{ url('/admin/assets/media/icons/aside/pembeliandef.svg') }}"
+                                    alt="">
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title" style="color: #FFFFFF;">PO</span>
+                    </a>
+                </div>
+                <!--end::Menu item-->
+
+                <!--begin::Menu item-->
+                <div class="menu-item">
                     <a class="menu-link" href="">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->

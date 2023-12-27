@@ -1,25 +1,4 @@
 @extends('layouts.layout')
-@section('button')
-    <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
-        <!--begin::Page title-->
-        <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
-            data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
-            class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-            <!--begin::Title-->
-            <button class="btn btn-primary btn-sm " data-kt-drawer-show="true" data-kt-drawer-target="#side_form"
-                id="button-side-form"><i class="fa fa-plus-circle" style="color:#ffffff" aria-hidden="true"></i> Tambah
-                Data</button>
-            <!--end::Title-->
-        </div>
-        <!--end::Page title-->
-        <!--begin::Actions-->
-        {{-- <div class="d-flex align-items-center gap-2 gap-lg-3">
-            <a href="#" data-type="excel" class="btn btn-sm btn-success export">Export Excel</a>
-            <a href="#" data-type="pdf" class="btn btn-sm btn-danger export">Cetak Laporan</a>
-        </div> --}}
-        <!--end::Actions-->
-    </div>
-@endsection
 @section('content')
     <div class="post d-flex flex-column-fluid" id="kt_post">
         <!--begin::Container-->
@@ -103,6 +82,25 @@
             <div class="row mt-5">
 
                 <div class="card">
+                    <div class="container-fluid d-flex flex-stack mt-5">
+                        <!--begin::Page title-->
+                        <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
+                            class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                            <!--begin::Title-->
+                            <button class="btn btn-primary btn-sm " data-kt-drawer-show="true"
+                                data-kt-drawer-target="#side_form" id="button-side-form"><i class="fa fa-plus-circle"
+                                    style="color:#ffffff" aria-hidden="true"></i> Tambah
+                                Data</button>
+                            <!--end::Title-->
+                        </div>
+                        <!--end::Page title-->
+                        <!--begin::Actions-->
+                        {{-- <div class="d-flex align-items-center gap-2 gap-lg-3">
+                            <a href="#" data-type="excel" class="btn btn-sm btn-success export">Export Excel</a>
+                            <a href="#" data-type="pdf" class="btn btn-sm btn-danger export">Cetak Laporan</a>
+                        </div> --}}
+                        <!--end::Actions-->
+                    </div>
                     <div class="card-body p-0">
                         <div class="container">
                             <div class="py-5 table-responsive">
