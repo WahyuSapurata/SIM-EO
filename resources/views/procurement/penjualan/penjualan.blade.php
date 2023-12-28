@@ -89,7 +89,7 @@
                         <input type="hidden" id="uuid_client_import" name="uuid_client">
 
                         <div class="mb-10">
-                            <label for="file_excel" class="form-label">Data Penjualan</label>
+                            <label for="file_excel" class="form-label">Data Penjualan Dalam Format (.xlsx)</label>
                             <input class="form-control" accept=".xlsx, .csv" type="file" name="file_excel"
                                 id="file_excel">
                             <small class="text-danger file_excel_error"></small>

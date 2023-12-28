@@ -476,11 +476,26 @@ class Control {
             success: function (res) {
                 $(element).html("");
                 let html = "<option selected disabled>Pilih</option>";
-                let user = 'admin';
                 $.each(res.data, function (x, y) {
-                    if (y.role != user) {
-                        html += `<option value="${y.uuid}">${y.name}</option>`;
-                    }
+                    html += `<option value="${y.uuid}">${y.nama_perusahaan}</option>`;
+                });
+                $(element).html(html);
+            },
+            error: function (xhr) {
+                alert("gagal");
+            },
+        });
+    }
+
+    push_select_pajak(url, element) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function (res) {
+                $(element).html("");
+                let html = "<option selected disabled>Pilih</option>";
+                $.each(res.data, function (x, y) {
+                    html += `<option value="${y.uuid}">${y.pajak}</option>`;
                 });
                 $(element).html(html);
             },

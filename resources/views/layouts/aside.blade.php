@@ -87,15 +87,17 @@
 
                 <!--begin::Menu item-->
                 <div class="menu-item">
-                    <a class="menu-link" href="">
+                    <a class="menu-link {{ $path[1] === 'po' ? 'active' : '' }}" href="{{ route('procurement.po') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                             <span class="svg-icon svg-icon-2">
-                                <img src="{{ url('/admin/assets/media/icons/aside/pembeliandef.svg') }}" alt="">
+                                <img src="{{ $path[1] === 'po' ? url('admin/assets/media/icons/aside/pembelianact.svg') : url('/admin/assets/media/icons/aside/pembeliandef.svg') }}"
+                                    alt="">
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-title" style="color: #FFFFFF;">PO</span>
+                        <span class="menu-title"
+                            style="{{ $path[1] === 'po' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">PO</span>
                     </a>
                 </div>
                 <!--end::Menu item-->

@@ -73,6 +73,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::post('/add-import-penjualan', 'PenjualanController@import_penjualan')->name('add-import-penjualan');
 
         Route::get('/export-excel/{params}', 'ExportExcel@exportToExcel')->name('export-excel');
+
+        Route::get('/po', 'PoController@index')->name('po');
+        Route::get('/po-client/{params}', 'PoController@po')->name('po-client');
+        Route::get('/get-po', 'PoController@get')->name('get-po');
+        Route::post('/add-po', 'PoController@store')->name('add-po');
+        Route::get('/show-po/{params}', 'PoController@show')->name('show-po');
+        Route::post('/update-po/{params}', 'PoController@update')->name('update-po');
+        Route::delete('/delete-po/{params}', 'PoController@delete')->name('delete-po');
+
+        Route::post('/export-invoice', 'PoController@exportToPDF')->name('export-invoice');
+        // Route::get('/tes', 'PoController@tes')->name('tes');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {
