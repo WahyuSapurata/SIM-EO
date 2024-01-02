@@ -495,7 +495,7 @@ class Control {
                 $(element).html("");
                 let html = "<option selected disabled>Pilih</option>";
                 $.each(res.data, function (x, y) {
-                    html += `<option value="${y.uuid}">${y.pajak}</option>`;
+                    html += `<option value="${y.deskripsi_pajak}">${y.deskripsi_pajak}</option>`;
                 });
                 $(element).html(html);
             },
@@ -644,11 +644,65 @@ class Control {
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
                 var subtotalTotal = 0;
+                var subtotalTotalRealCost = 0;
 
                 // Calculate total for 'harga_satuan' column
                 api.column(6, { search: 'applied' }).data().each(function (value) {
                     // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq;
+                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq * value.qty;
+                });
+
+                // Calculate total for 'harga_satuan' column
+                api.column(8, { search: 'applied' }).data().each(function (value) {
+                    // Periksa apakah satuan_real_cost bernilai null, dan jika iya, setel nilainya menjadi 0
+                    value.satuan_real_cost = value.satuan_real_cost !== null ? value.satuan_real_cost : 0;
+
+                    // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                    subtotalTotalRealCost += parseFloat(value.satuan_real_cost) * value.freq * value.qty;
+                });
+
+                // Update the total row in the footer
+                $('#total-subtotal').html('Rp ' + numeral(subtotalTotal).format('0,0'));
+                $('#subtotal-realCost').html('Rp ' + numeral(subtotalTotalRealCost).format('0,0'));
+            },
+
+        });
+    }
+
+    async initDatatable2(url, columns, columnDefs) {
+        // Destroy the existing DataTable
+        if (this.table && $.fn.DataTable.isDataTable(this.table)) {
+            this.table.DataTable().destroy();
+        }
+
+        await this.table.dataTable().fnClearTable();
+        await this.table.dataTable().fnDraw();
+        await this.table.dataTable().fnDestroy();
+
+        // Initialize a new DataTable
+        const dataTable = this.table.DataTable({
+            responsive: true,
+            pageLength: 10,
+            order: [[0, "desc"]],
+            processing: true,
+            ajax: url,
+            columns: columns,
+            columnDefs: columnDefs,
+            rowCallback: function (row, data, index) {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                var rowIndex = startIndex + index + 1;
+                $('td', row).eq(0).html(rowIndex);
+            },
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var subtotalTotal = 0;
+                var subtotalTotalRealCost = 0;
+
+                // Calculate total for 'harga_satuan' column
+                api.column(6, { search: 'applied' }).data().each(function (value) {
+                    // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq * value.qty;
                 });
 
                 // Update the total row in the footer

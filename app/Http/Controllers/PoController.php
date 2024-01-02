@@ -8,8 +8,18 @@ use App\Models\DataClient;
 use App\Models\DataPajak;
 use App\Models\DataVendor;
 use App\Models\Penjualan;
+use App\Models\PersetujuanPo;
 use App\Models\Po;
+use App\Models\RealCost;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PoController extends BaseController
 {
@@ -64,88 +74,108 @@ class PoController extends BaseController
     public function exportToPDF(Request $request)
     {
         $vendor = DataVendor::where('uuid', $request->vendor)->first();
-        $pajak = DataPajak::where('uuid', $request->pajak)->first();
-
         $uuidArray = explode(',', $request->uuid_penjualan);
         $penjualan = Penjualan::whereIn('uuid', $uuidArray)->get();
+        $realCost = RealCost::all();
+
+        $combinedData = $penjualan->map(function ($item) use ($realCost) {
+            $data = $realCost->where('uuid_po', $item->uuid)->first();
+
+            // Periksa apakah $data tidak kosong sebelum mengakses propertinya
+            if ($data) {
+                // Menambahkan data user ke dalam setiap item absen
+                $item->satuan_real_cost = $data->satuan_real_cost ?? null;
+                $item->pajak_po = $data->pajak_po ?? null;
+            } else {
+                // Jika $data kosong, berikan nilai default atau kosong
+                $item->satuan_real_cost = null;
+                $item->pajak_po = null;
+            }
+
+            return $item;
+        });
+
+        $pajakPoValues = $combinedData->pluck('pajak_po')->filter()->toArray();
+
+        // Ambil data pajak berdasarkan deskripsi_pajak yang sesuai dengan nilai-nilai pada $pajakPoValues
+        $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
+
+        // Buat koleksi baru untuk menyimpan data pajak sesuai dengan urutan pada $pajakPoValues
+        $orderedPajak = collect($pajakPoValues)->map(function ($value) use ($pajak) {
+            return $pajak->firstWhere('deskripsi_pajak', $value);
+        });
+
         $client = DataClient::where('uuid', $penjualan[0]->uuid_client)->first();
 
-        // Buat objek mPDF dengan orientasi lanskap
-        //$mpdf = new Mpdf(['orientation' => 'L']);
-        $mpdf = new \Mpdf\Mpdf(['format' => 'Legal']);
+        $disc = $request->disc;
+        $tempo = $request->tempo;
 
+        // Tanggal sekarang
+        $tanggalSekarang = Carbon::now();
 
+        // Tanggal 31 pada bulan ini
+        $tanggal31 = Carbon::parse($tempo)->addDay();
 
-        // Contoh konten PDF
-        $html = view('procurement.po.invoice', compact('vendor', 'pajak', 'penjualan', 'client'))->render();
+        // Hitung jumlah hari
+        $jumlahHari = $tanggalSekarang->diffInDays($tanggal31);
 
-        // Tambahkan konten ke PDF
-        $mpdf->WriteHTML($html);
+        $lastPdfNumber = Po::max('file') ?? 0;
+        // Menggunakan ekspresi reguler untuk mengambil angka dari nama file
+        preg_match('/\d+/', $lastPdfNumber, $matches);
 
-        // Tampilkan PDF di browser (inline) dengan orientasi lanskap
-        $mpdf->Output('Purchase Invoice' . $client->event . ' - ' . $vendor->nama_perusahaan . '.pdf', 'I');
+        // Hasilnya akan ada di dalam $matches[0]
+        $angkaDariNamaFile = $matches[0];
+        $newPdfNumber = $angkaDariNamaFile + 1;
+
+        $html = view('procurement.po.invoice', compact('vendor', 'combinedData', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'newPdfNumber'))->render();
+
+        // Buat nama file PDF dengan nomor urut
+        $pdfFileName = $newPdfNumber . '.pdf';
+        $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
+
+        SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
+
+        // Simpan informasi PDF ke dalam database menggunakan model Po
+        $pdfInfoCollection = Po::whereIn('uuid_penjualan', $uuidArray)->get();
+
+        foreach ($pdfInfoCollection as $pdfInfo) {
+            $pdfInfo->file = $pdfFileName;
+            $pdfInfo->save();
+        }
+
+        $tahun = date('Y'); // Mendapatkan tahun saat ini
+        $duaAngkaTerakhir = substr($tahun, -2);
+        if (auth()->user()->lokasi === 'makassar') {
+            $no_po = 'PO/MKS-' . $duaAngkaTerakhir . date('m') . $newPdfNumber;
+        } else {
+            $no_po = 'PO/JKT-' . $duaAngkaTerakhir . date('m') . $newPdfNumber;
+        }
+
+        $subtotalTotal = 0;
+        $subTotalPajak = 0;
+        foreach ($combinedData as $row) {
+            $jumlah = $row->harga_satuan * $row->freq * $row->qty;
+            $subtotalTotal += $jumlah;
+        }
+        foreach ($orderedPajak as $row_pajak) {
+            $subTotalPajak += $subtotalTotal * ($row_pajak->pajak / 100);
+        }
+
+        try {
+            $data = new PersetujuanPo();
+            $data->uuid_penjualan = $request->uuid_penjualan;
+            $data->no_po = $no_po;
+            $data->client = $client->nama_client;
+            $data->event = $client->event;
+            $data->total_po = $subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc);
+            $data->file = $pdfFileName;
+            $data->save();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        // $pdf = FacadePdf::loadHTML($html);
+        return SnappyPdf::loadHTML($html)
+            ->download($pdfFileName);
     }
-
-
-    // public function show($params)
-    // {
-    //     $data = array();
-    //     try {
-    //         $data = Penjualan::where('uuid', $params)->first();
-    //     } catch (\Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-    //     }
-    //     return $this->sendResponse($data, 'Show data success');
-    // }
-
-    // public function update(StorePenjualanRequest $storePenjualanRequest, $params)
-    // {
-    //     // Hapus karakter non-numerik (koma dan spasi)
-    //     $numericValue = (int) str_replace(['Rp', ',', ' '], '', $storePenjualanRequest->harga_satuan);
-    //     try {
-    //         $data = Penjualan::where('uuid', $params)->first();
-    //         $data->uuid_client = $storePenjualanRequest->uuid_client;
-    //         $data->kegiatan = $storePenjualanRequest->kegiatan;
-    //         $data->qty = $storePenjualanRequest->qty;
-    //         $data->satuan_kegiatan = $storePenjualanRequest->satuan_kegiatan;
-    //         $data->freq = $storePenjualanRequest->freq;
-    //         $data->satuan = $storePenjualanRequest->satuan;
-    //         $data->harga_satuan = $numericValue;
-    //         $data->ket = $storePenjualanRequest->ket;
-    //         $data->save();
-    //     } catch (\Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-    //     }
-
-    //     return $this->sendResponse($data, 'Update data success');
-    // }
-
-    // public function delete($params)
-    // {
-    //     $data = array();
-    //     try {
-    //         $data = Penjualan::where('uuid', $params)->first();
-    //         $data->delete();
-    //     } catch (\Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-    //     }
-    //     return $this->sendResponse($data, 'Delete data success');
-    // }
-
-    // public function import_penjualan(Request $request)
-    // {
-    //     try {
-    //         $request->validate([
-    //             'file_excel' => 'nullable|mimes:xls,xlsx,csv|max:20048', // Batas ukuran file diatur menjadi 2MB (sesuaikan sesuai kebutuhan)
-    //         ]);
-
-    //         $uuid_client = $request->input('uuid_client');
-    //         $file = $request->file('file_excel');
-    //         Excel::import(new ImportPenjualan($uuid_client), $file);
-
-    //         return $this->sendResponse('success', 'Excel data uploaded and saved successfully');
-    //     } catch (\Exception $e) {
-    //         return $this->sendError('Error uploading and saving Excel: ' . $e->getMessage(), $e->getMessage(), 200);
-    //     }
-    // }
 }

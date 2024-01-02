@@ -25,7 +25,7 @@
                         <rect width="16" height="16" fill="white" />
                     </g>
                 </svg>
-                Cetak Invoice
+                Cetak Invoice Po
             </button>
         </div>
         <!--end::Actions-->
@@ -36,7 +36,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Buat Invoice</h3>
+                    <h3 class="modal-title">Buat Invoice Po</h3>
 
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form class="form-data" enctype="multipart/form-data">
+                    <form>
 
                         <input type="hidden" name="id">
                         <input type="hidden" name="uuid">
@@ -61,11 +61,15 @@
                         </div>
 
                         <div class="mb-10">
-                            <label class="form-label">Pajak</label>
-                            <select name="pajak" class="form-select" data-control="select2" id="pajak-select"
-                                data-placeholder="Pilih jenis inputan">
-                            </select>
-                            <small class="text-danger pajak_error"></small>
+                            <label class="form-label">Discount</label>
+                            <input class="form-control" type="text" name="disc" id="disc">
+                            <small class="text-danger disc_error"></small>
+                        </div>
+
+                        <div class="mb-10">
+                            <label class="form-label">Jatuh Tempo</label>
+                            <input class="form-control kt_datepicker_7" type="text" name="tempo" id="tempo">
+                            <small class="text-danger tempo_error"></small>
                         </div>
 
                         <div class="separator separator-dashed mt-8 mb-5"></div>
@@ -91,36 +95,39 @@
 
                 <div class="card">
                     <div class="card-body p-0">
-                        <div class="container">
-                            <div class="py-5 table-responsive">
-                                <table id="kt_table_data"
-                                    class="table table-striped table-rounded border border-gray-300 table-row-bordered table-row-gray-300">
-                                    <thead class="text-center">
-                                        <tr class="fw-bolder fs-6 text-gray-800">
-                                            <th>No</th>
-                                            <th>Kegiatan</th>
-                                            <th>QTY</th>
-                                            <th>Satuan</th>
-                                            <th>Freq</th>
-                                            <th>Satuan</th>
-                                            <th>Harga Satuan</th>
-                                            <th>Sub Total</th>
-                                            <th>Keterangan</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot class="bg-primary rounded">
-                                        <tr class="fw-bolder fs-6 text-gray-800">
-                                            <td style="text-align: left !important;" colspan="7">Total</td>
-                                            <td style="text-align: left !important;" colspan="3" id="total-subtotal">
-                                                Rp 0
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                        <div class="py-5 table-responsive">
+                            <table id="kt_table_data"
+                                class="table table-striped table-rounded border border-gray-300 table-row-bordered table-row-gray-300">
+                                <thead class="text-center">
+                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                        <th>No</th>
+                                        <th>Kegiatan</th>
+                                        <th>QTY</th>
+                                        <th>Satuan</th>
+                                        <th>Freq</th>
+                                        <th>Satuan</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Sub Total</th>
+                                        <th>Satuan Real Cost</th>
+                                        <th>Total Real Cost</th>
+                                        <th>Pajak</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot class="bg-primary">
+                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                        <td style="text-align: left !important;" colspan="7">Total</td>
+                                        <td style="text-align: left !important;" colspan="2" id="total-subtotal">
+                                            Rp 0
+                                        </td>
+                                        <td style="text-align: left !important;" colspan="3" id="subtotal-realCost">
+                                            Rp 0
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
 
                     </div>
@@ -131,16 +138,123 @@
         <!--end::Container-->
     </div>
 @endsection
+@section('side-form')
+    <div id="side_form" class="bg-white" data-kt-drawer="true" data-kt-drawer-activate="true"
+        data-kt-drawer-toggle="#side_form_button" data-kt-drawer-close="#side_form_close" data-kt-drawer-width="500px">
+        <!--begin::Card-->
+        <div class="card w-100">
+            <!--begin::Card header-->
+            <div class="card-header pe-5">
+                <!--begin::Title-->
+                <div class="card-title">
+                    <!--begin::User-->
+                    <div class="d-flex justify-content-center flex-column me-3">
+                        <a href="#"
+                            class="fs-4 fw-bolder text-gray-900 text-hover-primary me-1 lh-1 title_side_form"></a>
+                    </div>
+                    <!--end::User-->
+                </div>
+                <!--end::Title-->
+                <!--begin::Card toolbar-->
+                <div class="card-toolbar">
+                    <!--begin::Close-->
+                    <div class="btn btn-sm btn-icon btn-active-light-primary" id="side_form_close">
+                        <!--begin::Svg Icon | path: icons/duotone/Navigation/Close.svg-->
+                        <span class="svg-icon svg-icon-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                <g transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)"
+                                    fill="#000000">
+                                    <rect fill="#000000" x="0" y="7" width="16" height="2" rx="1" />
+                                    <rect fill="#000000" opacity="0.5"
+                                        transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000)"
+                                        x="0" y="7" width="16" height="2" rx="1" />
+                                </g>
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </div>
+                    <!--end::Close-->
+                </div>
+                <!--end::Card toolbar-->
+            </div>
+            <!--end::Card header-->
+            <!--begin::Card body-->
+            <div class="card-body hover-scroll-overlay-y">
+                <form class="form-data">
+
+                    <input type="hidden" name="id">
+                    <input type="hidden" name="uuid">
+
+                    <div class="mb-10">
+                        <label class="form-label">Harga Satuan Real Cost</label>
+                        <input type="text" id="satuan_real_cost" class="form-control" name="satuan_real_cost">
+                        <small class="text-danger satuan_real_cost_error"></small>
+                    </div>
+
+                    <div class="mb-10">
+                        <label class="form-label">Pajak</label>
+                        <select name="pajak_po" class="form-select" data-control="select2" id="pajak-select"
+                            data-placeholder="Pilih jenis inputan">
+                        </select>
+                        <small class="text-danger pajak_po_error"></small>
+                    </div>
+
+                    <div class="separator separator-dashed mt-8 mb-5"></div>
+                    <div class="d-flex gap-5">
+                        <button type="submit" class="btn btn-primary btn-sm btn-submit d-flex align-items-center"><i
+                                class="bi bi-file-earmark-diff"></i> Simpan</button>
+                        <button type="reset" id="side_form_close"
+                            class="btn mr-2 btn-light btn-cancel btn-sm d-flex align-items-center"
+                            style="background-color: #ea443e65; color: #EA443E"><i class="bi bi-trash-fill"
+                                style="color: #EA443E"></i>Batal</button>
+                    </div>
+                </form>
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+@endsection
 @section('script')
     <script>
         let control = new Control();
         // Deklarasikan variabel formData di luar fungsi
         let formData = new FormData();
-        let formDataPo = new FormData();
+        let formDataRealCost = new FormData();
 
         var currentPath = window.location.pathname;
         var pathParts = currentPath.split('/'); // Membagi path menggunakan karakter '/'
         var lastPart = pathParts[pathParts.length - 1]; // Mengambil elemen terakhir dari array
+
+        $(function() {
+            // Format anggaran input using numeral.js
+            $('#disc').on('input', function() {
+                let value = $(this).val();
+                if (value !== "") {
+                    value = numeral(value).format('0,0'); // Format to rupiah
+                    $(this).val('Rp ' + value);
+                }
+            });
+
+            $('#satuan_real_cost').on('input', function() {
+                let value = $(this).val();
+                if (value !== "") {
+                    value = numeral(value).format('0,0'); // Format to rupiah
+                    $(this).val('Rp ' + value);
+                }
+            });
+
+            $(".kt_datepicker_7").flatpickr({
+                dateFormat: "d-m-Y",
+            });
+        });
+
+        $(document).on('click', '.button-update', function(e) {
+            e.preventDefault();
+            formDataRealCost.append('uuid_po', $(this).attr('data-uuid'));
+            control.overlay_form('Tambah', 'Real Cost');
+        })
 
         $(document).on('keyup', '#search_', function(e) {
             e.preventDefault();
@@ -181,13 +295,33 @@
             className: 'text-center',
             render: function(data, type, row, meta) {
                 const jumlah = parseFloat(row.harga_satuan) * parseFloat(row
-                    .freq);
+                    .freq) * parseFloat(row
+                    .qty);
                 const value = numeral(jumlah).format(
                     '0,0'); // Format to rupiah
                 return 'Rp ' + value;
             }
         }, {
-            data: 'ket',
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+                const value = numeral(row.satuan_real_cost).format(
+                    '0,0'); // Format to rupiah
+                return 'Rp ' + value;
+            }
+        }, {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+                const jumlah = parseFloat(row.satuan_real_cost) * parseFloat(row
+                    .freq) * parseFloat(row
+                    .qty);
+                const value = numeral(jumlah).format(
+                    '0,0'); // Format to rupiah
+                return 'Rp ' + value;
+            }
+        }, {
+            data: 'pajak_po',
             className: 'text-center',
         }, {
             data: 'uuid',
@@ -228,6 +362,7 @@
                         hasil = y;
                     }
                 });
+                console.log(hasil);
 
                 if (hasil) {
                     if (hasil.status === 'progres') {
@@ -241,8 +376,22 @@
                     }
                 } else {
                     return `
-                <input class="checkbox-uuid" type="checkbox" data-uuid="${data}" onclick="handleCheckboxClick('${data}')" />
-            `;
+                    <a href="javascript:;" type="button" data-uuid="${data}" data-kt-drawer-show="true" data-kt-drawer-target="#side_form" class="btn btn-primary button-update btn-icon btn-sm">
+
+                        <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.5 16.2738C3.5 17.8891 4.80945 19.1986 6.42474 19.1986H10.8479L11.1681 17.9178C11.3139 17.3347 11.6155 16.8022 12.0405 16.3771L17.3522 11.0655C17.9947 10.423 18.8591 10.138 19.6986 10.2103V5.92474C19.6986 4.30945 18.3891 3 16.7738 3H10.6994V7.27463C10.6994 8.88992 9.38992 10.1994 7.77463 10.1994H3.5V16.2738ZM9.34949 3.39597L3.89597 8.84949H7.77463C8.6444 8.84949 9.34949 8.1444 9.34949 7.27463V3.39597ZM17.9886 11.7018L12.6769 17.0135C12.3672 17.3231 12.1475 17.7112 12.0412 18.1361L11.6293 19.7836C11.4503 20.5 12.0993 21.1491 12.8157 20.9699L14.4632 20.558C14.8881 20.4518 15.2761 20.2321 15.5859 19.9224L20.8975 14.6107C21.7008 13.8074 21.7008 12.5051 20.8975 11.7018C20.0943 10.8984 18.7919 10.8984 17.9886 11.7018Z" fill="white"/>
+                        <mask id="mask0_1953_23043" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+                        <path d="M3.5 16.2738C3.5 17.8891 4.80945 19.1986 6.42474 19.1986H10.8479L11.1681 17.9178C11.3139 17.3347 11.6155 16.8022 12.0405 16.3771L17.3522 11.0655C17.9947 10.423 18.8591 10.138 19.6986 10.2103V5.92474C19.6986 4.30945 18.3891 3 16.7738 3H10.6994V7.27463C10.6994 8.88992 9.38992 10.1994 7.77463 10.1994H3.5V16.2738ZM9.34949 3.39597L3.89597 8.84949H7.77463C8.6444 8.84949 9.34949 8.1444 9.34949 7.27463V3.39597ZM17.9886 11.7018L12.6769 17.0135C12.3672 17.3231 12.1475 17.7112 12.0412 18.1361L11.6293 19.7836C11.4503 20.5 12.0993 21.1491 12.8157 20.9699L14.4632 20.558C14.8881 20.4518 15.2761 20.2321 15.5859 19.9224L20.8975 14.6107C21.7008 13.8074 21.7008 12.5051 20.8975 11.7018C20.0943 10.8984 18.7919 10.8984 17.9886 11.7018Z" fill="white"/>
+                        </mask>
+                        <g mask="url(#mask0_1953_23043)">
+                        <rect x="0.5" width="24" height="24" fill="white"/>
+                        </g>
+                        </svg>
+
+
+                        </a>
+                                <input class="checkbox-uuid" type="checkbox" data-uuid="${data}" onclick="handleCheckboxClick('${data}')" />
+                            `;
                 }
             },
         }];
@@ -263,8 +412,19 @@
 
             // Tampilkan UUID yang dipilih saat ini
             formData.append('uuid_penjualan', selectedUUIDs);
-            formDataPo.append('uuid_penjualan', selectedUUIDs);
         }
+
+        $(document).on('submit', ".form-data", function(e) {
+            e.preventDefault();
+
+            let satuan_real_cost = $('#satuan_real_cost').val();
+            let pajak_po = $('#pajak-select').val();
+            formDataRealCost.append('satuan_real_cost', satuan_real_cost);
+            formDataRealCost.append('pajak_po', pajak_po);
+            control.submitForm('/procurement/add-realCost', 'Tambah',
+                'Real Cost',
+                'POST', formDataRealCost);
+        });
 
         $(function() {
             control.push_select2('/admin/master-data/get-datavendor', '#from_select');
@@ -275,60 +435,37 @@
             get();
         })
 
-        // Use jQuery to capture the click event of the checkbox
-        // $(document).on('click', '.checkbox-uuid', function() {
-        //     // Extract the data-uuid attribute and call the handleCheckboxClick function
-        //     var uuid = $(this).data('uuid');
-        //     handleCheckboxClick(uuid);
-        // });
-
         $('#export-excel').click(function(e) {
             e.preventDefault();
-            // console.log($('#from_select').val());
-            // control.submitForm('/procurement/add-po', 'Tambah',
-            //     'Po',
-            //     'POST', formData);
-            // get();
+            control.submitForm('/procurement/add-po', 'Tambah',
+                'Po',
+                'POST', formData);
+            get();
+            $('#kt_modal_1').modal('hide');
 
-            formDataPo.append('vendor', $('#from_select').val());
-            formDataPo.append('pajak', $('#pajak-select').val());
-            // Menggunakan jQuery AJAX untuk mengirim FormData ke server
-            // $.ajaxSetup({
-            //     headers: {
-            //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            //     },
-            // });
-            // $.ajax({
-            //     url: '/procurement/export-invoice',
-            //     method: 'POST',
-            //     data: formDataPo,
-            //     processData: false, // Set processData dan contentType menjadi false
-            //     contentType: false,
-            //     success: function(response) {
-            //         // Membuat URL blob dan membuka jendela baru dengan URL tersebut
-            //         // const url = window.URL.createObjectURL(response);
-            //         window.open('/procurement/export-invoice', "_blank");
-            //     },
-            //     error: function(error) {
-            //         console.error('Gagal melakukan permintaan AJAX:', error);
-            //     }
-            // });
+            // Fungsi untuk mengonversi objek menjadi string query parameter
+            function objectToQueryString(obj) {
+                return Object.keys(obj).map(key => key + '=' + encodeURIComponent(obj[key])).join('&');
+            }
 
-            // Menggunakan fetch untuk mengirim FormData ke server
-            fetch('/procurement/export-invoice', {
-                    method: 'POST',
-                    body: formDataPo,
-                    headers: {
-                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-                    },
-                })
-                .then(response => response.blob())
-                .then(blob => {
-                    // Membuat URL blob dan membuka jendela baru dengan URL tersebut
-                    const url = window.URL.createObjectURL(blob);
-                    window.open(url, "_blank");
-                })
-                .catch(error => console.error('Gagal melakukan permintaan fetch:', error));
+            let vendor = $('#from_select').val();
+            let pajak = $('#pajak-select').val();
+            let disc = $('#disc').val();
+            let tempo = $('#tempo').val();
+            let dataPo = {
+                uuid_penjualan: selectedUUIDs,
+                vendor: vendor,
+                pajak: pajak,
+                disc: disc,
+                tempo: tempo
+            };
+
+            // Mengonversi objek dataPo menjadi string query parameter
+            let queryString = objectToQueryString(dataPo);
+
+            // Membuka URL dengan query parameter
+            window.open(`/procurement/export-invoice?${queryString}`, "_blank");
+
         });
     </script>
 @endsection

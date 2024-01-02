@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Makassar',
 
     /*
     |--------------------------------------------------------------------------
@@ -170,6 +170,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
+
+        Barryvdh\Snappy\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -187,6 +189,9 @@ return [
         // 'Example' => App\Facades\Example::class,
 
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+
+        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'SnappyPdf' => Barryvdh\Snappy\Facades\SnappyPdf::class,
     ])->toArray(),
 
 ];

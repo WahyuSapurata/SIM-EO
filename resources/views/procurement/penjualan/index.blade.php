@@ -406,7 +406,8 @@
             className: 'text-center',
             render: function(data, type, row, meta) {
                 const jumlah = parseFloat(row.harga_satuan) * parseFloat(row
-                    .freq);
+                    .freq) * parseFloat(row
+                    .qty);
                 const value = numeral(jumlah).format(
                     '0,0'); // Format to rupiah
                 return 'Rp ' + value;
@@ -460,7 +461,7 @@
 
         function uuidSelected(selectedUuid) {
             console.log(selectedUuid);
-            control.initDatatable1(
+            control.initDatatable2(
                 '/procurement/get-penjualan/' + selectedUuid, columns,
                 columnDefs);
         }

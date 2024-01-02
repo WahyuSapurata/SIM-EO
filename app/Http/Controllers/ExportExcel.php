@@ -109,7 +109,7 @@ class ExportExcel extends Controller
             $sheet->setCellValue('G' . $row, "Rp. " . number_format($budget->harga_satuan, 0, ',', '.'));
 
             // Format rupiah pada kolom H
-            $total_budget = $budget->freq * $budget->harga_satuan;
+            $total_budget = $budget->freq * $budget->harga_satuan * $budget->qty;
             $subtotalTotal += $total_budget;
             $sheet->setCellValue('H' . $row, "Rp. " . number_format($total_budget, 0, ',', '.'));
             $sheet->setCellValue('I' . $row, $budget->ket);

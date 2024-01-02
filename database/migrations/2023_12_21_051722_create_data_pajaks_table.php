@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('data_pajaks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->string('deskripsi_pajak');
             $table->string('pajak');
             $table->timestamps();
         });

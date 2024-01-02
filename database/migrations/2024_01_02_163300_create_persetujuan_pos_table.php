@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('persetujuan_pos', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('name');
-            $table->string('username');
-            $table->string('password');
-            $table->string('role');
-            $table->string('lokasi')->nullable();
-            $table->rememberToken();
+            $table->string('uuid_penjualan');
+            $table->string('no_po');
+            $table->string('client');
+            $table->string('event');
+            $table->string('total_po');
+            $table->string('file');
+            $table->string('sisa_tagihan')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('persetujuan_pos');
     }
 };

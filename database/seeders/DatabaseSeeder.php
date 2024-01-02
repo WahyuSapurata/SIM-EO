@@ -32,41 +32,5 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
-        User::updateOrCreate(
-            ['username' => 'procurement'],
-            [
-                'uuid' => Uuid::uuid4()->toString(),
-                'name' => 'procurement',
-                'password' => Hash::make('admin'),
-                'role' => 'procurement',
-            ]
-        );
-        User::updateOrCreate(
-            ['username' => 'finance'],
-            [
-                'uuid' => Uuid::uuid4()->toString(),
-                'name' => 'finance',
-                'password' => Hash::make('admin'),
-                'role' => 'finance',
-            ]
-        );
-        User::updateOrCreate(
-            ['username' => 'direktur'],
-            [
-                'uuid' => Uuid::uuid4()->toString(),
-                'name' => 'direktur',
-                'password' => Hash::make('admin'),
-                'role' => 'direktur',
-            ]
-        );
-        User::updateOrCreate(
-            ['username' => 'pajak'],
-            [
-                'uuid' => Uuid::uuid4()->toString(),
-                'name' => 'pajak',
-                'password' => Hash::make('admin'),
-                'role' => 'pajak',
-            ]
-        );
     }
 }

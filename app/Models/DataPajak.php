@@ -14,6 +14,7 @@ class DataPajak extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
+        'deskripsi_pajak',
         'pajak',
     ];
 

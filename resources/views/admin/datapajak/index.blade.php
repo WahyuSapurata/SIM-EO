@@ -39,6 +39,7 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
                                             <th>Persentase Pajak</th>
+                                            <th>Deskripsi Pajak</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -103,6 +104,12 @@
 
                     <input type="hidden" name="id">
                     <input type="hidden" name="uuid">
+
+                    <div class="mb-10">
+                        <label class="form-label">Deskripsi Pajak</label>
+                        <input type="text" id="deskripsi_pajak" class="form-control" name="deskripsi_pajak">
+                        <small class="text-danger deskripsi_pajak_error"></small>
+                    </div>
 
                     <div class="mb-10">
                         <label class="form-label">Persentase Pajak</label>
@@ -176,6 +183,9 @@
             render: function(data, type, row, meta) {
                 return meta.row + meta.settings._iDisplayStart + 1;
             }
+        }, {
+            data: 'deskripsi_pajak',
+            className: 'text-center',
         }, {
             data: 'pajak',
             className: 'text-center',

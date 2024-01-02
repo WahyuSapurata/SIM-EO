@@ -15,6 +15,7 @@ class Penjualan extends Model
     protected $fillable = [
         'uuid',
         'uuid_client',
+        'uuid_user',
         'kegiatan',
         'qty',
         'satuan_kegiatan',

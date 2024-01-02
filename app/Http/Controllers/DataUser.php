@@ -32,6 +32,7 @@ class DataUser extends BaseController
             $data->name = $dataUser->name;
             $data->username = $dataUser->username;
             $data->role = $dataUser->role;
+            $data->lokasi = $dataUser->lokasi;
             $data->password = Hash::make('<>password');
             $data->save();
         } catch (\Exception $e) {

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('project_date');
             $table->string('nama_pic');
             $table->string('no_pic');
+            $table->uuid('uuid_user');
             $table->timestamps();
         });
     }

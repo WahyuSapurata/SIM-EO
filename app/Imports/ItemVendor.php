@@ -2,17 +2,17 @@
 
 namespace App\Imports;
 
-use App\Models\Penjualan;
+use App\Models\ItemVendor as ModelsItemVendor;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ImportPenjualan implements ToModel, WithHeadingRow
+class ItemVendor implements ToModel, WithHeadingRow
 {
-    protected $uuid_client;
+    protected $uuid_vendor;
 
-    public function __construct($uuid_client)
+    public function __construct($uuid_vendor)
     {
-        $this->uuid_client = $uuid_client;
+        $this->uuid_vendor = $uuid_vendor;
     }
 
     public function headingRow(): int
@@ -22,9 +22,8 @@ class ImportPenjualan implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        return new Penjualan([
-            'uuid_client' => $this->uuid_client,
-            'uuid_user' => auth()->user()->uuid,
+        return new ModelsItemVendor([
+            'uuid_vendor' => $this->uuid_vendor,
             'kegiatan' => $row['kegiatan'],
             'qty' => $row['qty'],
             'satuan_kegiatan' => $row['satuan_kegiatan'],

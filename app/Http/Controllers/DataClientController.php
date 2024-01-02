@@ -17,7 +17,11 @@ class DataClientController extends BaseController
     public function get()
     {
         // Mengambil semua data pengguna
-        $dataFull = DataClient::all();
+        if (auth()->user()->role === 'admin') {
+            $dataFull = DataClient::all();
+        } else {
+            $dataFull = DataClient::where('uuid_user', auth()->user()->uuid)->get();
+        }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataFull, 'Get data success');
@@ -28,6 +32,7 @@ class DataClientController extends BaseController
         $data = array();
         try {
             $data = new DataClient();
+            $data->uuid_user = auth()->user()->uuid;
             $data->nama_client = $storeDataClientRequest->nama_client;
             $data->event = $storeDataClientRequest->event;
             $data->venue = $storeDataClientRequest->venue;

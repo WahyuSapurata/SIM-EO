@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('item_vendors', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('name');
-            $table->string('username');
-            $table->string('password');
-            $table->string('role');
-            $table->string('lokasi')->nullable();
-            $table->rememberToken();
+            $table->uuid('uuid_vendor');
+            $table->string('kegiatan');
+            $table->string('qty');
+            $table->string('satuan_kegiatan');
+            $table->string('freq');
+            $table->string('satuan');
+            $table->string('harga_satuan');
+            $table->string('ket')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('item_vendors');
     }
 };

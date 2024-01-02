@@ -126,6 +126,9 @@
                         <small class="text-danger role_error"></small>
                     </div>
 
+                    <div id="container_id">
+                    </div>
+
                     <div class="separator separator-dashed mt-8 mb-5"></div>
                     <div class="d-flex gap-5">
                         <button type="submit" class="btn btn-primary btn-sm btn-submit d-flex align-items-center"><i
@@ -254,6 +257,37 @@
                 text: "pajak"
             },
         ];
+
+        const lokasi = [{
+                text: "makassar"
+            },
+            {
+                text: "jakarta"
+            },
+        ];
+
+        // Tangkap event perubahan pada select dengan ID from_select
+        $('#from_select').change(function() {
+            // Simpan nilai dari select
+            let fromSelectValue = $(this).val();
+
+            // Cek apakah nilai sama dengan 'procurement'
+            if (fromSelectValue === 'procurement') {
+                // Tambahkan elemen HTML jika nilai adalah 'procurement'
+                let newElement = `<div class="mb-10">
+                    <label class="form-label">Lokasi</label>
+                    <select name="lokasi" class="form-select" data-control="select2" id="from_select_lokasi" data-placeholder="Pilih jenis inputan"></select>
+                    <small class="text-danger loaksi_error"></small>
+                    </div>`;
+
+                // Sisipkan elemen HTML ke dalam dokumen
+                $('#container_id').empty().append(newElement);
+                control.push_select3(lokasi, '#from_select_lokasi');
+            } else {
+                // Hapus elemen HTML jika nilai tidak sama dengan 'procurement'
+                $('#container_id').empty();
+            }
+        });
 
         $(function() {
             control.push_select3(role, '#from_select');

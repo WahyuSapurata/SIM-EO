@@ -16,6 +16,7 @@ class Po extends Model
         'uuid',
         'uuid_penjualan',
         'status',
+        'file',
     ];
 
     protected static function boot()

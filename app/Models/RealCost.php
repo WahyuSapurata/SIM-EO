@@ -6,21 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class DataClient extends Model
+class RealCost extends Model
 {
     use HasFactory;
 
-    protected $table = 'data_clients';
+    protected $table = 'real_costs';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'nama_client',
-        'event',
-        'venue',
-        'project_date',
-        'nama_pic',
-        'no_pic',
-        'uuid_user',
+        'uuid_po',
+        'satuan_real_cost',
+        'pajak_po',
     ];
 
     protected static function boot()

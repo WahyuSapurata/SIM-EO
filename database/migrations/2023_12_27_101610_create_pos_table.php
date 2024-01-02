@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('uuid');
             $table->uuid('uuid_penjualan');
             $table->string('status');
+            $table->string('file')->nullable();
             $table->timestamps();
         });
     }

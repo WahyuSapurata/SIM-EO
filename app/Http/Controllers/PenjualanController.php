@@ -6,6 +6,7 @@ use App\Http\Requests\StorePenjualanRequest;
 use App\Http\Requests\UpdatePenjualanRequest;
 use App\Imports\ImportPenjualan;
 use App\Models\Penjualan;
+use App\Models\RealCost;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -26,11 +27,32 @@ class PenjualanController extends BaseController
 
     public function get($params)
     {
-        // Mengambil semua data pengguna
-        $dataFull = Penjualan::where('uuid_client', $params)->get();
+        if (auth()->user()->role === 'admin') {
+            $dataFull = Penjualan::where('uuid_client', $params)->get();
+        } else {
+            $dataFull = Penjualan::where('uuid_client', $params)->where('uuid_user', auth()->user()->uuid)->get();
+        }
+        $realCost = RealCost::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($realCost) {
+            $data = $realCost->where('uuid_po', $item->uuid)->first();
+
+            // Periksa apakah $data tidak kosong sebelum mengakses propertinya
+            if ($data) {
+                // Menambahkan data user ke dalam setiap item absen
+                $item->satuan_real_cost = $data->satuan_real_cost ?? null;
+                $item->pajak_po = $data->pajak_po ?? null;
+            } else {
+                // Jika $data kosong, berikan nilai default atau kosong
+                $item->satuan_real_cost = null;
+                $item->pajak_po = null;
+            }
+
+            return $item;
+        });
 
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($combinedData, 'Get data success');
     }
 
     public function store(StorePenjualanRequest $storePenjualanRequest)
@@ -40,6 +62,7 @@ class PenjualanController extends BaseController
         $data = array();
         try {
             $data = new Penjualan();
+            $data->uuid_user = auth()->user()->uuid;
             $data->uuid_client = $storePenjualanRequest->uuid_client;
             $data->kegiatan = $storePenjualanRequest->kegiatan;
             $data->qty = $storePenjualanRequest->qty;

@@ -25,6 +25,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::group(['prefix' => 'admin', 'middleware' => ['auth'], 'as' => 'admin.'], function () {
         Route::get('/dashboard-admin', 'Dashboard@dashboard_admin')->name('dashboard-admin');
 
+        Route::get('/persetujuanpo', 'PersetujuanPo@index')->name('persetujuanpo');
+        Route::get('/get-persetujuanpo', 'PersetujuanPo@get')->name('get-persetujuanpo');
+        Route::post('/update-persetujuanpo/{params}', 'PersetujuanPo@update')->name('update-persetujuanpo');
+
         Route::prefix('master-data')->group(function () {
             Route::get('/datauser', 'DataUser@index')->name('datauser');
             Route::get('/get-datauser', 'DataUser@get')->name('get-datauser');
@@ -32,6 +36,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-datauser/{params}', 'DataUser@show')->name('show-datauser');
             Route::post('/update-datauser/{params}', 'DataUser@update')->name('update-datauser');
             Route::delete('/delete-datauser/{params}', 'DataUser@delete')->name('delete-datauser');
+
+            Route::get('/dataclient', 'DataClientController@index')->name('dataclient');
 
             Route::get('/datavendor', 'DataVendorController@index')->name('datavendor');
             Route::get('/get-datavendor', 'DataVendorController@get')->name('get-datavendor');
@@ -48,6 +54,14 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::delete('/delete-datapajak/{params}', 'DataPajakController@delete')->name('delete-datapajak');
         });
 
+        Route::get('/dataitemvendor/{params}', 'ItemVendorController@index')->name('dataitemvendor');
+        Route::get('/get-dataitemvendor/{params}', 'ItemVendorController@get')->name('get-dataitemvendor');
+        Route::post('/add-dataitemvendor', 'ItemVendorController@store')->name('add-dataitemvendor');
+        Route::get('/show-dataitemvendor/{params}', 'ItemVendorController@show')->name('show-dataitemvendor');
+        Route::post('/update-dataitemvendor/{params}', 'ItemVendorController@update')->name('update-dataitemvendor');
+        Route::delete('/delete-dataitemvendor/{params}', 'ItemVendorController@delete')->name('delete-dataitemvendor');
+        Route::post('/add-import-vendor', 'ItemVendorController@import_vendor')->name('add-import-vendor');
+
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');
     });
@@ -55,7 +69,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::group(['prefix' => 'procurement', 'middleware' => ['auth'], 'as' => 'procurement.'], function () {
         Route::get('/dashboard-procurement', 'Dashboard@dashboard_procurement')->name('dashboard-procurement');
 
-        Route::get('/dataclient', 'DataClientController@index')->name('dataclient');
         Route::get('/get-dataclient', 'DataClientController@get')->name('get-dataclient');
         Route::post('/add-dataclient', 'DataClientController@store')->name('add-dataclient');
         Route::get('/show-dataclient/{params}', 'DataClientController@show')->name('show-dataclient');
@@ -82,8 +95,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::post('/update-po/{params}', 'PoController@update')->name('update-po');
         Route::delete('/delete-po/{params}', 'PoController@delete')->name('delete-po');
 
-        Route::post('/export-invoice', 'PoController@exportToPDF')->name('export-invoice');
+        Route::get('/export-invoice', 'PoController@exportToPDF')->name('export-invoice');
+        // Route::get('/export-invoice-pdf', 'PoController@viewPdf')->name('export-invoice-pdf');
         // Route::get('/tes', 'PoController@tes')->name('tes');
+
+        Route::post('/add-realCost', 'RealCostController@store')->name('add-realCost');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

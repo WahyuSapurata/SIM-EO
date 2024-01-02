@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->uuid('uuid_client');
+            $table->uuid('uuid_user');
             $table->string('kegiatan');
             $table->string('qty');
             $table->string('satuan_kegiatan');

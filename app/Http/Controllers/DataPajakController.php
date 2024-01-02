@@ -28,6 +28,7 @@ class DataPajakController extends BaseController
         $data = array();
         try {
             $data = new DataPajak();
+            $data->deskripsi_pajak = $storeDataPajakRequest->deskripsi_pajak;
             $data->pajak = $storeDataPajakRequest->pajak;
             $data->save();
         } catch (\Exception $e) {
@@ -51,6 +52,7 @@ class DataPajakController extends BaseController
     {
         try {
             $data = DataPajak::where('uuid', $params)->first();
+            $data->deskripsi_pajak = $storeDataPajakRequest->deskripsi_pajak;
             $data->pajak = $storeDataPajakRequest->pajak;
             $data->save();
         } catch (\Exception $e) {
