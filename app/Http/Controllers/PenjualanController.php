@@ -136,7 +136,7 @@ class PenjualanController extends BaseController
 
             return $this->sendResponse('success', 'Excel data uploaded and saved successfully');
         } catch (\Exception $e) {
-            return $this->sendError('Error uploading and saving Excel: ' . $e->getMessage(), $e->getMessage(), 200);
+            return $this->sendError('Peringatan: Perbaiki Format Excel', $e->getMessage(), 200);
         }
     }
 }

@@ -50,18 +50,20 @@
             }
         }, {
             data: 'nama_client',
+            width: '8rem',
             className: 'text-center',
         }, {
             data: null,
             className: 'text-center',
             render: function(data, type, row, meta) {
                 let result = `
-                                <a href="/procurement/po-client/${row.uuid}" class="btn btn-success px-3 w-125px py-2">${row.event}</a>
+                                <a href="/procurement/po-client/${row.uuid}" class="btn btn-success px-3 py-2">${row.event}</a>
                             `;
                 return result;
             }
         }, {
             data: 'venue',
+            width: '10rem',
             className: 'text-center',
         }];
 

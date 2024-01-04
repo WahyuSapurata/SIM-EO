@@ -100,6 +100,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         // Route::get('/tes', 'PoController@tes')->name('tes');
 
         Route::post('/add-realCost', 'RealCostController@store')->name('add-realCost');
+        Route::get('/get-realCost', 'RealCostController@get')->name('get-realCost');
+        Route::get('/show-realCost/{params}', 'RealCostController@show')->name('show-realCost');
+        Route::post('/update-realCost/{params}', 'RealCostController@update')->name('update-realCost');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

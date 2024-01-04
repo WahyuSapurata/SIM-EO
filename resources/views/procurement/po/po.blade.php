@@ -252,8 +252,35 @@
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
+            let uuid_realCostPo;
+            let uuid_realCost;
+            $.ajax({
+                url: '/procurement/get-realCost',
+                method: 'GET',
+                async: false, // Pastikan request berjalan secara sinkron
+                success: function(res) {
+                    if (res.success === true) {
+                        $.each(res.data, function(x, y) {
+                            uuid_realCostPo = y.uuid_po // Mengambil UUID pertama
+                            uuid_realCost = y.uuid // Mengambil UUID pertama
+                        })
+                    } else {
+                        console.error('Gagal mengambil data:', res.message);
+                    }
+                },
+                error: function(error) {
+                    console.error('Gagal melakukan permintaan AJAX:', error);
+                }
+            });
+
             formDataRealCost.append('uuid_po', $(this).attr('data-uuid'));
-            control.overlay_form('Tambah', 'Real Cost');
+
+            if (uuid_realCostPo === $(this).attr('data-uuid')) {
+                let url = '/procurement/show-realCost/' + uuid_realCost;
+                control.overlay_form('Update', 'Client', url);
+            } else {
+                control.overlay_form('Tambah', 'Real Cost');
+            }
         })
 
         $(document).on('keyup', '#search_', function(e) {
@@ -362,7 +389,6 @@
                         hasil = y;
                     }
                 });
-                console.log(hasil);
 
                 if (hasil) {
                     if (hasil.status === 'progres') {
@@ -421,9 +447,17 @@
             let pajak_po = $('#pajak-select').val();
             formDataRealCost.append('satuan_real_cost', satuan_real_cost);
             formDataRealCost.append('pajak_po', pajak_po);
-            control.submitForm('/procurement/add-realCost', 'Tambah',
-                'Real Cost',
-                'POST', formDataRealCost);
+
+            let type = $(this).attr('data-type');
+            if (type == 'add') {
+                control.submitForm('/procurement/add-realCost', 'Tambah',
+                    'Real Cost',
+                    'POST', formDataRealCost);
+            } else {
+                let uuid = $("input[name='uuid']").val();
+                control.submitForm('/procurement/update-realCost/' + uuid, 'Update',
+                    'ClieReal Costnt', 'POST', formDataRealCost);
+            }
         });
 
         $(function() {

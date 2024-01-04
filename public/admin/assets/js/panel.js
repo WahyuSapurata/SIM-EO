@@ -103,6 +103,7 @@ class Control {
         if (type == "Tambah") {
             $(".form-data")[0].reset();
             $("#from_select").val(null).trigger("change");
+            $("#pajak-select").val(null).trigger("change");
             // $(".form-select").val(null).trigger("change");
             $(".form-data").attr("data-type", "add");
             $("#img-foto").attr("src", ""); // Gantilah "gambar-preview" dengan id elemen gambar Anda
@@ -313,6 +314,7 @@ class Control {
                             table_.DataTable().ajax.reload();
                             $("form")[0].reset();
                             $("#from_select").val(null).trigger("change");
+                            $("#pajak-select").val(null).trigger("change");
                             // $(".form-select").val(null).trigger("change");
                         });
                 } else {
@@ -649,7 +651,7 @@ class Control {
                 // Calculate total for 'harga_satuan' column
                 api.column(6, { search: 'applied' }).data().each(function (value) {
                     // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq * value.qty;
+                    subtotalTotal += parseFloat(value.harga_satuan) * value.freq * value.qty;
                 });
 
                 // Calculate total for 'harga_satuan' column
@@ -702,7 +704,7 @@ class Control {
                 // Calculate total for 'harga_satuan' column
                 api.column(6, { search: 'applied' }).data().each(function (value) {
                     // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotal += parseFloat(value.harga_satuan.replace(/[^\d.-]/g, '')) * value.freq * value.qty;
+                    subtotalTotal += parseFloat(value.harga_satuan) * value.freq * value.qty;
                 });
 
                 // Update the total row in the footer

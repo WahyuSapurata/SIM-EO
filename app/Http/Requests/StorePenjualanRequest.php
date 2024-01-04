@@ -23,9 +23,9 @@ class StorePenjualanRequest extends FormRequest
     {
         return [
             'kegiatan' => 'required',
-            'qty' => 'required',
+            'qty' => 'required|numeric',
             'satuan_kegiatan' => 'required',
-            'freq' => 'required',
+            'freq' => 'required|numeric',
             'satuan' => 'required',
             'harga_satuan' => 'required',
         ];
@@ -36,8 +36,10 @@ class StorePenjualanRequest extends FormRequest
         return [
             'kegiatan.required' => 'Kolom kegiatan harus di isi.',
             'qty.required' => 'Kolom qty harus di isi.',
+            'qty.numeric' => 'Kolom qty harus di number.',
             'satuan_kegiatan.required' => 'Kolom satuan kegiatan harus di isi.',
             'freq.required' => 'Kolom freq harus di isi.',
+            'freq.numeric' => 'Kolom freq harus di number.',
             'satuan.required' => 'Kolom satuan harus di isi.',
             'harga_satuan.required' => 'Kolom harga satuan harus di isi.',
         ];

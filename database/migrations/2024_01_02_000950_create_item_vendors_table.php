@@ -16,11 +16,11 @@ return new class extends Migration
             $table->uuid('uuid');
             $table->uuid('uuid_vendor');
             $table->string('kegiatan');
-            $table->string('qty');
+            $table->integer('qty');
             $table->string('satuan_kegiatan');
-            $table->string('freq');
+            $table->integer('freq');
             $table->string('satuan');
-            $table->string('harga_satuan');
+            $table->integer('harga_satuan');
             $table->string('ket')->nullable();
             $table->timestamps();
         });

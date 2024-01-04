@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePersetujuanPo;
 use App\Models\PersetujuanPo as ModelsPersetujuanPo;
 use App\Models\Po;
 use Illuminate\Http\Request;
@@ -23,17 +24,17 @@ class PersetujuanPo extends BaseController
         return $this->sendResponse($dataFull, 'Get data success');
     }
 
-    public function update(Request $request, $params)
+    public function update(UpdatePersetujuanPo $updatePersetujuanPo, $params)
     {
         // Hapus karakter non-numerik (koma dan spasi)
-        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $request->sisa_tagihan);
+        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updatePersetujuanPo->sisa_tagihan);
         try {
             $data = ModelsPersetujuanPo::where('uuid', $params)->first();
             $data->sisa_tagihan = $numericValue ? $numericValue : $data->total_po;
             $data->save();
 
             $uuidArray = explode(',', $data->uuid_penjualan);
-            Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $request->status]);
+            Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updatePersetujuanPo->status]);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }
