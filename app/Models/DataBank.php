@@ -6,24 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class DataVendor extends Model
+class DataBank extends Model
 {
     use HasFactory;
 
-    protected $table = 'data_vendors';
+    protected $table = 'data_banks';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'nama_owner',
-        'nama_perusahaan',
-        'alamat_perusahaan',
-        'email',
-        'no_telp',
         'nama_bank',
-        'nama_pemegan_rek',
         'no_rek',
-        'nama_npwp',
-        'npwp'
+        'cabang',
+        'atas_nama'
     ];
 
     protected static function boot()

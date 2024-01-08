@@ -11,19 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_vendors', function (Blueprint $table) {
+        Schema::create('data_banks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('nama_owner');
-            $table->string('nama_perusahaan');
-            $table->string('alamat_perusahaan');
-            $table->string('email');
-            $table->string('no_telp');
             $table->string('nama_bank');
-            $table->string('nama_pemegan_rek');
             $table->string('no_rek');
-            $table->string('nama_npwp');
-            $table->string('npwp');
+            $table->string('cabang');
+            $table->string('atas_nama');
             $table->timestamps();
         });
     }
@@ -33,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_vendors');
+        Schema::dropIfExists('data_banks');
     }
 };

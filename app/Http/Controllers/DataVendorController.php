@@ -31,9 +31,12 @@ class DataVendorController extends BaseController
             $data->nama_owner = $storeDataVendorRequest->nama_owner;
             $data->nama_perusahaan = $storeDataVendorRequest->nama_perusahaan;
             $data->alamat_perusahaan = $storeDataVendorRequest->alamat_perusahaan;
+            $data->email = $storeDataVendorRequest->email;
             $data->no_telp = $storeDataVendorRequest->no_telp;
             $data->nama_bank = $storeDataVendorRequest->nama_bank;
+            $data->nama_pemegan_rek = $storeDataVendorRequest->nama_pemegan_rek;
             $data->no_rek = $storeDataVendorRequest->no_rek;
+            $data->nama_npwp = $storeDataVendorRequest->nama_npwp;
             $data->npwp = $storeDataVendorRequest->npwp;
             $data->save();
         } catch (\Exception $e) {
@@ -60,9 +63,12 @@ class DataVendorController extends BaseController
             $data->nama_owner = $storeDataVendorRequest->nama_owner;
             $data->nama_perusahaan = $storeDataVendorRequest->nama_perusahaan;
             $data->alamat_perusahaan = $storeDataVendorRequest->alamat_perusahaan;
+            $data->email = $storeDataVendorRequest->email;
             $data->no_telp = $storeDataVendorRequest->no_telp;
             $data->nama_bank = $storeDataVendorRequest->nama_bank;
+            $data->nama_pemegan_rek = $storeDataVendorRequest->nama_pemegan_rek;
             $data->no_rek = $storeDataVendorRequest->no_rek;
+            $data->nama_npwp = $storeDataVendorRequest->nama_npwp;
             $data->npwp = $storeDataVendorRequest->npwp;
             $data->save();
         } catch (\Exception $e) {

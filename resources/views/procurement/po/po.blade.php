@@ -10,7 +10,7 @@
             {{-- <a href="#" data-type="excel" class="btn btn-sm btn-success export">Export Excel</a>
             <a href="#" data-type="pdf" class="btn btn-sm btn-danger export">Cetak Laporan</a> --}}
             <button type="button" data-bs-toggle="modal" data-bs-target="#kt_modal_1"
-                class="btn btn-sm btn-info d-flex align-items-center gap-1">
+                class="btn btn-sm btn-info d-flex align-items-center gap-1 disabled-link" id="cetakButton">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M4.00001 1.3335H9.33334L13.3333 5.3335V13.3335C13.3333 13.6871 13.1929 14.0263 12.9428 14.2763C12.6928 14.5264 12.3536 14.6668 12 14.6668H4.00001C3.64638 14.6668 3.30724 14.5264 3.0572 14.2763C2.80715 14.0263 2.66667 13.6871 2.66667 13.3335V2.66683C2.66667 2.31321 2.80715 1.97407 3.0572 1.72402C3.30724 1.47397 3.64638 1.3335 4.00001 1.3335ZM5.468 11.0735C5.822 11.0735 6.126 10.9868 6.33201 10.7935C6.48934 10.6435 6.576 10.4228 6.57667 10.1615C6.57667 9.9015 6.462 9.68083 6.29267 9.54616C6.11467 9.40416 5.85067 9.3335 5.47934 9.3335C5.20742 9.32976 4.93564 9.34804 4.66667 9.38816V12.0122H5.26267V11.0615C5.33076 11.0702 5.39937 11.0742 5.468 11.0735ZM7.64334 12.0402C8.164 12.0402 8.59 11.9295 8.87001 11.6968C9.126 11.4802 9.31201 11.1288 9.31201 10.6202C9.31201 10.1502 9.13867 9.82283 8.862 9.6175C8.606 9.42416 8.278 9.3335 7.77334 9.3335C7.50143 9.33106 7.22974 9.34956 6.96067 9.38883V12.0002C7.11067 12.0202 7.33134 12.0402 7.64334 12.0402ZM10.312 9.84683H11.3333V9.3535H9.708V12.0128H10.312V10.9435H11.2667V10.4542H10.312V9.84683ZM8.66667 6.00016H9.33334H12L8.66667 2.66683V6.00016ZM5.26303 9.81086C5.30569 9.79886 5.38836 9.78687 5.51103 9.78687C5.81103 9.78687 5.98036 9.93353 5.98036 10.1775C5.98036 10.4502 5.78369 10.6115 5.46436 10.6115C5.37703 10.6115 5.31369 10.6082 5.26303 10.5962V9.81086ZM7.56436 9.81886C7.61569 9.80686 7.70236 9.79487 7.83569 9.79487C8.35303 9.79487 8.67636 10.0869 8.67236 10.6402C8.67236 11.2749 8.31769 11.5749 7.77303 11.5709C7.69836 11.5709 7.61569 11.5709 7.56436 11.5589V9.81886Z"
@@ -72,6 +72,12 @@
                             <small class="text-danger tempo_error"></small>
                         </div>
 
+                        <div class="mb-10">
+                            <label class="form-label">No Invoice Po</label>
+                            <input class="form-control" type="number" name="no_invoice" id="no_invoice">
+                            <small class="text-danger no_invoice_error"></small>
+                        </div>
+
                         <div class="separator separator-dashed mt-8 mb-5"></div>
                         <div class="d-flex gap-5">
                             <button type="submit" id="export-excel"
@@ -111,6 +117,7 @@
                                         <th>Satuan Real Cost</th>
                                         <th>Total Real Cost</th>
                                         <th>Pajak</th>
+                                        <th>Disc</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -122,7 +129,7 @@
                                         <td style="text-align: left !important;" colspan="2" id="total-subtotal">
                                             Rp 0
                                         </td>
-                                        <td style="text-align: left !important;" colspan="3" id="subtotal-realCost">
+                                        <td style="text-align: left !important;" colspan="4" id="subtotal-realCost">
                                             Rp 0
                                         </td>
                                     </tr>
@@ -200,6 +207,20 @@
                         <small class="text-danger pajak_po_error"></small>
                     </div>
 
+                    <div class="mb-10">
+                        <label class="form-label">Pajak</label>
+                        <select name="pajak_pph" class="form-select" data-control="select2" id="pajak_pph-select"
+                            data-placeholder="Pilih jenis inputan">
+                        </select>
+                        <small class="text-danger pajak_pph_error"></small>
+                    </div>
+
+                    <div class="mb-10">
+                        <label class="form-label">Discount</label>
+                        <input type="text" id="disc_item" class="form-control" name="disc_item">
+                        <small class="text-danger disc_item_error"></small>
+                    </div>
+
                     <div class="separator separator-dashed mt-8 mb-5"></div>
                     <div class="d-flex gap-5">
                         <button type="submit" class="btn btn-primary btn-sm btn-submit d-flex align-items-center"><i
@@ -238,6 +259,14 @@
             });
 
             $('#satuan_real_cost').on('input', function() {
+                let value = $(this).val();
+                if (value !== "") {
+                    value = numeral(value).format('0,0'); // Format to rupiah
+                    $(this).val('Rp ' + value);
+                }
+            });
+
+            $('#disc_item').on('input', function() {
                 let value = $(this).val();
                 if (value !== "") {
                     value = numeral(value).format('0,0'); // Format to rupiah
@@ -348,8 +377,21 @@
                 return 'Rp ' + value;
             }
         }, {
-            data: 'pajak_po',
+            data: null,
             className: 'text-center',
+            render: function(data, type, row, meta) {
+                const valuePo = row.pajak_po === '0' || row.pajak_po === null ? '' : row.pajak_po;
+                const valuePPH = row.pajak_pph === '0' || row.pajak_pph === null ? '' : row.pajak_pph;
+                return `${valuePo} ${valuePPH}`;
+            }
+        }, {
+            data: null,
+            className: 'text-center',
+            render: function(data, type, row, meta) {
+                const value = numeral(row.disc_item).format(
+                    '0,0'); // Format to rupiah
+                return 'Rp ' + value;
+            }
         }, {
             data: 'uuid',
         }];
@@ -438,6 +480,16 @@
 
             // Tampilkan UUID yang dipilih saat ini
             formData.append('uuid_penjualan', selectedUUIDs);
+
+            // Periksa apakah ada UUID yang dipilih
+            var cetakButton = document.getElementById('cetakButton');
+            if (selectedUUIDs.length > 0) {
+                // Jika ada, hapus class 'disabled-link'
+                cetakButton.classList.remove('disabled-link');
+            } else {
+                // Jika tidak ada, tambahkan class 'disabled-link'
+                cetakButton.classList.add('disabled-link');
+            }
         }
 
         $(document).on('submit', ".form-data", function(e) {
@@ -445,8 +497,12 @@
 
             let satuan_real_cost = $('#satuan_real_cost').val();
             let pajak_po = $('#pajak-select').val();
+            let pajak_pph = $('#pajak_pph-select').val();
+            let disc_item = $('#disc_item').val();
             formDataRealCost.append('satuan_real_cost', satuan_real_cost);
             formDataRealCost.append('pajak_po', pajak_po);
+            formDataRealCost.append('pajak_pph', pajak_pph);
+            formDataRealCost.append('disc_item', disc_item);
 
             let type = $(this).attr('data-type');
             if (type == 'add') {
@@ -463,6 +519,7 @@
         $(function() {
             control.push_select2('/admin/master-data/get-datavendor', '#from_select');
             control.push_select_pajak('/admin/master-data/get-datapajak', '#pajak-select');
+            control.push_select_pajak('/admin/master-data/get-datapajak', '#pajak_pph-select');
             control.initDatatable1(
                 '/procurement/get-penjualan/' + lastPart, columns,
                 columnDefs);
@@ -471,11 +528,6 @@
 
         $('#export-excel').click(function(e) {
             e.preventDefault();
-            control.submitForm('/procurement/add-po', 'Tambah',
-                'Po',
-                'POST', formData);
-            get();
-            $('#kt_modal_1').modal('hide');
 
             // Fungsi untuk mengonversi objek menjadi string query parameter
             function objectToQueryString(obj) {
@@ -483,23 +535,70 @@
             }
 
             let vendor = $('#from_select').val();
-            let pajak = $('#pajak-select').val();
             let disc = $('#disc').val();
             let tempo = $('#tempo').val();
+            let no_invoice = $('#no_invoice').val();
             let dataPo = {
                 uuid_penjualan: selectedUUIDs,
                 vendor: vendor,
-                pajak: pajak,
                 disc: disc,
-                tempo: tempo
+                tempo: tempo,
+                no_invoice: no_invoice
             };
 
             // Mengonversi objek dataPo menjadi string query parameter
             let queryString = objectToQueryString(dataPo);
 
-            // Membuka URL dengan query parameter
-            window.open(`/procurement/export-invoice?${queryString}`, "_blank");
+            $.ajax({
+                url: '/procurement/get-po',
+                method: 'GET',
+                async: false, // Pastikan request berjalan secara sinkron
+                success: function(res) {
+                    if (res.success === true) {
+                        if (res.data.length > 0) {
+                            $.each(res.data, function(x, y) {
+                                if (y.file === no_invoice) {
+                                    $('.no_invoice_error').text('No invoice telah di gunakan')
+                                } else {
+                                    // Membuka URL dengan query parameter
+                                    window.open(`/procurement/export-invoice?${queryString}`,
+                                        "_blank");
 
+                                    control.submitForm('/procurement/add-po', 'Tambah',
+                                        'Po',
+                                        'POST', formData);
+                                    get();
+                                    $('#kt_modal_1').modal('hide');
+                                }
+                            })
+                        } else {
+                            // Membuka URL dengan query parameter
+                            window.open(`/procurement/export-invoice?${queryString}`,
+                                "_blank");
+
+                            control.submitForm('/procurement/add-po', 'Tambah',
+                                'Po',
+                                'POST', formData);
+                            get();
+                            $('#kt_modal_1').modal('hide');
+                        }
+                    } else {
+                        console.error('Gagal mengambil data:', res.message);
+                    }
+                },
+                error: function(error) {
+                    console.error('Gagal melakukan permintaan AJAX:', error);
+                }
+            });
+
+            var cetakButton = document.getElementById('cetakButton');
+            if (selectedUUIDs.length > 0) {
+                // Jika ada, hapus class 'disabled-link'
+                cetakButton.classList.remove('disabled-link');
+            } else {
+                // Jika tidak ada, tambahkan class 'disabled-link'
+                cetakButton.classList.add('disabled-link');
+            }
         });
     </script>
 @endsection

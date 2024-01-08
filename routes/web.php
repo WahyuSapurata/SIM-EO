@@ -52,6 +52,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-datapajak/{params}', 'DataPajakController@show')->name('show-datapajak');
             Route::post('/update-datapajak/{params}', 'DataPajakController@update')->name('update-datapajak');
             Route::delete('/delete-datapajak/{params}', 'DataPajakController@delete')->name('delete-datapajak');
+
+            Route::get('/databank', 'DataBankController@index')->name('databank');
+            Route::get('/get-databank', 'DataBankController@get')->name('get-databank');
+            Route::post('/add-databank', 'DataBankController@store')->name('add-databank');
+            Route::get('/show-databank/{params}', 'DataBankController@show')->name('show-databank');
+            Route::post('/update-databank/{params}', 'DataBankController@update')->name('update-databank');
+            Route::delete('/delete-databank/{params}', 'DataBankController@delete')->name('delete-databank');
         });
 
         Route::get('/dataitemvendor/{params}', 'ItemVendorController@index')->name('dataitemvendor');
@@ -61,6 +68,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::post('/update-dataitemvendor/{params}', 'ItemVendorController@update')->name('update-dataitemvendor');
         Route::delete('/delete-dataitemvendor/{params}', 'ItemVendorController@delete')->name('delete-dataitemvendor');
         Route::post('/add-import-vendor', 'ItemVendorController@import_vendor')->name('add-import-vendor');
+
+        Route::get('/invoice', 'InvoiceController@index')->name('invoice');
+        Route::get('/add-export-invoice', 'InvoiceController@exportToPDF')->name('add-export-invoice');
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');
@@ -94,6 +104,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/show-po/{params}', 'PoController@show')->name('show-po');
         Route::post('/update-po/{params}', 'PoController@update')->name('update-po');
         Route::delete('/delete-po/{params}', 'PoController@delete')->name('delete-po');
+
+        Route::post('/add-fee-management', 'FeeManajementController@store')->name('add-fee-management');
+        Route::get('/fee-management/{params}', 'FeeManajementController@get')->name('fee-management-params');
 
         Route::get('/export-invoice', 'PoController@exportToPDF')->name('export-invoice');
         // Route::get('/export-invoice-pdf', 'PoController@viewPdf')->name('export-invoice-pdf');

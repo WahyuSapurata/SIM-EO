@@ -6,24 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class DataVendor extends Model
+class Invoice extends Model
 {
     use HasFactory;
 
-    protected $table = 'data_vendors';
+    protected $table = 'invoices';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'nama_owner',
-        'nama_perusahaan',
-        'alamat_perusahaan',
-        'email',
-        'no_telp',
-        'nama_bank',
-        'nama_pemegan_rek',
-        'no_rek',
-        'nama_npwp',
-        'npwp'
+        'client',
+        'no_invoice',
+        'tanggal_invoice',
+        'deskripsi',
+        'penanggung_jawab',
+        'jabatan',
+        'uuid_bank',
+        'total',
+        'pajak',
+        'file',
+        'tagihan'
     ];
 
     protected static function boot()

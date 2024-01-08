@@ -394,6 +394,28 @@ class Control {
         });
     }
 
+    submitWindow(url, role_data = null, module = null) {
+        let this_ = this;
+        let table_ = this.table;
+
+        window.open(url,
+            "_blank");
+        swal
+            .fire({
+                text: `${module} berhasil di ${role_data}`,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+            })
+            .then(function () {
+                $("#side_form_close").trigger("click");
+                table_.DataTable().ajax.reload();
+                $("form")[0].reset();
+                $("#from_select").val(null).trigger("change");
+                // $(".form-select").val(null).trigger("change");
+            });
+    }
+
     ajaxDelete(url, label) {
         let token = $("meta[name='csrf-token']").attr("content");
         let table_ = this.table;
@@ -495,9 +517,45 @@ class Control {
             method: "GET",
             success: function (res) {
                 $(element).html("");
-                let html = "<option selected disabled>Pilih</option>";
+                let html = "<option selected disabled>Pilih jenis inputan</option>";
                 $.each(res.data, function (x, y) {
                     html += `<option value="${y.deskripsi_pajak}">${y.deskripsi_pajak}</option>`;
+                });
+                $(element).html(html);
+            },
+            error: function (xhr) {
+                alert("gagal");
+            },
+        });
+    }
+
+    push_select_client(url, element) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function (res) {
+                $(element).html("");
+                let html = "<option selected disabled>Pilih jenis inputan</option>";
+                $.each(res.data, function (x, y) {
+                    html += `<option value="${y.nama_client}">${y.nama_client}</option>`;
+                });
+                $(element).html(html);
+            },
+            error: function (xhr) {
+                alert("gagal");
+            },
+        });
+    }
+
+    push_select_bank(url, element) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function (res) {
+                $(element).html("");
+                let html = "<option selected disabled>Pilih jenis inputan</option>";
+                $.each(res.data, function (x, y) {
+                    html += `<option value="${y.uuid}">${y.nama_bank}</option>`;
                 });
                 $(element).html(html);
             },

@@ -71,10 +71,11 @@ class PoController extends BaseController
         return $this->sendResponse('success', 'Added data success');
     }
 
-    public function exportToPDF(Request $request)
+    public function exportToPDF(StorePoRequest $storePoRequest)
     {
-        $vendor = DataVendor::where('uuid', $request->vendor)->first();
-        $uuidArray = explode(',', $request->uuid_penjualan);
+        $vendor = DataVendor::where('uuid', $storePoRequest->vendor)->first();
+
+        $uuidArray = explode(',', $storePoRequest->uuid_penjualan);
         $penjualan = Penjualan::whereIn('uuid', $uuidArray)->get();
         $realCost = RealCost::all();
 
@@ -86,18 +87,21 @@ class PoController extends BaseController
                 // Menambahkan data user ke dalam setiap item absen
                 $item->satuan_real_cost = $data->satuan_real_cost ?? null;
                 $item->pajak_po = $data->pajak_po ?? null;
+                $item->pajak_pph = $data->pajak_pph ?? null;
+                $item->disc_item = $data->disc_item ?? null;
             } else {
                 // Jika $data kosong, berikan nilai default atau kosong
                 $item->satuan_real_cost = null;
                 $item->pajak_po = null;
+                $item->pajak_pph = null;
+                $item->disc_item = null;
             }
 
             return $item;
         });
 
-        $pajakPoValues = $combinedData->pluck('pajak_po')->filter()->toArray();
-
         // Ambil data pajak berdasarkan deskripsi_pajak yang sesuai dengan nilai-nilai pada $pajakPoValues
+        $pajakPoValues = $combinedData->pluck('pajak_po')->merge($combinedData->pluck('pajak_pph'))->filter()->unique()->toArray();
         $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
 
         // Buat koleksi baru untuk menyimpan data pajak sesuai dengan urutan pada $pajakPoValues
@@ -107,8 +111,9 @@ class PoController extends BaseController
 
         $client = DataClient::where('uuid', $penjualan[0]->uuid_client)->first();
 
-        $disc = $request->disc;
-        $tempo = $request->tempo;
+        $disc = $storePoRequest->disc;
+        $tempo = $storePoRequest->tempo;
+        $no_invoice = $storePoRequest->no_invoice;
 
         // Tanggal sekarang
         $tanggalSekarang = Carbon::now();
@@ -119,18 +124,23 @@ class PoController extends BaseController
         // Hitung jumlah hari
         $jumlahHari = $tanggalSekarang->diffInDays($tanggal31);
 
-        $lastPdfNumber = Po::max('file') ?? 0;
-        // Menggunakan ekspresi reguler untuk mengambil angka dari nama file
-        preg_match('/\d+/', $lastPdfNumber, $matches);
+        // return view('procurement.po.invoice', compact('vendor', 'combinedData', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
-        // Hasilnya akan ada di dalam $matches[0]
-        $angkaDariNamaFile = $matches[0];
-        $newPdfNumber = $angkaDariNamaFile + 1;
-
-        $html = view('procurement.po.invoice', compact('vendor', 'combinedData', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'newPdfNumber'))->render();
+        $html = view('procurement.po.invoice', compact('vendor', 'combinedData', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
         // Buat nama file PDF dengan nomor urut
-        $pdfFileName = $newPdfNumber . '.pdf';
+        $tahun = date('Y'); // Mendapatkan tahun saat ini
+        $duaAngkaTerakhir = substr($tahun, -2);
+
+        if (auth()->user()->lokasi === 'makassar') {
+            $no_po = 'PO/MKS-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        } else {
+            $no_po = 'PO/JKT-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        }
+
+        // Pastikan $client dan $vendor tidak null sebelum mengakses propertinya
+        $pdfFileName = 'Purchase Invoice-' . $no_po . ' ' . ($client ? $client->event : '') . ' - ' . ($vendor ? $vendor->alamat_perusahaan : '') . '.pdf';
+
         $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
 
         SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
@@ -139,16 +149,8 @@ class PoController extends BaseController
         $pdfInfoCollection = Po::whereIn('uuid_penjualan', $uuidArray)->get();
 
         foreach ($pdfInfoCollection as $pdfInfo) {
-            $pdfInfo->file = $pdfFileName;
+            $pdfInfo->file = $no_invoice;
             $pdfInfo->save();
-        }
-
-        $tahun = date('Y'); // Mendapatkan tahun saat ini
-        $duaAngkaTerakhir = substr($tahun, -2);
-        if (auth()->user()->lokasi === 'makassar') {
-            $no_po = 'PO/MKS-' . $duaAngkaTerakhir . date('m') . $newPdfNumber;
-        } else {
-            $no_po = 'PO/JKT-' . $duaAngkaTerakhir . date('m') . $newPdfNumber;
         }
 
         $subtotalTotal = 0;
@@ -163,7 +165,7 @@ class PoController extends BaseController
 
         try {
             $data = new PersetujuanPo();
-            $data->uuid_penjualan = $request->uuid_penjualan;
+            $data->uuid_penjualan = $storePoRequest->uuid_penjualan;
             $data->no_po = $no_po;
             $data->client = $client->nama_client;
             $data->event = $client->event;
@@ -174,7 +176,7 @@ class PoController extends BaseController
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }
 
-        // $pdf = FacadePdf::loadHTML($html);
+        $pdf = FacadePdf::loadHTML($html);
         return SnappyPdf::loadHTML($html)
             ->download($pdfFileName);
     }

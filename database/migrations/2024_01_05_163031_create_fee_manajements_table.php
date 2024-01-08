@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('real_costs', function (Blueprint $table) {
+        Schema::create('fee_manajements', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->uuid('uuid_po')->nullable();
-            $table->string('satuan_real_cost')->nullable();
-            $table->string('pajak_po')->nullable();
-            $table->string('pajak_pph')->nullable();
-            $table->string('disc_item')->nullable();
+            $table->uuid('uuid_client');
+            $table->string('total_fee');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('real_costs');
+        Schema::dropIfExists('fee_manajements');
     }
 };

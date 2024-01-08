@@ -17,6 +17,8 @@ class RealCost extends Model
         'uuid_po',
         'satuan_real_cost',
         'pajak_po',
+        'pajak_pph',
+        'disc_item',
     ];
 
     protected static function boot()

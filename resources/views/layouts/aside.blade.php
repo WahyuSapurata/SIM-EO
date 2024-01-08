@@ -220,15 +220,18 @@
 
                 <!--begin::Menu item-->
                 <div class="menu-item">
-                    <a class="menu-link" href="">
+                    <a class="menu-link {{ $path[1] === 'invoice' ? 'active' : '' }}"
+                        href="{{ route('admin.invoice') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                             <span class="svg-icon svg-icon-2">
-                                <img src="{{ url('/admin/assets/media/icons/aside/invoicedef.svg') }}" alt="">
+                                <img src="{{ $path[1] === 'invoice' ? url('admin/assets/media/icons/aside/invoiceact.svg') : url('/admin/assets/media/icons/aside/invoicedef.svg') }}"
+                                    alt="">
                             </span>
                             <!--end::Svg Icon-->
                         </span>
-                        <span class="menu-title" style="color: #FFFFFF;">Invoice</span>
+                        <span class="menu-title"
+                            style="{{ $path[1] === 'invoice' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Invoice</span>
                     </a>
                 </div>
                 <!--end::Menu item-->
@@ -356,6 +359,25 @@
                                 <span class="menu-title"
                                     style="{{ isset($path[2]) && $path[2] === 'datapajak' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
                                     Pajak</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'databank' ? 'active' : '' }}"
+                                href="{{ route('admin.databank') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'databank' ? url('admin/assets/media/icons/aside/databankact.svg') : url('/admin/assets/media/icons/aside/databankdef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'databank' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Daftar
+                                    Bank</span>
                             </a>
                         </div>
                         <!--end::Menu item-->

@@ -13,6 +13,7 @@ class RealCostController extends BaseController
     {
         // Hapus karakter non-numerik (koma dan spasi)
         $numericValue = (int) str_replace(['Rp', ',', ' '], '', $request->satuan_real_cost);
+        $numericValuePPH = (int) str_replace(['Rp', ',', ' '], '', $request->disc_item);
         if ($request->pajak_po === "null") {
             $pajak = 0;
         } else {
@@ -24,6 +25,8 @@ class RealCostController extends BaseController
             $data->uuid_po = $request->uuid_po;
             $data->satuan_real_cost = $numericValue;
             $data->pajak_po = $pajak;
+            $data->pajak_pph = $request->pajak_pph === "null" ? 0 : $request->pajak_pph;
+            $data->disc_item = $numericValuePPH;
             $data->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
@@ -55,6 +58,7 @@ class RealCostController extends BaseController
     {
         // Hapus karakter non-numerik (koma dan spasi)
         $numericValue = (int) str_replace(['Rp', ',', ' '], '', $request->satuan_real_cost);
+        $numericValuePPH = (int) str_replace(['Rp', ',', ' '], '', $request->disc_item);
         if ($request->pajak_po === "null") {
             $pajak = 0;
         } else {
@@ -65,6 +69,8 @@ class RealCostController extends BaseController
             $data->uuid_po = $request->uuid_po;
             $data->satuan_real_cost = $numericValue;
             $data->pajak_po = $pajak;
+            $data->pajak_pph = $request->pajak_pph === "null" ? 0 : $request->pajak_pph;
+            $data->disc_item = $numericValuePPH;
             $data->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);

@@ -14,13 +14,13 @@ class PenjualanController extends BaseController
 {
     public function index()
     {
-        $module = 'Daftar Penjualan';
+        $module = 'Daftar Budget Client';
         return view('procurement.penjualan.index', compact('module'));
     }
 
     public function penjualan($params)
     {
-        $module = 'Daftar Penjualan';
+        $module = 'Daftar Budget Client';
         $this->get($params);
         return view('procurement.penjualan.penjualan', compact('module'));
     }
@@ -42,10 +42,14 @@ class PenjualanController extends BaseController
                 // Menambahkan data user ke dalam setiap item absen
                 $item->satuan_real_cost = $data->satuan_real_cost ?? null;
                 $item->pajak_po = $data->pajak_po ?? null;
+                $item->pajak_pph = $data->pajak_pph ?? null;
+                $item->disc_item = $data->disc_item ?? null;
             } else {
                 // Jika $data kosong, berikan nilai default atau kosong
                 $item->satuan_real_cost = null;
                 $item->pajak_po = null;
+                $item->pajak_pph = null;
+                $item->disc_item = null;
             }
 
             return $item;

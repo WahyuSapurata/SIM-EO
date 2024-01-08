@@ -8,11 +8,15 @@
         <!--begin::Page title-->
         <div data-kt-swapper="true" data-kt-swapper-mode="prepend"
             data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}"
-            class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+            class="page-title d-flex gap-2 align-items-center flex-wrap me-3 mb-5 mb-lg-0">
             <!--begin::Title-->
             <button class="btn btn-primary btn-sm " data-kt-drawer-show="true" data-kt-drawer-target="#side_form"
                 id="button-side-form"><i class="fa fa-plus-circle" style="color:#ffffff" aria-hidden="true"></i> Tambah
                 Data</button>
+            <button type="button" id="cetakButton" class="btn btn-sm btn-warning d-flex align-items-center gap-1"
+                data-bs-toggle="modal" data-bs-target="#kt_modal_2">
+                Tambah Fee Management
+            </button>
             <!--end::Title-->
         </div>
         <!--end::Page title-->
@@ -111,6 +115,49 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="kt_modal_2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Tambah Fee Management</h3>
+
+                    <!--begin::Close-->
+                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span class="svg-icon svg-icon-1"></span>
+                    </div>
+                    <!--end::Close-->
+                </div>
+
+                <div class="modal-body">
+                    <form class="form-data" enctype="multipart/form-data">
+
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="uuid">
+                        <input type="hidden" id="uuid_fee_penjualan" name="uuid_client">
+
+                        <div class="mb-10">
+                            <label for="total_fee" class="form-label">Total Fee</label>
+                            <input class="form-control" type="text" name="total_fee" id="total_fee">
+                            <small class="text-danger total_fee_error"></small>
+                        </div>
+
+                        <div class="separator separator-dashed mt-8 mb-5"></div>
+                        <div class="d-flex gap-5">
+                            <button type="submit"
+                                class="btn btn-primary btn-sm btn-submit-fee d-flex align-items-center"><i
+                                    class="bi bi-file-earmark-diff"></i> Simpan</button>
+                            <button type="reset" data-bs-dismiss="modal"
+                                class="btn mr-2 btn-light btn-sm d-flex align-items-center"
+                                style="background-color: #ea443e65; color: #EA443E"><i class="bi bi-trash-fill"
+                                    style="color: #EA443E"></i>Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="post d-flex flex-column-fluid" id="kt_post">
         <!--begin::Container-->
         <div id="kt_content_container" class="container">
@@ -142,6 +189,18 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <td style="text-align: left !important;" colspan="7">Total</td>
                                             <td style="text-align: left !important;" colspan="3" id="total-subtotal">
+                                                Rp 0
+                                            </td>
+                                        </tr>
+                                        <tr class="fw-bolder fs-6 text-gray-800">
+                                            <td style="text-align: left !important;" colspan="7">Fee Management</td>
+                                            <td style="text-align: left !important;" colspan="3" id="total-fee">
+                                                Rp 0
+                                            </td>
+                                        </tr>
+                                        <tr class="fw-bolder fs-6 text-gray-800">
+                                            <td style="text-align: left !important;" colspan="7">Grand Total</td>
+                                            <td style="text-align: left !important;" colspan="3" id="grand-total">
                                                 Rp 0
                                             </td>
                                         </tr>
@@ -269,6 +328,7 @@
         let control = new Control();
         // Deklarasikan variabel formData di luar fungsi
         let formData = new FormData();
+        let formDataFee = new FormData();
 
         var currentPath = window.location.pathname;
         var pathParts = currentPath.split('/'); // Membagi path menggunakan karakter '/'
@@ -277,48 +337,72 @@
         $('#uuid_client_import').val(lastPart);
         formData.append('uuid_client', lastPart);
 
-        // $(document).ready(async function() {
-        //     // Simulasikan klik pada tombol dengan ID 'autoClickButton'
-        //     try {
-        //         const res = await $.ajax({
-        //             url: '/procurement/get-dataclient',
-        //             method: 'GET'
-        //         });
+        $('#uuid_fee_penjualan').val(lastPart);
+        formDataFee.append('uuid_client', lastPart);
 
-        //         if (res.success === true) {
-        //             $('#event_select').html("");
-        //             let html = "<option></option>";
-        //             $.each(res.data, function(x, y) {
-        //                 html += `<option value="${y.uuid}">${y.event}</option>`;
-        //             });
-        //             $('#event_select').html(html);
+        const getFee = () => {
+            $.ajax({
+                url: '/procurement/fee-management/' + lastPart,
+                method: 'GET',
+                async: false, // Pastikan request berjalan secara sinkron
+                success: function(res) {
+                    if (res.success === true) {
+                        if (res.data != null) {
+                            let totalFee = res.data.total_fee;
+                            var cetakButton = document.getElementById('cetakButton');
+                            if (totalFee) {
+                                // Jika ada, hapus class 'disabled-link'
+                                cetakButton.classList.add('disabled-link');
+                            }
+                            $('#total-fee').text('Rp ' + numeral(totalFee).format('0,0'));
+                            $.ajax({
+                                url: '/procurement/get-penjualan/' + lastPart,
+                                method: 'GET',
+                                async: false, // Pastikan request berjalan secara sinkron
+                                success: function(res) {
+                                    if (res.success === true) {
+                                        var grandTotal = 0;
+                                        $.each(res.data, function(x, y) {
+                                            grandTotal += y.harga_satuan * y.freq * y
+                                                .qty
+                                        })
+                                        let grandHasilTotal = (parseFloat(grandTotal) +
+                                            parseFloat(
+                                                totalFee));
+                                        $('#grand-total').text('Rp ' + numeral(grandHasilTotal)
+                                            .format('0,0'));
+                                    } else {
+                                        console.error('Gagal mengambil data:', res.message);
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error('Gagal melakukan permintaan AJAX:', error);
+                                }
+                            });
+                        }
+                    } else {
+                        console.error('Gagal mengambil data:', res.message);
+                    }
+                },
+                error: function(error) {
+                    console.error('Gagal melakukan permintaan AJAX:', error);
+                }
+            });
+        }
 
-        //             // Menanggapi perubahan pada elemen select
-        //             $('#event_select').on('change', function() {
-        //                 let selectedUuid = $(this).val();
-        //                 formData.append('uuid_client', selectedUuid);
-        //                 $('#uuid_client_import').val(selectedUuid);
-        //                 // someFunction(selectedUuid);
-        //                 $('#staticBackdrop_modal').modal('hide');
-
-        //                 uuidSelected(selectedUuid);
-        //             });
-
-        //             // function someFunction(selectedUuid) {
-        //             // Gunakan selectedUuid di sini
-
-        //         } else {
-        //             console.error('Gagal mengambil data:', res.message);
-        //         }
-        //     } catch (error) {
-        //         console.error('Gagal melakukan permintaan AJAX:', error);
-        //     }
-        // });
-
+        getFee();
 
         $(function() {
             // Format anggaran input using numeral.js
             $('#harga_satuan').on('input', function() {
+                let value = $(this).val();
+                if (value !== "") {
+                    value = numeral(value).format('0,0'); // Format to rupiah
+                    $(this).val('Rp ' + value);
+                }
+            });
+
+            $('#total_fee').on('input', function() {
                 let value = $(this).val();
                 if (value !== "") {
                     value = numeral(value).format('0,0'); // Format to rupiah
@@ -372,9 +456,21 @@
             e.preventDefault();
 
             control.submitFormMultipartData('/procurement/add-import-penjualan', 'Tambah',
-                'Penjualan',
+                'Import',
                 'POST');
             $('#kt_modal_1').modal('hide');
+        });
+
+        $(document).on('click', ".btn-submit-fee", function(e) {
+            e.preventDefault();
+
+            let fee = $('#total_fee').val();
+            formDataFee.append('total_fee', fee);
+            control.submitForm('/procurement/add-fee-management', 'Tambah',
+                'Fee Management',
+                'POST', formDataFee);
+            $('#kt_modal_2').modal('hide');
+            getFee();
         });
 
         $(document).on('keyup', '#search_', function(e) {

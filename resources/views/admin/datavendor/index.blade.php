@@ -41,9 +41,12 @@
                                             <th>Nama Owner/Pemilik</th>
                                             <th>Nama Perusahaan</th>
                                             <th>Alamat Perusahaan</th>
+                                            <th>Email</th>
                                             <th>No. tlp</th>
                                             <th>Nama Bank</th>
+                                            <th>Nama Pemegan Rek</th>
                                             <th>No. Rek</th>
+                                            <th>Nama Pemilik NPWP</th>
                                             <th>NPWP</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -129,6 +132,12 @@
                     </div>
 
                     <div class="mb-10">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" name="email">
+                        <small class="text-danger email_error"></small>
+                    </div>
+
+                    <div class="mb-10">
                         <label class="form-label">No. tlp</label>
                         <input type="text" id="no_telp" class="form-control" name="no_telp">
                         <small class="text-danger no_telp_error"></small>
@@ -141,9 +150,21 @@
                     </div>
 
                     <div class="mb-10">
+                        <label class="form-label">Nama Pemegan Rek</label>
+                        <input type="text" id="nama_pemegan_rek" class="form-control" name="nama_pemegan_rek">
+                        <small class="text-danger nama_pemegan_rek_error"></small>
+                    </div>
+
+                    <div class="mb-10">
                         <label class="form-label">No. Rek</label>
                         <input type="text" id="no_rek" class="form-control" name="no_rek">
                         <small class="text-danger no_rek_error"></small>
+                    </div>
+
+                    <div class="mb-10">
+                        <label class="form-label">Nama Pemilik NPWP</label>
+                        <input type="text" id="nama_npwp" class="form-control" name="nama_npwp">
+                        <small class="text-danger nama_npwp_error"></small>
                     </div>
 
                     <div class="mb-10">
@@ -224,16 +245,25 @@
             data: 'alamat_perusahaan',
             className: 'text-center',
         }, {
+            data: 'email',
+            className: 'text-center',
+        }, {
             data: 'no_telp',
             className: 'text-center',
         }, {
             data: 'nama_bank',
             className: 'text-center',
         }, {
+            data: 'nama_pemegan_rek',
+            className: 'text-center',
+        }, {
             data: 'no_rek',
             className: 'text-center',
         }, {
             data: 'npwp',
+            className: 'text-center',
+        }, {
+            data: 'nama_npwp',
             className: 'text-center',
         }, {
             data: 'uuid',

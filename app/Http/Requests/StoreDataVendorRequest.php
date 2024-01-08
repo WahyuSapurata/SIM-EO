@@ -25,9 +25,12 @@ class StoreDataVendorRequest extends FormRequest
             'nama_owner' => 'required',
             'nama_perusahaan' => 'required',
             'alamat_perusahaan' => 'required',
+            'email' => 'required',
             'no_telp' => 'required',
             'nama_bank' => 'required',
+            'nama_pemegan_rek' => 'required',
             'no_rek' => 'required',
+            'nama_npwp' => 'required',
             'npwp' => 'required',
         ];
     }
@@ -38,9 +41,12 @@ class StoreDataVendorRequest extends FormRequest
             'nama_owner.required' => 'Kolom nama owner harus di isi.',
             'nama_perusahaan.required' => 'Kolom nama perusahaan harus di isi.',
             'alamat_perusahaan.required' => 'Kolom alamat perusahaan harus di isi.',
+            'email.required' => 'Kolom email harus di isi.',
             'no_telp.required' => 'Kolom no.telp harus di isi.',
-            'nama_bank.required' => 'Kolom nama_bank harus di isi.',
-            'no_rek.required' => 'Kolom no.rek harus di isi.',
+            'nama_bank.required' => 'Kolom nama bank harus di isi.',
+            'nama_pemegan_rek.required' => 'Kolom nama pemegan rek harus di isi.',
+            'no_rek.required' => 'Kolom no rek harus di isi.',
+            'nama_npwp.required' => 'Kolom nama pemilik npwp harus di isi.',
             'npwp.required' => 'Kolom npwp harus di isi.',
         ];
     }

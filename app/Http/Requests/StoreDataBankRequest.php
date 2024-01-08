@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePoRequest extends FormRequest
+class StoreDataBankRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,18 +22,20 @@ class StorePoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vendor' => 'required',
-            'tempo' => 'required',
-            'no_invoice' => 'required|unique:pos,file',
+            'nama_bank' => 'required',
+            'no_rek' => 'required',
+            'cabang' => 'required',
+            'atas_nama' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'vendor.required' => 'Kolom vendor harus di isi.',
-            'tempo.required' => 'Kolom jatuh Tempo harus di isi.',
-            'no_invoice.required' => 'Kolom no invoice kegiatan harus di isi.',
+            'nama_bank.required' => 'Kolom nama bank harus di isi.',
+            'no_rek.required' => 'Kolom no. Rek harus di isi.',
+            'cabang.required' => 'Kolom cabang harus di isi.',
+            'atas_nama.required' => 'Kolom atas nama harus di isi.',
         ];
     }
 }

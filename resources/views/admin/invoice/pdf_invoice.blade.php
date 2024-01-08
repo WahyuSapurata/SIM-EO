@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ 'Purchase Invoice ' . $client->event . '-' . $vendor->nama_perusahaan }}</title>
+    <title>Invoice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -46,7 +46,7 @@
     </style>
 </head>
 
-@php
+{{-- @php
     $subtotalTotal = 0;
     $subTotalPajak = 0;
     setlocale(LC_TIME, 'id_ID.utf8'); // Set locale ke bahasa Indonesia
@@ -55,44 +55,23 @@
 
     $tahun = date('Y'); // Mendapatkan tahun saat ini
     $duaAngkaTerakhir = substr($tahun, -2);
-@endphp
+@endphp --}}
 
 <body>
     <div class="container">
-        <div style="display: flex">
+        <div style="display: flex; align-items: center; border-bottom: 4px solid #548ed4; padding-bottom: 20px">
             <div style="width: 100%">
-                <img src="http://103.84.206.99/logo.png" alt="">
-                <div style="margin-left: 24px; font-size: 25px">Double Helix Indonesia</div>
+                <img src="/logo-inievent.png" alt="">
             </div>
-            <div style="width: 100%">
-                <div style="text-align: right; font-size: 18px; color: #456a8c">Pembelian</div>
-                <table style="font-size: 13px">
-                    <tr style="font-weight: bold">
-                        <td>Tanggal</td>
-                        <td>{{ $tanggalSekarang }}</td>
-                    </tr>
-                    <tr>
-                        <td>Pembelian #</td>
-                        @if (auth()->user()->lokasi === 'makassar')
-                            <td>PO/MKS-{{ $duaAngkaTerakhir . date('m') . $no_invoice }}</td>
-                        @else
-                            <td>PO/JKT-{{ $duaAngkaTerakhir . date('m') . $no_invoice }}</td>
-                        @endif
-                    </tr>
-                    <tr>
-                        <td>Referensi Suppl</td>
-                    </tr>
-                </table>
-                <div style="font-size: 15px; margin-top: 30px; display: grid; gap: 3px">
-                    <div style="background-color: #0a3e62; color: #FFFFFF; padding-left: 10px">Dari</div>
-                    <div style="padding-left: 10px">{{ $vendor->nama_perusahaan }}</div>
-                    <div style="padding-left: 10px">{{ $vendor->alamat_perusahaan }}</div>
-                    <div style="padding-left: 10px">Tel: {{ $vendor->no_telp }} </div>
-                </div>
+            <div style="width: 100%; font-size: 18px; text-align: end">
+                <div style="font-size: 20px; font-weight: bold">CV. INIEVENT LANCAR JAYA</div>
+                <div>Alamat: Komp. Perumahan Griya Puspita Sari Blok. 4 No. 20</div>
+                <div>Phone : 0811 444 0700</div>
+                <div>www.Inievent.com</div>
             </div>
         </div>
 
-        <div style="width: 100%; margin-top: 30px">
+        {{-- <div style="width: 100%; margin-top: 30px">
             <table class="table">
                 <thead style="background-color: #0a3e62; color: #fff;">
                     <tr class="tr">
@@ -259,7 +238,7 @@
                     </tr>
                 </table>
             </div>
-        </div>
+        </div> --}}
     </div>
 </body>
 
