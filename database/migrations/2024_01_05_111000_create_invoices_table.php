@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('client');
+            $table->uuid('uuid_vendor');
             $table->string('no_invoice');
             $table->string('tanggal_invoice');
             $table->string('deskripsi');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('jabatan');
             $table->uuid('uuid_bank');
             $table->string('total');
-            $table->string('pajak');
+            $table->uuid('uuid_pajak')->nullable();
             $table->string('file');
             $table->string('tagihan')->nullable();
             $table->timestamps();

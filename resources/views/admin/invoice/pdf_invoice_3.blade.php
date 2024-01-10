@@ -59,15 +59,16 @@
 
 <body>
     <div class="container">
-        <div style="display: flex; align-items: center; border-bottom: 4px solid #548ed4; padding-bottom: 20px">
+        <div style="display: flex; align-items: center; border-bottom: 4px solid #e36c09; padding-bottom: 20px">
             <div style="width: 100%">
-                <img src="https://raw.githubusercontent.com/WahyuSapurata/foto/main/logo-inievent.png" alt="">
+                <img src="https://raw.githubusercontent.com/WahyuSapurata/foto/main/Screenshot_from_2024-01-09_10-09-05-removebg-preview.png"
+                    alt="">
             </div>
             <div style="width: 100%; font-size: 18px; text-align: end">
-                <div style="font-size: 20px; font-weight: bold">CV. INIEVENT LANCAR JAYA</div>
-                <div>Alamat: Komp. Perumahan Griya Puspita Sari Blok. 4 No. 20</div>
-                <div>Phone : 0811 444 0700</div>
-                <div>www.Inievent.com</div>
+                <div style="font-size: 20px; font-weight: bold">PT. LINGKARAN GANDA BERKARYA</div>
+                <div>Base : Jl. Pandang Raya No.8,Panakukang, Makassar</div>
+                <div>Telp/fax 0411 425194</div>
+                <div>Email : info@doublehelix.co.id</div>
             </div>
         </div>
 
@@ -75,7 +76,7 @@
             <div style="display: flex">
                 <div style="width: 100%; font-weight: bold">
                     <div
-                        style="font-size: 23px; border: 1px solid #000; padding: 8px; background-color: #548ed4; width: 350px; color: #FFFFFF">
+                        style="font-size: 23px; border: 1px solid #000; padding: 8px; background-color: #e36c09; width: 350px; color: #FFFFFF">
                         INVOICE
                     </div>
                     <div style="font-size: 16px; margin-left: 20px">INVOICE TO</div>
@@ -99,7 +100,7 @@
             </div>
 
             <table class="table">
-                <thead style="background-color: #548ed4; color: #fff;">
+                <thead style="background-color: #e36c09; color: #fff;">
                     <tr class="tr">
                         <th class="th">DESCRIPTION</th>
                         <th class="th" style="width: 150px">TOTAL PRICE (Rp)</th>
@@ -114,17 +115,29 @@
                     </tr>
                     <tr class="tr">
                         <td class="td">
+                            {{ $dataPajak->deskripsi_pajak }}
+                        </td>
+                        @php
+                            $totalPajak = $dataPajak->pajak / 100;
+                            $hasilPajak = $total * $totalPajak;
+                            $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+                            $terbilang = $formatter->format($hasilPajak);
+                        @endphp
+                        <td class="td">{{ 'Rp. ' . number_format($hasilPajak, 0, ',', '.') }}</td>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">
                             Grand Total
                         </td>
-                        <td class="td">{{ 'Rp. ' . number_format($total, 0, ',', '.') }}</td>
+                        <td class="td">{{ 'Rp. ' . number_format($total + $hasilPajak, 0, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>
             <div style="font-style: italic; font-size: 16px; margin-top: 10px; margin-bottom: 30px">Terbilang :
-                ({{ $huruf }} rupiah)</div>
+                ({{ $terbilang }} rupiah)</div>
 
             <table class="table">
-                <thead style="background-color: #548ed4; color: #fff;">
+                <thead style="background-color: #e36c09; color: #fff;">
                     <tr class="tr">
                         <th class="th">PAYMENT METHOD</th>
                         <th class="th">SIGNATURE</th>
@@ -147,7 +160,7 @@
                 <div>{{ $jabatan }}</div>
             </div>
         </div>
-        <div style="width: 100%; margin-top: 175px; height: 10px; border: 1px solid; background-color: #548ed4"></div>
+        <div style="width: 100%; margin-top: 175px; height: 10px; border: 1px solid; background-color: #e36c09"></div>
     </div>
 </body>
 

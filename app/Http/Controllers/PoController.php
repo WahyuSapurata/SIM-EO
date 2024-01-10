@@ -11,15 +11,9 @@ use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
 use App\Models\Po;
 use App\Models\RealCost;
-use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-use Barryvdh\DomPDF\PDF;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PoController extends BaseController
 {
@@ -139,7 +133,10 @@ class PoController extends BaseController
         }
 
         // Pastikan $client dan $vendor tidak null sebelum mengakses propertinya
-        $pdfFileName = 'Purchase Invoice-' . $no_po . ' ' . ($client ? $client->event : '') . ' - ' . ($vendor ? $vendor->alamat_perusahaan : '') . '.pdf';
+        $clientEvent = $client ? $client->event : '';
+        $vendorAlamatPerusahaan = $vendor ? $vendor->alamat_perusahaan : '';
+
+        $pdfFileName = 'Purchase Invoice-' . $clientEvent . ' - ' . $vendorAlamatPerusahaan . time() . '.pdf';
 
         $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
 
@@ -176,8 +173,11 @@ class PoController extends BaseController
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }
 
-        $pdf = FacadePdf::loadHTML($html);
-        return SnappyPdf::loadHTML($html)
-            ->download($pdfFileName);
+        // Kembalikan link untuk diakses oleh pengguna
+        return response()->json([
+            'success' => true,
+            'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
+            'message' => 'PDF Po has been generated and saved successfully.',
+        ]);
     }
 }

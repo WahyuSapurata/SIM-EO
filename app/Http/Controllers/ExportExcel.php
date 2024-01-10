@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataClient;
+use App\Models\FeeManajement;
 use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -15,6 +16,7 @@ class ExportExcel extends Controller
     {
         $budget_client = Penjualan::where('uuid_client', $params)->get();
         $client = DataClient::where('uuid', $params)->first();
+        $feeManagement = FeeManajement::where('uuid_client', $client->uuid)->first();
 
         // Buat objek Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -117,12 +119,11 @@ class ExportExcel extends Controller
             $row++;
         }
 
-        // Tambahkan total pada akhir baris
+        // Baris Total
         $sheet->setCellValue('A' . $row, 'Total'); // Gantilah 'Total' dengan label yang sesuai
         $sheet->mergeCells('A' . $row . ':G' . $row); // Gabungkan sel dari A hingga G
         $sheet->setCellValue('H' . $row, "Rp. " . number_format($subtotalTotal, 0, ',', '.')); // Menghitung total
         $sheet->setCellValue('I' . $row, ''); // Kolom keterangan (jika ada)
-
         // Menerapkan gaya untuk sel total
         $sheet->getStyle('A' . $row . ':I' . $row)->applyFromArray([
             'fill' => [
@@ -138,6 +139,47 @@ class ExportExcel extends Controller
             ],
         ]);
 
+        // Baris Fee Management
+        $row++; // Pindahkan ke baris berikutnya
+        $sheet->setCellValue('A' . $row, 'Fee Management'); // Gantilah 'Fee Management' dengan label yang sesuai
+        $sheet->mergeCells('A' . $row . ':G' . $row); // Gabungkan sel dari A hingga G
+        $sheet->setCellValue('H' . $row, "Rp. " . number_format($feeManagement->total_fee, 0, ',', '.')); // Menghitung total Fee Management
+        $sheet->setCellValue('I' . $row, ''); // Kolom keterangan (jika ada)
+        // Menerapkan gaya untuk sel Fee Management
+        $sheet->getStyle('A' . $row . ':I' . $row)->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'acb9ca', // Warna Peach
+                ],
+            ],
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+
+        // Baris Fee Management
+        $row++; // Pindahkan ke baris berikutnya
+        $sheet->setCellValue('A' . $row, 'Grand Total'); // Gantilah 'Fee Management' dengan label yang sesuai
+        $sheet->mergeCells('A' . $row . ':G' . $row); // Gabungkan sel dari A hingga G
+        $sheet->setCellValue('H' . $row, "Rp. " . number_format($subtotalTotal + $feeManagement->total_fee, 0, ',', '.')); // Menghitung total Fee Management
+        $sheet->setCellValue('I' . $row, ''); // Kolom keterangan (jika ada)
+        // Menerapkan gaya untuk sel Fee Management
+        $sheet->getStyle('A' . $row . ':I' . $row)->applyFromArray([
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'rgb' => 'acb9ca', // Warna Peach
+                ],
+            ],
+            'borders' => [
+                'outline' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ]);
 
         // Ambil objek kolom terakhir yang memiliki data (A, B, C, dst.)
         $lastColumn = $sheet->getHighestDataColumn();

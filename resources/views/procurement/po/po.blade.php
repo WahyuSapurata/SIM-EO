@@ -561,8 +561,9 @@
                                     $('.no_invoice_error').text('No invoice telah di gunakan')
                                 } else {
                                     // Membuka URL dengan query parameter
-                                    window.open(`/procurement/export-invoice?${queryString}`,
-                                        "_blank");
+                                    control.submitWindowPo(
+                                        `/procurement/export-invoice?${queryString}`,
+                                        'Tambah', 'Po', 'GET');
 
                                     control.submitForm('/procurement/add-po', 'Tambah',
                                         'Po',
@@ -573,8 +574,9 @@
                             })
                         } else {
                             // Membuka URL dengan query parameter
-                            window.open(`/procurement/export-invoice?${queryString}`,
-                                "_blank");
+                            control.submitWindowPo(
+                                `/procurement/export-invoice?${queryString}`,
+                                'Tambah', 'Po', 'GET');
 
                             control.submitForm('/procurement/add-po', 'Tambah',
                                 'Po',
@@ -592,13 +594,8 @@
             });
 
             var cetakButton = document.getElementById('cetakButton');
-            if (selectedUUIDs.length > 0) {
-                // Jika ada, hapus class 'disabled-link'
-                cetakButton.classList.remove('disabled-link');
-            } else {
-                // Jika tidak ada, tambahkan class 'disabled-link'
-                cetakButton.classList.add('disabled-link');
-            }
+            // Jika tidak ada, tambahkan class 'disabled-link'
+            cetakButton.classList.add('disabled-link');
         });
     </script>
 @endsection

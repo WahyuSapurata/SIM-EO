@@ -71,6 +71,27 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::get('/invoice', 'InvoiceController@index')->name('invoice');
         Route::get('/add-export-invoice', 'InvoiceController@exportToPDF')->name('add-export-invoice');
+        Route::get('/get-invoice', 'InvoiceController@get')->name('get-invoice');
+        Route::get('/show-invoice/{params}', 'InvoiceController@show')->name('show-invoice');
+        Route::post('/update-invoice/{params}', 'InvoiceController@update')->name('update-invoice');
+        Route::delete('/delete-invoice/{params}', 'InvoiceController@delete')->name('delete-invoice');
+
+        Route::get('/persetujuaninvoice', 'PersetujuanInvoiceController@index')->name('persetujuaninvoice');
+        Route::get('/get-persetujuaninvoice', 'PersetujuanInvoiceController@get')->name('get-persetujuaninvoice');
+        Route::post('/update-persetujuaninvoice/{params}', 'PersetujuanInvoiceController@update')->name('update-persetujuaninvoice');
+
+        Route::get('/utang', 'UtangController@index')->name('utang');
+        Route::get('/get-utang', 'UtangController@get')->name('get-utang');
+        Route::post('/update-utang/{params}', 'UtangController@update')->name('update-utang');
+
+        Route::get('/piutang', 'PiutangController@index')->name('piutang');
+        Route::get('/get-piutang', 'PiutangController@get')->name('get-piutang');
+        Route::post('/update-piutang/{params}', 'PiutangController@update')->name('update-piutang');
+
+        Route::get('/laporan', 'Laporan@index')->name('laporan');
+        Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
+        Route::get('/get-laporan', 'Laporan@getLaporan')->name('get-laporan');
+        Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');

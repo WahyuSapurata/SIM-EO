@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penjualan;
 use Illuminate\Http\Request;
 
 class Dashboard extends BaseController
@@ -17,6 +18,8 @@ class Dashboard extends BaseController
     public function dashboard_admin()
     {
         $module = 'Dashboard';
+        // $budget_client = Penjualan::all();
+        // dd($budget_client);
         return view('dashboard.admin', compact('module'));
     }
 

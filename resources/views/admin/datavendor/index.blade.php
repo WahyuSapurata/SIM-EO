@@ -44,7 +44,7 @@
                                             <th>Email</th>
                                             <th>No. tlp</th>
                                             <th>Nama Bank</th>
-                                            <th>Nama Pemegan Rek</th>
+                                            <th>Nama Pemegang Rek</th>
                                             <th>No. Rek</th>
                                             <th>Nama Pemilik NPWP</th>
                                             <th>NPWP</th>
@@ -150,7 +150,7 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Nama Pemegan Rek</label>
+                        <label class="form-label">Nama Pemegang Rek</label>
                         <input type="text" id="nama_pemegan_rek" class="form-control" name="nama_pemegan_rek">
                         <small class="text-danger nama_pemegan_rek_error"></small>
                     </div>
@@ -260,10 +260,10 @@
             data: 'no_rek',
             className: 'text-center',
         }, {
-            data: 'npwp',
+            data: 'nama_npwp',
             className: 'text-center',
         }, {
-            data: 'nama_npwp',
+            data: 'npwp',
             className: 'text-center',
         }, {
             data: 'uuid',

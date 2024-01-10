@@ -22,7 +22,8 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client' => 'required',
+            'kop' => 'required',
+            'uuid_vendor' => 'required',
             'no_invoice' => 'required',
             'tanggal_invoice' => 'required',
             'deskripsi' => 'required',
@@ -30,14 +31,14 @@ class StoreInvoiceRequest extends FormRequest
             'jabatan' => 'required',
             'uuid_bank' => 'required',
             'total' => 'required',
-            'pajak' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'client.required' => 'Kolom client owner harus di isi.',
+            'kop.required' => 'Kolom kop harus di isi.',
+            'uuid_vendor.required' => 'Kolom vendor harus di isi.',
             'no_invoice.required' => 'Kolom no invoice harus di isi.',
             'tanggal_invoice.required' => 'Kolom tanggal invoice perusahaan harus di isi.',
             'deskripsi.required' => 'Kolom deskripsi harus di isi.',
@@ -45,7 +46,6 @@ class StoreInvoiceRequest extends FormRequest
             'jabatan.required' => 'Kolom jabatan harus di isi.',
             'uuid_bank.required' => 'Kolom bank harus di isi.',
             'total.required' => 'Kolom total harus di isi.',
-            'pajak.required' => 'Kolom pajak harus di isi.',
         ];
     }
 }

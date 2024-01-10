@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdatePersetujuanPo;
 use App\Models\PersetujuanPo as ModelsPersetujuanPo;
 use App\Models\Po;
+use App\Models\Utang;
 use Illuminate\Http\Request;
 
 class PersetujuanPo extends BaseController
@@ -35,6 +36,13 @@ class PersetujuanPo extends BaseController
 
             $uuidArray = explode(',', $data->uuid_penjualan);
             Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updatePersetujuanPo->status]);
+
+            if ($numericValue != 0) {
+                $utang = new Utang();
+                $utang->uuid_persetujuanPo = $data->uuid;
+                $utang->utang = $data->total_po - $numericValue;
+                $utang->save();
+            }
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }

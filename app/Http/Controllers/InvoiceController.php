@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\DataBank;
+use App\Models\DataPajak;
+use App\Models\DataVendor;
 use App\Models\Invoice;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use NumberFormatter;
 
 class InvoiceController extends BaseController
 {
@@ -18,9 +23,36 @@ class InvoiceController extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = Invoice::all();
+        $dataVendor = DataVendor::all();
+        $dataPajak = DataPajak::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($dataVendor, $dataPajak) {
+            $vendor = $dataVendor->where('uuid', $item->uuid_vendor)->first();
+            $pajak = $dataPajak->where('uuid', $item->uuid_pajak)->first();
+
+            // Periksa apakah $data tidak kosong sebelum mengakses propertinya
+            if ($vendor) {
+                // Menambahkan data user ke dalam setiap item absen
+                $item->vendor = $vendor->nama_perusahaan ?? null;
+            } else {
+                // Jika $data kosong, berikan nilai default atau kosong
+                $item->vendor = null;
+            }
+
+            // Periksa apakah $data tidak kosong sebelum mengakses propertinya
+            if ($pajak) {
+                // Menambahkan data user ke dalam setiap item absen
+                $item->pajak = $pajak->deskripsi_pajak ?? null;
+            } else {
+                // Jika $data kosong, berikan nilai default atau kosong
+                $item->pajak = null;
+            }
+
+            return $item;
+        });
 
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($combinedData, 'Get data success');
     }
 
     // public function store(Request $request)
@@ -43,10 +75,119 @@ class InvoiceController extends BaseController
     //     return $this->sendResponse('success', 'Added data success');
     // }
 
+    public function show($params)
+    {
+        $data = array();
+        try {
+            $data = Invoice::where('uuid', $params)->first();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+        return $this->sendResponse($data, 'Show data success');
+    }
+
+    public function update(UpdateInvoiceRequest $updateInvoiceRequest, $params)
+    {
+        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updateInvoiceRequest->total);
+        try {
+            $data = Invoice::where('uuid', $params)->first();
+            $data->uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+            $data->no_invoice = $updateInvoiceRequest->no_invoice;
+            $data->tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
+            $data->deskripsi = $updateInvoiceRequest->deskripsi;
+            $data->penanggung_jawab = $updateInvoiceRequest->penanggung_jawab;
+            $data->jabatan = $updateInvoiceRequest->jabatan;
+            $data->uuid_bank = $updateInvoiceRequest->uuid_bank;
+            $data->total = $numericValue;
+            $data->uuid_pajak = $updateInvoiceRequest->uuid_pajak;
+            $data->save();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        return $this->sendResponse($data, 'Update data success');
+    }
+
+
+    public function delete($params)
+    {
+        $data = array();
+        try {
+            $data = Invoice::where('uuid', $params)->first();
+            if ($data->file && file_exists(public_path('pdf-invoice/' . $data->file))) {
+                unlink(public_path('pdf-invoice/' . $data->file));
+            }
+            $data->delete();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+        return $this->sendResponse($data, 'Delete data success');
+    }
+
     public function exportToPDF(StoreInvoiceRequest $storeInvoiceRequest)
     {
-        // dd($storeInvoiceRequest->all());
+        $kop = $storeInvoiceRequest->kop;
+        $uuid_vendor = $storeInvoiceRequest->uuid_vendor;
+        $no_invoice = $storeInvoiceRequest->no_invoice;
+        $tanggal_invoice = $storeInvoiceRequest->tanggal_invoice;
+        $deskripsi = $storeInvoiceRequest->deskripsi;
+        $penanggung_jawab = $storeInvoiceRequest->penanggung_jawab;
+        $jabatan = $storeInvoiceRequest->jabatan;
+        $uuid_bank = $storeInvoiceRequest->uuid_bank;
+        $total = (int) str_replace(['Rp', ',', ' '], '', $storeInvoiceRequest->total);
+        $uuid_pajak = $storeInvoiceRequest->uuid_pajak;
 
-        return view('admin.invoice.pdf_invoice')->render();
+        $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+        $huruf = $formatter->format($total);
+
+        // Buat nama file PDF dengan nomor urut
+        $tahun = date('Y'); // Mendapatkan tahun saat ini
+        $duaAngkaTerakhir = substr($tahun, -2);
+        $no_inv = 'INV/' . $duaAngkaTerakhir . date('m') . $no_invoice;
+
+        $dataVendor = DataVendor::where('uuid', $uuid_vendor)->first();
+
+        $dataBank = DataBank::where('uuid', $uuid_bank)->first();
+
+        $dataPajak = DataPajak::where('uuid', $uuid_pajak)->first();
+
+        // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+        if ($kop === 'CV. INIEVENT LANCAR JAYA') {
+            $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+        } elseif ($kop === 'DoubleHelix Indonesia') {
+            $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+        } elseif ($kop === 'PT. LINGKARAN GANDA BERKARYA') {
+            $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+        }
+
+        $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';
+
+        $pdfFilePath = 'pdf-invoice/' . $pdfFileName; // Direktori dalam direktori public
+
+        SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
+
+        try {
+            $data = new Invoice();
+            $data->uuid_vendor = $uuid_vendor;
+            $data->no_invoice = $no_inv;
+            $data->tanggal_invoice = $tanggal_invoice;
+            $data->deskripsi = $deskripsi;
+            $data->penanggung_jawab = $penanggung_jawab;
+            $data->jabatan = $jabatan;
+            $data->uuid_bank = $uuid_bank;
+            $data->total = $total;
+            $data->uuid_pajak = $uuid_pajak;
+            $data->file = $pdfFileName;
+            $data->save();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        // Kembalikan link untuk diakses oleh pengguna
+        return response()->json([
+            'success' => true,
+            'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
+            'message' => 'PDF Invoice has been generated and saved successfully.',
+        ]);
     }
 }
