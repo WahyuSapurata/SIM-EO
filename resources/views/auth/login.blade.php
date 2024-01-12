@@ -47,87 +47,88 @@ License: For each use you must have a valid license purchased only from above li
     <div class="d-flex flex-column flex-root" id="kt_app_root">
         <!--begin::Authentication - Sign-in -->
         <div class="d-flex flex-column flex-lg-row flex-column-fluid">
-            <!--begin::Logo-->
-            <a href="" class="d-block d-lg-none mx-auto py-20">
-                <img alt="Logo" src="admin/assets/media/logos/default.svg" class="theme-light-show h-25px" />
-                <img alt="Logo" src="admin/assets/media/logos/default-dark.svg" class="theme-dark-show h-25px" />
-            </a>
-            <!--end::Logo-->
             <!--begin::Aside-->
-            <div class="d-flex flex-column flex-column-fluid flex-center w-lg-50 p-10">
+            <!--begin::Body-->
+            {{-- <div class="d-none d-lg-flex flex-lg-row-fluid w-50 bgi-size-cover bgi-position-y-center bgi-position-x-start bgi-no-repeat"
+                        style="background-image: url(admin/assets/media/auth/bg11.png)"></div> --}}
+            <!--begin::Body-->
+            <div class="bgi-size-cover bgi-position-y-center bgi-position-x-start bgi-no-repeat w-100"
+                style="background-image: url(background-login.png)">
                 <!--begin::Wrapper-->
-                <div class="d-flex justify-content-between flex-column-fluid flex-column w-100 mw-450px">
-                    <!--begin::Body-->
-                    <div class="py-20">
-                        <!--begin::Form-->
-                        <form class="form w-100" method="POST" action="{{ route('login.login-proses') }}">
-                            @csrf
-                            <!--begin::Heading-->
-                            <div class="text-center mb-11">
-                                <!--begin::Title-->
-                                <h1 class="text-dark fw-bolder mb-3">Login</h1>
-                                <!--end::Title-->
-                                <!--begin::Subtitle-->
-                                <div class="text-gray-500 fw-semibold fs-6">Masukkan akun anda..!</div>
-                                <!--end::Subtitle=-->
-                            </div>
-                            <!--begin::Heading-->
-                            <!--begin::Input group=-->
-                            <div class="fv-row mb-8">
-                                <!--begin::Email-->
-                                <input type="text" placeholder="Username" name="username"
-                                    value="{{ old('username') }}" autocomplete="off" class="form-control" />
-                                @error('username')
-                                    <small class="error text-danger">{{ $message }}</small>
-                                @enderror
-                                <!--end::Email-->
-                            </div>
-                            <!--end::Input group=-->
-                            <div class="fv-row mb-8" data-kt-password-meter="true">
-                                <!--begin::Wrapper-->
-                                <div class="mb-1">
-                                    <!--begin::Input wrapper-->
-                                    <div class="position-relative mb-3">
-                                        <div class="position-relative">
-                                            <input placeholder="Password" type="password" name="password"
-                                                autocomplete="off" class="form-control" />
-                                            <span
-                                                class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
-                                                data-kt-password-meter-control="visibility">
-                                                <i class="bi bi-eye-slash fs-2"></i>
-                                                <i class="bi bi-eye fs-2 d-none"></i>
-                                            </span>
-                                        </div>
-                                        @error('password')
-                                            <div class="error text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    <!--end::Input wrapper-->
+                <div class="d-flex flex-column flex-column-fluid flex-center h-100"
+                    style="background-color: rgb(32 30 30 / 41%)">
+                    <img style="position: absolute; left: 35px; top: 35px; width: 200px;" src="/logo.png"
+                        alt="">
+                    <div class="d-flex justify-content-between flex-column-fluid flex-column w-100 mw-450px">
+                        <!--begin::Body-->
+                        <div class="py-20 shadow-lg"
+                            style="background: rgb(110 101 101 / 50%); padding: 50px; border-radius: 10px; margin-top: 100px">
+                            <!--begin::Form-->
+                            <form class="form w-100" method="POST" action="{{ route('login.login-proses') }}">
+                                @csrf
+                                <!--begin::Heading-->
+                                <div class="text-center mb-11">
+                                    <!--begin::Title-->
+                                    <h1 class="text-white fw-bolder mb-3">Login</h1>
+                                    <!--end::Title-->
+                                    <!--begin::Subtitle-->
+                                    <div class="text-gray-500 fw-semibold fs-6">Masukkan akun anda..!</div>
+                                    <!--end::Subtitle=-->
                                 </div>
-                                <!--end::Wrapper-->
-                            </div>
-                            <!--end::Input group=-->
-                            <!--begin::Submit button-->
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">
-                                    <!--begin::Indicator label-->
-                                    <span class="indicator-label">Sign In</span>
-                                    <!--end::Indicator label-->
-                                </button>
-                            </div>
-                            <!--end::Submit button-->
-                        </form>
-                        <!--end::Form-->
+                                <!--begin::Heading-->
+                                <!--begin::Input group=-->
+                                <div class="fv-row mb-8">
+                                    <!--begin::Email-->
+                                    <input type="text" placeholder="Username" name="username"
+                                        value="{{ old('username') }}" autocomplete="off" class="form-control" />
+                                    @error('username')
+                                        <small class="error text-danger">{{ $message }}</small>
+                                    @enderror
+                                    <!--end::Email-->
+                                </div>
+                                <!--end::Input group=-->
+                                <div class="fv-row mb-8" data-kt-password-meter="true">
+                                    <!--begin::Wrapper-->
+                                    <div class="mb-1">
+                                        <!--begin::Input wrapper-->
+                                        <div class="position-relative mb-3">
+                                            <div class="position-relative">
+                                                <input placeholder="Password" type="password" name="password"
+                                                    autocomplete="off" class="form-control" />
+                                                <span
+                                                    class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                                                    data-kt-password-meter-control="visibility">
+                                                    <i class="bi bi-eye-slash fs-2"></i>
+                                                    <i class="bi bi-eye fs-2 d-none"></i>
+                                                </span>
+                                            </div>
+                                            @error('password')
+                                                <div class="error text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <!--end::Input wrapper-->
+                                    </div>
+                                    <!--end::Wrapper-->
+                                </div>
+                                <!--end::Input group=-->
+                                <!--begin::Submit button-->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <!--begin::Indicator label-->
+                                        <span class="indicator-label">Sign In</span>
+                                        <!--end::Indicator label-->
+                                    </button>
+                                </div>
+                                <!--end::Submit button-->
+                            </form>
+                            <!--end::Form-->
+                        </div>
+                        <!--end::Body-->
                     </div>
-                    <!--end::Body-->
                 </div>
                 <!--end::Wrapper-->
             </div>
             <!--end::Aside-->
-            <!--begin::Body-->
-            <div class="d-none d-lg-flex flex-lg-row-fluid w-50 bgi-size-cover bgi-position-y-center bgi-position-x-start bgi-no-repeat"
-                style="background-image: url(admin/assets/media/auth/bg11.png)"></div>
-            <!--begin::Body-->
         </div>
         <!--end::Authentication - Sign-in-->
     </div>

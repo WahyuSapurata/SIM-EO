@@ -9,24 +9,31 @@ use Illuminate\Http\Request;
 
 class RealCostController extends BaseController
 {
-    public function store(Request $request)
+    public function store(StoreRealCostRequest $storeRealCostRequest)
     {
         // Hapus karakter non-numerik (koma dan spasi)
-        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $request->satuan_real_cost);
-        $numericValuePPH = (int) str_replace(['Rp', ',', ' '], '', $request->disc_item);
-        if ($request->pajak_po === "null") {
+        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $storeRealCostRequest->satuan_real_cost);
+        $numericValueDisc = (int) str_replace(['Rp', ',', ' '], '', $storeRealCostRequest->disc_item);
+        if ($storeRealCostRequest->pajak_po === "null") {
             $pajak = 0;
         } else {
-            $pajak = $request->pajak_po;
+            $pajak = $storeRealCostRequest->pajak_po;
         }
         $data = array();
         try {
             $data = new RealCost();
-            $data->uuid_po = $request->uuid_po;
             $data->satuan_real_cost = $numericValue;
             $data->pajak_po = $pajak;
-            $data->pajak_pph = $request->pajak_pph === "null" ? 0 : $request->pajak_pph;
-            $data->disc_item = $numericValuePPH;
+            $data->pajak_pph = $storeRealCostRequest->pajak_pph === "null" ? 0 : $storeRealCostRequest->pajak_pph;
+            $data->disc_item = $numericValueDisc;
+
+            $data->uuid_client = $storeRealCostRequest->uuid_client;
+            $data->kegiatan = $storeRealCostRequest->kegiatan;
+            $data->qty = $storeRealCostRequest->qty;
+            $data->satuan_kegiatan = $storeRealCostRequest->satuan_kegiatan;
+            $data->freq = $storeRealCostRequest->freq;
+            $data->satuan = $storeRealCostRequest->satuan;
+
             $data->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
@@ -45,32 +52,37 @@ class RealCostController extends BaseController
         return $this->sendResponse($data, 'Show data success');
     }
 
-    public function get()
+    public function get($params)
     {
         // Mengambil semua data pengguna
-        $dataFull = RealCost::all();
-
+        $dataFull = RealCost::where('uuid_client', $params)->get();
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataFull, 'Get data success');
     }
 
-    public function update(Request $request, $params)
+    public function update(StoreRealCostRequest $storeRealCostRequest, $params)
     {
         // Hapus karakter non-numerik (koma dan spasi)
-        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $request->satuan_real_cost);
-        $numericValuePPH = (int) str_replace(['Rp', ',', ' '], '', $request->disc_item);
-        if ($request->pajak_po === "null") {
+        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $storeRealCostRequest->satuan_real_cost);
+        $numericValueDisc = (int) str_replace(['Rp', ',', ' '], '', $storeRealCostRequest->disc_item);
+        if ($storeRealCostRequest->pajak_po === "null") {
             $pajak = 0;
         } else {
-            $pajak = $request->pajak_po;
+            $pajak = $storeRealCostRequest->pajak_po;
         }
         try {
             $data = RealCost::where('uuid', $params)->first();
-            $data->uuid_po = $request->uuid_po;
             $data->satuan_real_cost = $numericValue;
             $data->pajak_po = $pajak;
-            $data->pajak_pph = $request->pajak_pph === "null" ? 0 : $request->pajak_pph;
-            $data->disc_item = $numericValuePPH;
+            $data->pajak_pph = $storeRealCostRequest->pajak_pph === "null" ? 0 : $storeRealCostRequest->pajak_pph;
+            $data->disc_item = $numericValueDisc;
+
+            $data->uuid_client = $storeRealCostRequest->uuid_client;
+            $data->kegiatan = $storeRealCostRequest->kegiatan;
+            $data->qty = $storeRealCostRequest->qty;
+            $data->satuan_kegiatan = $storeRealCostRequest->satuan_kegiatan;
+            $data->freq = $storeRealCostRequest->freq;
+            $data->satuan = $storeRealCostRequest->satuan;
             $data->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);

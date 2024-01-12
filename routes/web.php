@@ -59,6 +59,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-databank/{params}', 'DataBankController@show')->name('show-databank');
             Route::post('/update-databank/{params}', 'DataBankController@update')->name('update-databank');
             Route::delete('/delete-databank/{params}', 'DataBankController@delete')->name('delete-databank');
+
+            Route::get('/kategori', 'KategoriController@index')->name('kategori');
+            Route::get('/get-kategori', 'KategoriController@get')->name('get-kategori');
+            Route::post('/add-kategori', 'KategoriController@store')->name('add-kategori');
+            Route::get('/show-kategori/{params}', 'KategoriController@show')->name('show-kategori');
+            Route::post('/update-kategori/{params}', 'KategoriController@update')->name('update-kategori');
+            Route::delete('/delete-kategori/{params}', 'KategoriController@delete')->name('delete-kategori');
         });
 
         Route::get('/dataitemvendor/{params}', 'ItemVendorController@index')->name('dataitemvendor');
@@ -92,6 +99,19 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
         Route::get('/get-laporan', 'Laporan@getLaporan')->name('get-laporan');
         Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
+
+        Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
+        Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
+
+        Route::get('/operasionalkantor', 'OperasionalKantorController@index')->name('operasionalkantor');
+        Route::get('/get-operasionalkantor', 'OperasionalKantorController@get')->name('get-operasionalkantor');
+        Route::post('/add-operasionalkantor', 'OperasionalKantorController@store')->name('add-operasionalkantor');
+        Route::get('/show-operasionalkantor/{params}', 'OperasionalKantorController@show')->name('show-operasionalkantor');
+        Route::post('/update-operasionalkantor/{params}', 'OperasionalKantorController@update')->name('update-operasionalkantor');
+        Route::delete('/delete-operasionalkantor/{params}', 'OperasionalKantorController@delete')->name('delete-operasionalkantor');
+
+        Route::get('/persetujuanoperasionalkantor', 'PersetujuanOperasionalKantorController@index')->name('persetujuanoperasionalkantor');
+        Route::post('/update-persetujuanoperasionalkantor/{params}', 'PersetujuanOperasionalKantorController@update')->name('update-persetujuanoperasionalkantor');
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');
@@ -134,9 +154,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         // Route::get('/tes', 'PoController@tes')->name('tes');
 
         Route::post('/add-realCost', 'RealCostController@store')->name('add-realCost');
-        Route::get('/get-realCost', 'RealCostController@get')->name('get-realCost');
+        Route::get('/get-realCost/{params}', 'RealCostController@get')->name('get-realCost');
         Route::get('/show-realCost/{params}', 'RealCostController@show')->name('show-realCost');
         Route::post('/update-realCost/{params}', 'RealCostController@update')->name('update-realCost');
+
+        Route::get('/export-invoiceNonVendor', 'NonVendorController@exportToPDF')->name('export-invoiceNonVendor');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

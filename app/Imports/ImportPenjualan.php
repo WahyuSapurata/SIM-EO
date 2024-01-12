@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Penjualan;
+use App\Models\RealCost;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -22,7 +23,7 @@ class ImportPenjualan implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
-        return new Penjualan([
+        $penjualan = new Penjualan([
             'uuid_client' => $this->uuid_client,
             'uuid_user' => auth()->user()->uuid,
             'kegiatan' => $row['kegiatan'],
@@ -33,5 +34,18 @@ class ImportPenjualan implements ToModel, WithHeadingRow
             'harga_satuan' => $row['harga_satuan'],
             'ket' => $row['ket'],
         ]);
+
+        $piutang = new RealCost([
+            'uuid_client' => $this->uuid_client,
+            'kegiatan' => $row['kegiatan'],
+            'qty' => $row['qty'],
+            'satuan_kegiatan' => $row['satuan_kegiatan'],
+            'freq' => $row['freq'],
+            'satuan' => $row['satuan'],
+            'harga_satuan' => $row['harga_satuan'],
+            'ket' => $row['ket'],
+        ]);
+
+        return compact('penjualan', 'piutang');
     }
 }

@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penjualans', function (Blueprint $table) {
+        Schema::create('operasional_kantors', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->uuid('uuid_client');
-            $table->uuid('uuid_user');
-            $table->string('kegiatan');
-            $table->integer('qty');
-            $table->string('satuan_kegiatan');
-            $table->integer('freq');
-            $table->string('satuan');
+            $table->string('deskripsi');
+            $table->string('spsifikasi');
             $table->string('harga_satuan');
-            $table->string('ket')->nullable();
+            $table->string('qty');
+            $table->string('qty_satuan');
+            $table->string('freq');
+            $table->string('freq_satuan');
+            $table->string('kategori');
+            $table->string('sisa_tagihan')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penjualans');
+        Schema::dropIfExists('operasional_kantors');
     }
 };

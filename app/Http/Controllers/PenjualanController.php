@@ -76,6 +76,17 @@ class PenjualanController extends BaseController
             $data->harga_satuan = $numericValue;
             $data->ket = $storePenjualanRequest->ket;
             $data->save();
+
+            $realCost = new RealCost();
+            $realCost->uuid_client = $storePenjualanRequest->uuid_client;
+            $realCost->kegiatan = $storePenjualanRequest->kegiatan;
+            $realCost->qty = $storePenjualanRequest->qty;
+            $realCost->satuan_kegiatan = $storePenjualanRequest->satuan_kegiatan;
+            $realCost->freq = $storePenjualanRequest->freq;
+            $realCost->satuan = $storePenjualanRequest->satuan;
+            $realCost->harga_satuan = $numericValue;
+            $realCost->ket = $storePenjualanRequest->ket;
+            $realCost->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }

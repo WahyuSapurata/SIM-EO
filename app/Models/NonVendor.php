@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class PersetujuanPo extends Model
+class NonVendor extends Model
 {
     use HasFactory;
 
-    protected $table = 'persetujuan_pos';
+    protected $table = 'non_vendors';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'uuid_penjualan',
+        'uuid_realCost',
         'no_po',
         'jatuh_tempo',
         'client',

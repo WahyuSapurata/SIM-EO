@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ 'Purchase Invoice ' . $client->event . '-' . $vendor->nama_perusahaan }}</title>
+    <title>{{ 'Purchase Invoice ' . $client->event }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,7 +65,7 @@
                 <div style="margin-left: 24px; font-size: 25px">Double Helix Indonesia</div>
             </div>
             <div style="width: 100%">
-                <div style="text-align: right; font-size: 18px; color: #456a8c">Pembelian</div>
+                <div style="text-align: right; font-size: 18px; color: #456a8c">Pembelian Non Vendor</div>
                 <table style="font-size: 13px">
                     <tr style="font-weight: bold">
                         <td>Tanggal</td>
@@ -83,12 +83,6 @@
                         <td>Referensi Suppl</td>
                     </tr>
                 </table>
-                <div style="font-size: 15px; margin-top: 30px; display: grid; gap: 3px">
-                    <div style="background-color: #0a3e62; color: #FFFFFF; padding-left: 10px">Dari</div>
-                    <div style="padding-left: 10px">{{ $vendor->nama_perusahaan }}</div>
-                    <div style="padding-left: 10px">{{ $vendor->alamat_perusahaan }}</div>
-                    <div style="padding-left: 10px">Tel: {{ $vendor->no_telp }} </div>
-                </div>
             </div>
         </div>
 
@@ -241,20 +235,13 @@
                     @endforeach
 
                     <tr>
-                        <td>Diskon</td>
-                        @php
-                            $discount = (int) str_replace(['Rp', ',', ' '], '', $disc);
-                        @endphp
-                        <td style="border: 1px solid">{{ 'Rp. ' . number_format($discount) }}</td>
-                    </tr>
-                    <tr>
                         <td>TOTAL</td>
-                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc)) }}
+                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak) }}
                         </td>
                     </tr>
                     <tr>
                         <td>Sisa Tagihan</td>
-                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc)) }}
+                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak) }}
                         </td>
                     </tr>
                 </table>

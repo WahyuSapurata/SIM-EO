@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('persetujuan_pos', function (Blueprint $table) {
+        Schema::create('persetujuan_operasional_kantors', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('uuid_penjualan');
-            $table->string('no_po');
-            $table->string('jatuh_tempo');
-            $table->string('client');
-            $table->string('event');
-            $table->string('total_po');
-            $table->string('file');
-            $table->integer('sisa_tagihan')->nullable();
+            $table->string('uuid_operasional');
+            $table->string('status');
             $table->timestamps();
         });
     }
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('persetujuan_pos');
+        Schema::dropIfExists('persetujuan_operasional_kantors');
     }
 };

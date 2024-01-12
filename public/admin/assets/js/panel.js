@@ -310,8 +310,8 @@ class Control {
                         })
                         .then(function () {
                             $("#side_form_close").trigger("click");
-                            $('#kt_modal_1').modal('hide');
                             table_.DataTable().ajax.reload();
+                            $('#kt_modal_1').modal('hide');
                             $("form")[0].reset();
                             $("#from_select").val(null).trigger("change");
                             $("#pajak-select").val(null).trigger("change");
@@ -441,7 +441,6 @@ class Control {
                             timer: 1500,
                         })
                         .then(function () {
-                            window.open(response.pdf_link, "_blank");
                             $("#side_form_close").trigger("click");
                             table_.DataTable().ajax.reload();
                             $("form")[0].reset();
@@ -450,6 +449,7 @@ class Control {
                             $("#from_select_client").val(null).trigger("change");
                             $("#from_select_bank").val(null).trigger("change");
                             $("#from_select_uuid_vendor").val(null).trigger("change");
+                            window.open(response.pdf_link, "_blank");
                             // $(".form-select").val(null).trigger("change");
                         });
                 } else {
@@ -498,8 +498,26 @@ class Control {
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1500,
+                        })
+                        .then(function () {
+                            $("#side_form_close").trigger("click");
+                            table_.DataTable().ajax.reload();
+                            $("form")[0].reset();
+                            $("#from_select").val(null).trigger("change");
+                            window.open(response.pdf_link, "_blank");
+                            // $(".form-select").val(null).trigger("change");
                         });
-                    window.open(response.pdf_link, "_blank");
+                } else {
+                    $("form")[0].reset();
+                    $("#from_select").val(null).trigger("change");
+                    // $(".form-select").val(null).trigger("change");
+                    swal.fire({
+                        title: response.message,
+                        text: response.data,
+                        icon: "warning",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
                 }
             },
             error: function (xhr) {
@@ -678,6 +696,24 @@ class Control {
         });
     }
 
+    push_select_kategori(url, element) {
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function (res) {
+                $(element).html("");
+                let html = "<option selected disabled>Pilih jenis inputan</option>";
+                $.each(res.data, function (x, y) {
+                    html += `<option value="${y.nama_kategori}">${y.nama_kategori}</option>`;
+                });
+                $(element).html(html);
+            },
+            error: function (xhr) {
+                alert("gagal");
+            },
+        });
+    }
+
     push_select3(data, element) {
         $(element).html("");
         let html = "<option></option>";
@@ -822,7 +858,7 @@ class Control {
                 // Calculate total for 'harga_satuan' column
                 api.column(6, { search: 'applied' }).data().each(function (value) {
                     // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotal += parseFloat(value.harga_satuan) * value.freq * value.qty;
+                    subtotalTotal += parseFloat(value.harga_satuan === null ? 0 : value.harga_satuan) * value.freq * value.qty;
                 });
 
                 // Calculate total for 'harga_satuan' column

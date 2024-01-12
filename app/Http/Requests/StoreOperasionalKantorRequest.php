@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRealCostRequest extends FormRequest
+class StoreOperasionalKantorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,24 +22,28 @@ class StoreRealCostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kegiatan' => 'required',
+            'deskripsi' => 'required',
+            'spsifikasi' => 'required',
+            'harga_satuan' => 'required',
             'qty' => 'required',
-            'satuan_kegiatan' => 'required',
+            'qty_satuan' => 'required',
             'freq' => 'required',
-            'satuan' => 'required',
-            'satuan_real_cost' => 'required',
+            'freq_satuan' => 'required',
+            'kategori' => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'kegiatan.required' => 'Kolom kegiatan harus di isi.',
+            'deskripsi.required' => 'Kolom deskripsi harus di isi.',
+            'spsifikasi.required' => 'Kolom spsifikasi harus di isi.',
+            'harga_satuan.required' => 'Kolom harga satuan harus di isi.',
             'qty.required' => 'Kolom qty harus di isi.',
-            'satuan_kegiatan.required' => 'Kolom satuan kegiatan harus di isi.',
+            'qty_satuan.required' => 'Kolom qty satuan harus di isi.',
             'freq.required' => 'Kolom freq harus di isi.',
-            'satuan.required' => 'Kolom satuan harus di isi.',
-            'satuan_real_cost.required' => 'Kolom satuan real cost harus di isi.',
+            'freq_satuan.required' => 'Kolom freq satuan harus di isi.',
+            'kategori.required' => 'Kolom kategori harus di isi.',
         ];
     }
 }

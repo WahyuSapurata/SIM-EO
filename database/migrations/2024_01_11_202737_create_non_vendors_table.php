@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('persetujuan_pos', function (Blueprint $table) {
+        Schema::create('non_vendors', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->string('uuid_penjualan');
+            $table->string('uuid_realCost');
             $table->string('no_po');
             $table->string('jatuh_tempo');
             $table->string('client');
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('persetujuan_pos');
+        Schema::dropIfExists('non_vendors');
     }
 };

@@ -21,6 +21,7 @@ class DataClient extends Model
         'nama_pic',
         'no_pic',
         'uuid_user',
+        'status',
     ];
 
     protected static function boot()

@@ -14,11 +14,19 @@ return new class extends Migration
         Schema::create('real_costs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->uuid('uuid_po')->nullable();
+            $table->uuid('uuid_client')->nullable();
             $table->string('satuan_real_cost')->nullable();
             $table->string('pajak_po')->nullable();
             $table->string('pajak_pph')->nullable();
             $table->string('disc_item')->nullable();
+
+            $table->string('kegiatan');
+            $table->integer('qty');
+            $table->string('satuan_kegiatan');
+            $table->integer('freq');
+            $table->string('satuan');
+            $table->string('harga_satuan')->nullable();
+            $table->string('ket')->nullable();
             $table->timestamps();
         });
     }

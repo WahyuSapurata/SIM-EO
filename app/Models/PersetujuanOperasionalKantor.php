@@ -6,22 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class PersetujuanPo extends Model
+class PersetujuanOperasionalKantor extends Model
 {
     use HasFactory;
 
-    protected $table = 'persetujuan_pos';
+    protected $table = 'persetujuan_operasional_kantors';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'uuid_penjualan',
-        'no_po',
-        'jatuh_tempo',
-        'client',
-        'event',
-        'total_po',
-        'file',
-        'sisa_tagihan',
+        'uuid_operasional',
+        'status',
     ];
 
     protected static function boot()

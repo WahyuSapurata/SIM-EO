@@ -14,11 +14,18 @@ class RealCost extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
-        'uuid_po',
+        'uuid_client',
         'satuan_real_cost',
         'pajak_po',
         'pajak_pph',
         'disc_item',
+        'kegiatan',
+        'qty',
+        'satuan_kegiatan',
+        'freq',
+        'satuan',
+        'harga_satuan',
+        'ket',
     ];
 
     protected static function boot()

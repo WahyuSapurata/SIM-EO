@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('nama_pic');
             $table->string('no_pic');
             $table->uuid('uuid_user');
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

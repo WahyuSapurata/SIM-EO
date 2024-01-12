@@ -2,75 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePoRequest;
-use App\Http\Requests\UpdatePoRequest;
+use App\Http\Requests\StoreNonVendorRequest;
+use App\Http\Requests\UpdateNonVendorRequest;
 use App\Models\DataClient;
 use App\Models\DataPajak;
-use App\Models\DataVendor;
-use App\Models\Penjualan;
-use App\Models\PersetujuanPo;
+use App\Models\NonVendor;
 use App\Models\Po;
 use App\Models\RealCost;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Http\Request;
 
-class PoController extends BaseController
+class NonVendorController extends BaseController
 {
     public function index()
     {
-        $module = 'Daftar Client';
-        return view('procurement.po.index', compact('module'));
+        $module = 'Persetujuan Po Non Vendor';
+        return view('admin.persetujuannonvendor.index', compact('module'));
     }
-
-    public function po($params)
-    {
-        $module = 'Daftar Real Cost';
-        return view('procurement.po.po', compact('module'));
-    }
-
-    // public function penjualan($params)
-    // {
-    //     $module = 'Daftar Penjualan';
-    //     $this->get($params);
-    //     return view('procurement.penjualan.penjualan', compact('module'));
-    // }
 
     public function get()
     {
         // Mengambil semua data pengguna
-        $dataFull = Po::all();
+        $dataFull = NonVendor::all();
+
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataFull, 'Get data success');
     }
 
-    public function store(Request $request)
+    // public function update(UpdatePersetujuanPo $updatePersetujuanPo, $params)
+    // {
+    //     // Hapus karakter non-numerik (koma dan spasi)
+    //     $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updatePersetujuanPo->sisa_tagihan);
+    //     try {
+    //         $data = ModelsPersetujuanPo::where('uuid', $params)->first();
+    //         $data->sisa_tagihan = $numericValue ? $numericValue : $data->total_po;
+    //         $data->save();
+
+    //         $uuidArray = explode(',', $data->uuid_penjualan);
+    //         Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updatePersetujuanPo->status]);
+
+    //         if ($numericValue != 0) {
+    //             $utang = new Utang();
+    //             $utang->uuid_persetujuanPo = $data->uuid;
+    //             $utang->utang = $data->total_po - $numericValue;
+    //             $utang->save();
+    //         }
+    //     } catch (\Exception $e) {
+    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+    //     }
+
+    //     return $this->sendResponse($data, 'Update data success');
+    // }
+
+    public function exportToPDF(Request $request)
     {
-        try {
-            // Memecah string UUID menjadi dua UUID terpisah
-            $uuids = explode(',', $request->uuid_penjualan);
-
-            // Membuat objek Po untuk setiap UUID
-            foreach ($uuids as $uuid) {
-                $data = new Po();
-                $data->uuid_penjualan = $uuid;
-                $data->status = 'progres';
-                $data->save();
-            }
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-        }
-
-        return $this->sendResponse('success', 'Added data success');
-    }
-
-    public function exportToPDF(StorePoRequest $storePoRequest)
-    {
-        $vendor = DataVendor::where('uuid', $storePoRequest->vendor)->first();
-
-        $uuidArray = explode(',', $storePoRequest->uuid_penjualan);
+        $uuidArray = explode(',', $request->uuid_penjualan);
         $realCost = RealCost::whereIn('uuid', $uuidArray)->get();
-
         // Ambil data pajak berdasarkan deskripsi_pajak yang sesuai dengan nilai-nilai pada $pajakPoValues
         $pajakPoValues = $realCost->pluck('pajak_po')->merge($realCost->pluck('pajak_pph'))->filter()->unique()->toArray();
         $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
@@ -82,9 +70,8 @@ class PoController extends BaseController
 
         $client = DataClient::where('uuid', $realCost[0]->uuid_client)->first();
 
-        $disc = $storePoRequest->disc;
-        $tempo = $storePoRequest->tempo;
-        $no_invoice = $storePoRequest->no_invoice;
+        $tempo = $request->tempo;
+        $no_invoice = $request->no_invoice;
 
         // Tanggal sekarang
         $tanggalSekarang = Carbon::now();
@@ -95,9 +82,9 @@ class PoController extends BaseController
         // Hitung jumlah hari
         $jumlahHari = $tanggalSekarang->diffInDays($tanggal31);
 
-        // return view('procurement.po.invoice', compact('vendor', 're$realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
+        // return view('procurement.po.invoicenonvendor', compact('realCost', 'client', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
-        $html = view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
+        $html = view('procurement.po.invoicenonvendor', compact('realCost', 'client', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
         // Buat nama file PDF dengan nomor urut
         $tahun = date('Y'); // Mendapatkan tahun saat ini
@@ -111,9 +98,8 @@ class PoController extends BaseController
 
         // Pastikan $client dan $vendor tidak null sebelum mengakses propertinya
         $clientEvent = $client ? $client->event : '';
-        $vendorAlamatPerusahaan = $vendor ? $vendor->alamat_perusahaan : '';
 
-        $pdfFileName = 'Purchase Invoice-' . $clientEvent . ' - ' . $vendorAlamatPerusahaan . time() . '.pdf';
+        $pdfFileName = 'Purchase Invoice-' . $clientEvent . time() . '.pdf';
 
         $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
 
@@ -136,15 +122,14 @@ class PoController extends BaseController
         foreach ($orderedPajak as $row_pajak) {
             $subTotalPajak += $subtotalTotal * ($row_pajak->pajak / 100);
         }
-
         try {
-            $data = new PersetujuanPo();
-            $data->uuid_penjualan = $storePoRequest->uuid_penjualan;
+            $data = new NonVendor();
+            $data->uuid_realCost = $request->uuid_penjualan;
             $data->no_po = $no_po;
             $data->jatuh_tempo = $tempo;
             $data->client = $client->nama_client;
             $data->event = $client->event;
-            $data->total_po = $subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc);
+            $data->total_po = $subtotalTotal + $subTotalPajak;
             $data->file = $pdfFileName;
             $data->save();
         } catch (\Exception $e) {
