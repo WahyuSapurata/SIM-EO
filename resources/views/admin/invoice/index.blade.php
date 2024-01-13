@@ -40,7 +40,7 @@
                                             <th>No</th>
                                             <th>No Invoice</th>
                                             <th>Tanggal Invoice</th>
-                                            <th>Vendor</th>
+                                            <th>Client</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>Pajak</th>
@@ -131,8 +131,8 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Vendor</label>
-                        <select name="uuid_vendor" class="form-select" data-control="select2" id="from_select_uuid_vendor"
+                        <label class="form-label">Client</label>
+                        <select name="uuid_vendor" class="form-select" data-control="select2" id="from_select_uuid_client"
                             data-placeholder="Pilih jenis inputan">
                         </select>
                         <small class="text-danger uuid_vendor_error"></small>
@@ -233,27 +233,33 @@
                 // Mengonversi objek formDataInvoice menjadi string query parameter
                 var queryString = objectToQueryString(formDataInvoice);
 
+                var regex = /^\d{4}$/;
+
                 $.ajax({
-                    url: '/admin/get-invoice',
+                    url: '/admin/data-invoice/get-invoice',
                     method: 'GET',
                     async: false, // Pastikan request berjalan secara sinkron
                     success: function(res) {
                         if (res.success === true) {
-                            console.log(res);
-                            if (res.data.length > 0) {
-                                $.each(res.data, function(x, y) {
-                                    if (y.file === no_invoice) {
-                                        $('.no_invoice_error').text(
-                                            'No invoice telah di gunakan')
-                                    } else {
-                                        control.submitWindow(
-                                            `/admin/add-export-invoice?${queryString}`,
-                                            'Tambah', 'Invoice', 'GET');
-                                    }
-                                })
+                            if (regex.test(no_invoice) === false) {
+                                $('.no_invoice_error').text(
+                                    'No invoice po harus 4 digit')
                             } else {
-                                control.submitWindow(`/admin/add-export-invoice?${queryString}`,
-                                    'Tambah', 'Invoice', 'GET');
+                                if (res.data.length > 0) {
+                                    $.each(res.data, function(x, y) {
+                                        if (y.file === no_invoice) {
+                                            $('.no_invoice_error').text(
+                                                'No invoice telah di gunakan')
+                                        } else {
+                                            control.submitWindow(
+                                                `/admin/add-export-invoice?${queryString}`,
+                                                'Tambah', 'Invoice', 'GET');
+                                        }
+                                    })
+                                } else {
+                                    control.submitWindow(`/admin/add-export-invoice?${queryString}`,
+                                        'Tambah', 'Invoice', 'GET');
+                                }
                             }
                         } else {
                             console.error('Gagal mengambil data:', res.message);
@@ -272,13 +278,13 @@
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
-            let url = '/admin/show-invoice/' + $(this).attr('data-uuid');
+            let url = '/admin/data-invoice/show-invoice/' + $(this).attr('data-uuid');
             control.overlay_form('Update', 'Invoice', url);
         })
 
         $(document).on('click', '.button-delete', function(e) {
             e.preventDefault();
-            let url = '/admin/delete-invoice/' + $(this).attr('data-uuid');
+            let url = '/admin/data-invoice/delete-invoice/' + $(this).attr('data-uuid');
             let label = $(this).attr('data-label');
             control.ajaxDelete(url, label)
         })
@@ -329,7 +335,7 @@
             render: function(data, type, full, meta) {
                 let data_invoice;
                 $.ajax({
-                    url: '/admin/get-persetujuaninvoice',
+                    url: '/admin/data-invoice/get-persetujuaninvoice',
                     method: 'GET',
                     async: false, // Pastikan request berjalan secara sinkron
                     success: function(res) {
@@ -396,10 +402,10 @@
 
         $(function() {
             control.push_select3(kop, '#from_select_kop');
-            control.push_select_vendor('/admin/master-data/get-datavendor', '#from_select_uuid_vendor');
+            control.push_select_client('/procurement/get-dataclient', '#from_select_uuid_client');
             control.push_select_pajak_uuid('/admin/master-data/get-datapajak', '#uuid_pajak-select');
             control.push_select_bank('/admin/master-data/get-databank', '#from_select_bank');
-            control.initDatatable('/admin/get-invoice', columns, columnDefs);
+            control.initDatatable('/admin/data-invoice/get-invoice', columns, columnDefs);
         })
     </script>
 @endsection

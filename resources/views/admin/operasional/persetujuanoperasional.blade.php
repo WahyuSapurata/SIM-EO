@@ -166,25 +166,26 @@
             e.preventDefault();
             let type = $(this).attr('data-type');
             if (type == 'add') {
-                control.submitFormMultipartData('/admin/add-operasionalkantor', 'Tambah',
+                control.submitFormMultipartData('/admin/data-operasional/add-operasionalkantor', 'Tambah',
                     'Data Operasiona Kantor',
                     'POST');
             } else {
                 let uuid = $("input[name='uuid']").val();
-                control.submitFormMultipartData('/admin/update-persetujuanoperasionalkantor/' + uuid, 'Update',
+                control.submitFormMultipartData('/admin/data-operasional/update-persetujuanoperasionalkantor/' +
+                    uuid, 'Update',
                     'Data Operasiona Kantor', 'POST');
             }
         });
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
-            let url = '/admin/show-operasionalkantor/' + $(this).attr('data-uuid');
+            let url = '/admin/data-operasional/show-operasionalkantor/' + $(this).attr('data-uuid');
             control.overlay_form('Update', 'Data Operasiona Kantor', url);
         })
 
         $(document).on('click', '.button-delete', function(e) {
             e.preventDefault();
-            let url = '/admin/delete-operasionalkantor/' + $(this).attr('data-uuid');
+            let url = '/admin/data-operasional/delete-operasionalkantor/' + $(this).attr('data-uuid');
             let label = $(this).attr('data-label');
             control.ajaxDelete(url, label)
         })
@@ -277,7 +278,7 @@
 
         $(function() {
             control.push_select3(setuju, '#from_select');
-            control.initDatatable('/admin/get-operasionalkantor', columns, columnDefs);
+            control.initDatatable('/admin/data-operasional/get-operasionalkantor', columns, columnDefs);
         })
     </script>
 @endsection

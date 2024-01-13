@@ -24,12 +24,12 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::updateOrCreate(
-            ['username' => 'admin'],
+            ['username' => 'finance'],
             [
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => 'admin',
-                'password' => Hash::make('admin'),
-                'role' => 'admin',
+                'name' => 'finance',
+                'password' => Hash::make('<>password'),
+                'role' => 'finance',
             ]
         );
     }

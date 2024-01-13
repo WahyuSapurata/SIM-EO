@@ -155,7 +155,7 @@
                 formData.append(field.name, field.value);
             });
             formData.append('uuid_invoice', uuid_piutang);
-            control.submitForm('/admin/update-piutang/' + uuid_piutang, 'Tambah',
+            control.submitForm('/admin/Utang-piutang/update-piutang/' + uuid_piutang, 'Tambah',
                 'Piutang', 'POST', formData);
         });
 
@@ -261,7 +261,7 @@
 
         $(function() {
             control.push_select3(setuju, '#from_select');
-            control.initDatatable('/admin/get-piutang', columns, columnDefs);
+            control.initDatatable('/admin/Utang-piutang/get-piutang', columns, columnDefs);
         })
     </script>
 @endsection

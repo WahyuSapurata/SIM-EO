@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('client');
             $table->string('event');
             $table->string('total_po');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->integer('sisa_tagihan')->nullable();
             $table->timestamps();
         });

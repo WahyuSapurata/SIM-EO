@@ -248,7 +248,7 @@
                 text: "procurement"
             },
             {
-                text: "finance"
+                text: "admin"
             },
             {
                 text: "direktur"

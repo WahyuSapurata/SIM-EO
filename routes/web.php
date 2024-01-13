@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,9 +26,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::group(['prefix' => 'admin', 'middleware' => ['auth'], 'as' => 'admin.'], function () {
         Route::get('/dashboard-admin', 'Dashboard@dashboard_admin')->name('dashboard-admin');
 
-        Route::get('/persetujuanpo', 'PersetujuanPo@index')->name('persetujuanpo');
-        Route::get('/get-persetujuanpo', 'PersetujuanPo@get')->name('get-persetujuanpo');
-        Route::post('/update-persetujuanpo/{params}', 'PersetujuanPo@update')->name('update-persetujuanpo');
+        Route::prefix('persetujuan-po')->group(function () {
+            Route::get('/persetujuanpo', 'PersetujuanPo@index')->name('persetujuanpo');
+            Route::get('/get-persetujuanpo', 'PersetujuanPo@get')->name('get-persetujuanpo');
+            Route::post('/update-persetujuanpo/{params}', 'PersetujuanPo@update')->name('update-persetujuanpo');
+
+            Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
+            Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
+            Route::get('/reload-pesetujuannonvendor/{params}', 'NonVendorController@reload')->name('reload-pesetujuannonvendor');
+        });
 
         Route::prefix('master-data')->group(function () {
             Route::get('/datauser', 'DataUser@index')->name('datauser');
@@ -76,42 +83,45 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::delete('/delete-dataitemvendor/{params}', 'ItemVendorController@delete')->name('delete-dataitemvendor');
         Route::post('/add-import-vendor', 'ItemVendorController@import_vendor')->name('add-import-vendor');
 
-        Route::get('/invoice', 'InvoiceController@index')->name('invoice');
-        Route::get('/add-export-invoice', 'InvoiceController@exportToPDF')->name('add-export-invoice');
-        Route::get('/get-invoice', 'InvoiceController@get')->name('get-invoice');
-        Route::get('/show-invoice/{params}', 'InvoiceController@show')->name('show-invoice');
-        Route::post('/update-invoice/{params}', 'InvoiceController@update')->name('update-invoice');
-        Route::delete('/delete-invoice/{params}', 'InvoiceController@delete')->name('delete-invoice');
+        Route::prefix('data-invoice')->group(function () {
+            Route::get('/invoice', 'InvoiceController@index')->name('invoice');
+            Route::get('/add-export-invoice', 'InvoiceController@exportToPDF')->name('add-export-invoice');
+            Route::get('/get-invoice', 'InvoiceController@get')->name('get-invoice');
+            Route::get('/show-invoice/{params}', 'InvoiceController@show')->name('show-invoice');
+            Route::post('/update-invoice/{params}', 'InvoiceController@update')->name('update-invoice');
+            Route::delete('/delete-invoice/{params}', 'InvoiceController@delete')->name('delete-invoice');
 
-        Route::get('/persetujuaninvoice', 'PersetujuanInvoiceController@index')->name('persetujuaninvoice');
-        Route::get('/get-persetujuaninvoice', 'PersetujuanInvoiceController@get')->name('get-persetujuaninvoice');
-        Route::post('/update-persetujuaninvoice/{params}', 'PersetujuanInvoiceController@update')->name('update-persetujuaninvoice');
+            Route::get('/persetujuaninvoice', 'PersetujuanInvoiceController@index')->name('persetujuaninvoice');
+            Route::get('/get-persetujuaninvoice', 'PersetujuanInvoiceController@get')->name('get-persetujuaninvoice');
+            Route::post('/update-persetujuaninvoice/{params}', 'PersetujuanInvoiceController@update')->name('update-persetujuaninvoice');
+        });
 
-        Route::get('/utang', 'UtangController@index')->name('utang');
-        Route::get('/get-utang', 'UtangController@get')->name('get-utang');
-        Route::post('/update-utang/{params}', 'UtangController@update')->name('update-utang');
+        Route::prefix('Utang-piutang')->group(function () {
+            Route::get('/utang', 'UtangController@index')->name('utang');
+            Route::get('/get-utang', 'UtangController@get')->name('get-utang');
+            Route::post('/update-utang/{params}', 'UtangController@update')->name('update-utang');
 
-        Route::get('/piutang', 'PiutangController@index')->name('piutang');
-        Route::get('/get-piutang', 'PiutangController@get')->name('get-piutang');
-        Route::post('/update-piutang/{params}', 'PiutangController@update')->name('update-piutang');
+            Route::get('/piutang', 'PiutangController@index')->name('piutang');
+            Route::get('/get-piutang', 'PiutangController@get')->name('get-piutang');
+            Route::post('/update-piutang/{params}', 'PiutangController@update')->name('update-piutang');
+        });
 
         Route::get('/laporan', 'Laporan@index')->name('laporan');
         Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
         Route::get('/get-laporan', 'Laporan@getLaporan')->name('get-laporan');
         Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
 
-        Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
-        Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
+        Route::prefix('data-operasional')->group(function () {
+            Route::get('/operasionalkantor', 'OperasionalKantorController@index')->name('operasionalkantor');
+            Route::get('/get-operasionalkantor', 'OperasionalKantorController@get')->name('get-operasionalkantor');
+            Route::post('/add-operasionalkantor', 'OperasionalKantorController@store')->name('add-operasionalkantor');
+            Route::get('/show-operasionalkantor/{params}', 'OperasionalKantorController@show')->name('show-operasionalkantor');
+            Route::post('/update-operasionalkantor/{params}', 'OperasionalKantorController@update')->name('update-operasionalkantor');
+            Route::delete('/delete-operasionalkantor/{params}', 'OperasionalKantorController@delete')->name('delete-operasionalkantor');
 
-        Route::get('/operasionalkantor', 'OperasionalKantorController@index')->name('operasionalkantor');
-        Route::get('/get-operasionalkantor', 'OperasionalKantorController@get')->name('get-operasionalkantor');
-        Route::post('/add-operasionalkantor', 'OperasionalKantorController@store')->name('add-operasionalkantor');
-        Route::get('/show-operasionalkantor/{params}', 'OperasionalKantorController@show')->name('show-operasionalkantor');
-        Route::post('/update-operasionalkantor/{params}', 'OperasionalKantorController@update')->name('update-operasionalkantor');
-        Route::delete('/delete-operasionalkantor/{params}', 'OperasionalKantorController@delete')->name('delete-operasionalkantor');
-
-        Route::get('/persetujuanoperasionalkantor', 'PersetujuanOperasionalKantorController@index')->name('persetujuanoperasionalkantor');
-        Route::post('/update-persetujuanoperasionalkantor/{params}', 'PersetujuanOperasionalKantorController@update')->name('update-persetujuanoperasionalkantor');
+            Route::get('/persetujuanoperasionalkantor', 'PersetujuanOperasionalKantorController@index')->name('persetujuanoperasionalkantor');
+            Route::post('/update-persetujuanoperasionalkantor/{params}', 'PersetujuanOperasionalKantorController@update')->name('update-persetujuanoperasionalkantor');
+        });
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
         Route::post('/update-password/{params}', 'UbahPassword@update')->name('update-password');
@@ -163,6 +173,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {
         Route::get('/dashboard-finance', 'Dashboard@dashboard_finance')->name('dashboard-finance');
+        Route::get('/invoice-finance', 'InvoiceController@index')->name('invoice-finance');
     });
 
     Route::group(['prefix' => 'direktur', 'middleware' => ['auth'], 'as' => 'direktur.'], function () {

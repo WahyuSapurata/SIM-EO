@@ -80,8 +80,8 @@
                     </div>
                     <div style="font-size: 16px; margin-left: 20px">INVOICE TO</div>
                     <div style="font-size: 20px; margin-top: 25px; margin-left: 20px">
-                        {{ $dataVendor->nama_perusahaan }}
-                        <br> {{ $dataVendor->alamat_perusahaan }}
+                        {{ $dataClient->nama_client }}
+                        <br> {{ $dataClient->venue }}
                     </div>
                 </div>
                 <div style="width: 100%">

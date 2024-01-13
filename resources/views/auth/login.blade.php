@@ -57,7 +57,7 @@ License: For each use you must have a valid license purchased only from above li
                 <!--begin::Wrapper-->
                 <div class="d-flex flex-column flex-column-fluid flex-center h-100"
                     style="background-color: rgb(32 30 30 / 41%)">
-                    <img style="position: absolute; left: 35px; top: 35px; width: 200px;" src="/logo.png"
+                    <img style="position: absolute; left: 35px; top: 35px; width: 200px;" src="/logo-login.png"
                         alt="">
                     <div class="d-flex justify-content-between flex-column-fluid flex-column w-100 mw-450px">
                         <!--begin::Body-->

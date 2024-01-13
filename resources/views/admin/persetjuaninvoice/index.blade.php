@@ -16,7 +16,7 @@
                                             <th>No</th>
                                             <th>No Invoice</th>
                                             <th>Tanggal Invoice</th>
-                                            <th>Vendor</th>
+                                            <th>Client</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>File</th>
@@ -142,7 +142,7 @@
                 formData.append(field.name, field.value);
             });
             formData.append('uuid_invoice', uuid_persetujuanInvoice);
-            control.submitForm('/admin/update-persetujuaninvoice/' + uuid_persetujuanInvoice, 'Tambah',
+            control.submitForm('/admin/data-invoice/update-persetujuaninvoice/' + uuid_persetujuanInvoice, 'Tambah',
                 'Persetujuan Invoice', 'POST', formData);
         });
 
@@ -248,7 +248,7 @@
 
         $(function() {
             control.push_select3(setuju, '#from_select');
-            control.initDatatable('/admin/get-invoice', columns, columnDefs);
+            control.initDatatable('/admin/data-invoice/get-invoice', columns, columnDefs);
         })
     </script>
 @endsection

@@ -448,7 +448,7 @@ class Control {
                             $("#from_select_kop").val(null).trigger("change");
                             $("#from_select_client").val(null).trigger("change");
                             $("#from_select_bank").val(null).trigger("change");
-                            $("#from_select_uuid_vendor").val(null).trigger("change");
+                            $("#from_select_uuid_client").val(null).trigger("change");
                             window.open(response.pdf_link, "_blank");
                             // $(".form-select").val(null).trigger("change");
                         });
@@ -660,7 +660,7 @@ class Control {
         });
     }
 
-    push_select_vendor(url, element) {
+    push_select_client(url, element) {
         $.ajax({
             url: url,
             method: "GET",
@@ -668,7 +668,7 @@ class Control {
                 $(element).html("");
                 let html = "<option selected disabled>Pilih jenis inputan</option>";
                 $.each(res.data, function (x, y) {
-                    html += `<option value="${y.uuid}">${y.nama_perusahaan}</option>`;
+                    html += `<option value="${y.uuid}">${y.nama_client}</option>`;
                 });
                 $(element).html(html);
             },

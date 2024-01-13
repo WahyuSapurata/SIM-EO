@@ -143,4 +143,9 @@ class NonVendorController extends BaseController
             'message' => 'PDF Po has been generated and saved successfully.',
         ]);
     }
+
+    public function reload($params)
+    {
+        dd($params);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\DataBank;
+use App\Models\DataClient;
 use App\Models\DataPajak;
 use App\Models\DataVendor;
 use App\Models\Invoice;
@@ -23,7 +24,7 @@ class InvoiceController extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = Invoice::all();
-        $dataVendor = DataVendor::all();
+        $dataVendor = DataClient::all();
         $dataPajak = DataPajak::all();
 
         $combinedData = $dataFull->map(function ($item) use ($dataVendor, $dataPajak) {
@@ -33,7 +34,7 @@ class InvoiceController extends BaseController
             // Periksa apakah $data tidak kosong sebelum mengakses propertinya
             if ($vendor) {
                 // Menambahkan data user ke dalam setiap item absen
-                $item->vendor = $vendor->nama_perusahaan ?? null;
+                $item->vendor = $vendor->nama_client ?? null;
             } else {
                 // Jika $data kosong, berikan nilai default atau kosong
                 $item->vendor = null;
@@ -145,19 +146,19 @@ class InvoiceController extends BaseController
         $duaAngkaTerakhir = substr($tahun, -2);
         $no_inv = 'INV/' . $duaAngkaTerakhir . date('m') . $no_invoice;
 
-        $dataVendor = DataVendor::where('uuid', $uuid_vendor)->first();
+        $dataClient = DataClient::where('uuid', $uuid_vendor)->first();
 
         $dataBank = DataBank::where('uuid', $uuid_bank)->first();
 
         $dataPajak = DataPajak::where('uuid', $uuid_pajak)->first();
 
-        // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+        // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
         if ($kop === 'CV. INIEVENT LANCAR JAYA') {
-            $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
         } elseif ($kop === 'DoubleHelix Indonesia') {
-            $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
         } elseif ($kop === 'PT. LINGKARAN GANDA BERKARYA') {
-            $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataVendor', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+            $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
         }
 
         $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';

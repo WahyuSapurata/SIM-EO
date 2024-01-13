@@ -137,7 +137,7 @@
                 formData.append(field.name, field.value);
             });
             formData.append('uuid', uuid_persetujuanPo);
-            control.submitForm('/admin/update-persetujuanpo/' + uuid_persetujuanPo, 'Tambah',
+            control.submitForm('/admin/persetujuan-po/update-persetujuanpo/' + uuid_persetujuanPo, 'Tambah',
                 'Persetujuan Po', 'POST', formData);
         });
 
@@ -254,7 +254,7 @@
 
         $(function() {
             control.push_select3(setuju, '#from_select');
-            control.initDatatable('/admin/get-persetujuanpo', columns, columnDefs);
+            control.initDatatable('/admin/persetujuan-po/get-persetujuanpo', columns, columnDefs);
         })
     </script>
 @endsection
