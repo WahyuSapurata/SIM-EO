@@ -224,7 +224,7 @@ class Control {
         });
     }
 
-    submitFormMultipartDataAbsen(url, role_data = null, module = null, method, formData) {
+    submitData(url, role_data = null, module = null, method) {
         let this_ = this;
         let table_ = this.table;
 
@@ -237,12 +237,9 @@ class Control {
         $.ajax({
             type: method,
             url: url,
-            data: formData,
             contentType: false,
             processData: false,  // Ubah ini agar jQuery tidak memproses FormData secara otomatis
-            enctype: 'multipart/form-data',  // Tambahkan atribut enctype
             success: function (response) {
-                $(".text-danger").html("");
                 if (response.success == true) {
                     swal
                         .fire({
@@ -274,7 +271,6 @@ class Control {
                 }
             },
             error: function (xhr) {
-                $(".text-danger").html("");
                 $.each(xhr.responseJSON["errors"], function (key, value) {
                     $(`.${key}_error`).html(value);
                 });

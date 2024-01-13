@@ -146,6 +146,19 @@ class NonVendorController extends BaseController
 
     public function reload($params)
     {
-        dd($params);
+        $uuidArray = explode(',', $params);
+        try {
+            $dataRealCost = NonVendor::where('uuid_realCost', $params)->first();
+            if ($dataRealCost->file && file_exists(public_path('pdf/' . $dataRealCost->file))) {
+                unlink(public_path('pdf/' . $dataRealCost->file));
+            }
+            $dataRealCost->delete();
+
+            Po::whereIn('uuid_penjualan', $uuidArray)->delete();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        return $this->sendResponse('success', 'Delete data success');
     }
 }
