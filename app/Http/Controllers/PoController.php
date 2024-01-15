@@ -76,8 +76,9 @@ class PoController extends BaseController
         $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
 
         // Buat koleksi baru untuk menyimpan data pajak sesuai dengan urutan pada $pajakPoValues
-        $orderedPajak = collect($pajakPoValues)->map(function ($value) use ($pajak) {
-            return $pajak->firstWhere('deskripsi_pajak', $value);
+        $orderedPajak = $realCost->map(function ($value) use ($pajak) {
+            $value->pajak_data = $pajak->where('deskripsi_pajak', $value->pajak_po ?? $value->pajak_pph)->first();
+            return $value;
         });
 
         $client = DataClient::where('uuid', $realCost[0]->uuid_client)->first();
@@ -95,7 +96,7 @@ class PoController extends BaseController
         // Hitung jumlah hari
         $jumlahHari = $tanggalSekarang->diffInDays($tanggal31);
 
-        // return view('procurement.po.invoice', compact('vendor', 're$realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
+        // return view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
         $html = view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 

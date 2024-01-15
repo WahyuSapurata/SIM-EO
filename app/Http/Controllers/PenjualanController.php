@@ -119,6 +119,17 @@ class PenjualanController extends BaseController
             $data->harga_satuan = $numericValue;
             $data->ket = $storePenjualanRequest->ket;
             $data->save();
+
+            $dataRealCost = RealCost::where('uuid_penjualan', $params)->first();
+            $dataRealCost->uuid_client = $storePenjualanRequest->uuid_client;
+            $dataRealCost->kegiatan = $storePenjualanRequest->kegiatan;
+            $dataRealCost->qty = $storePenjualanRequest->qty;
+            $dataRealCost->satuan_kegiatan = $storePenjualanRequest->satuan_kegiatan;
+            $dataRealCost->freq = $storePenjualanRequest->freq;
+            $dataRealCost->satuan = $storePenjualanRequest->satuan;
+            $dataRealCost->harga_satuan = $numericValue;
+            $dataRealCost->ket = $storePenjualanRequest->ket;
+            $dataRealCost->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }
@@ -132,6 +143,8 @@ class PenjualanController extends BaseController
         try {
             $data = Penjualan::where('uuid', $params)->first();
             $data->delete();
+            $dataRealCost = RealCost::where('uuid_penjualan', $params)->first();
+            $dataRealCost->delete();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }

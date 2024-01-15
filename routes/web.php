@@ -167,6 +167,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/get-realCost/{params}', 'RealCostController@get')->name('get-realCost');
         Route::get('/show-realCost/{params}', 'RealCostController@show')->name('show-realCost');
         Route::post('/update-realCost/{params}', 'RealCostController@update')->name('update-realCost');
+        Route::delete('/delete-realCost/{params}', 'RealCostController@delete')->name('delete-realCost');
 
         Route::get('/export-invoiceNonVendor', 'NonVendorController@exportToPDF')->name('export-invoiceNonVendor');
     });

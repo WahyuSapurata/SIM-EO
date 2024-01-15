@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
+use App\Models\SaldoAwal;
 use App\Models\Utang;
 use Illuminate\Http\Request;
 
@@ -20,115 +22,195 @@ class Dashboard extends BaseController
     public function dashboard_admin()
     {
         $module = 'Dashboard';
+        $invoice = Invoice::all();
         $data = PersetujuanPo::all();
-        $data_utang = Utang::all();
+        $budgetClient = Penjualan::all();
+        $saldo = SaldoAwal::all();
+        $persetujuanPo = PersetujuanPo::all();
+
+        $totalInvoice = 0;
         $totalPo = 0;
-        $totalRealCost = 0;
-        $totalUtang = 0;
-        foreach ($data as $row) {
-            $totalPo += $row->total_po;
+        $totalBudget = 0;
+        $totalSaldo = 0;
+        $totalPersetujuan = 0;
+
+        foreach ($invoice as $row_invoice) {
+            $totalInvoice += $row_invoice->tagihan;
         }
 
-        foreach ($data as $row_real_cost) {
-            $totalRealCost += $row_real_cost->sisa_tagihan;
+        foreach ($data as $row) {
+            $totalPo += $row->sisa_tagihan;
         }
-        foreach ($data_utang as $utang) {
-            $totalUtang += $utang->tagihan;
+
+        foreach ($budgetClient as $row_budget) {
+            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
         }
-        $subTotal = $totalRealCost + $totalUtang;
-        $keuntungan = $totalPo + $subTotal - $totalRealCost;
-        return view('dashboard.admin', compact('module', 'totalPo', 'subTotal', 'totalRealCost', 'keuntungan'));
+
+        foreach ($saldo as $row_saldo) {
+            $totalSaldo += $row_saldo->saldo;
+        }
+
+        foreach ($persetujuanPo as $row_persetujuan) {
+            $totalPersetujuan += $row_persetujuan->sisa_tagihan;
+        }
+        $piutang = $totalBudget - $totalPo;
+        $kas = $totalSaldo + $totalInvoice - $totalPersetujuan;
+        return view('dashboard.admin', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
     }
 
     public function dashboard_procurement()
     {
         $module = 'Dashboard';
+        $invoice = Invoice::all();
         $data = PersetujuanPo::all();
-        $data_utang = Utang::all();
+        $budgetClient = Penjualan::all();
+        $saldo = SaldoAwal::all();
+        $persetujuanPo = PersetujuanPo::all();
+
+        $totalInvoice = 0;
         $totalPo = 0;
-        $totalRealCost = 0;
-        $totalUtang = 0;
-        foreach ($data as $row) {
-            $totalPo += $row->total_po;
+        $totalBudget = 0;
+        $totalSaldo = 0;
+        $totalPersetujuan = 0;
+
+        foreach ($invoice as $row_invoice) {
+            $totalInvoice += $row_invoice->tagihan;
         }
 
-        foreach ($data as $row_real_cost) {
-            $totalRealCost += $row_real_cost->sisa_tagihan;
+        foreach ($data as $row) {
+            $totalPo += $row->sisa_tagihan;
         }
-        foreach ($data_utang as $utang) {
-            $totalUtang += $utang->tagihan;
+
+        foreach ($budgetClient as $row_budget) {
+            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
         }
-        $subTotal = $totalRealCost + $totalUtang;
-        $keuntungan = $totalPo + $subTotal - $totalRealCost;
-        return view('dashboard.procurement', compact('module', 'totalPo', 'subTotal', 'totalRealCost', 'keuntungan'));
+
+        foreach ($saldo as $row_saldo) {
+            $totalSaldo += $row_saldo->saldo;
+        }
+
+        foreach ($persetujuanPo as $row_persetujuan) {
+            $totalPersetujuan += $row_persetujuan->sisa_tagihan;
+        }
+        $piutang = $totalBudget - $totalPo;
+        $kas = $totalSaldo + $totalInvoice - $totalPersetujuan;
+        return view('dashboard.procurement', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
     }
 
     public function dashboard_finance()
     {
         $module = 'Dashboard';
+        $invoice = Invoice::all();
         $data = PersetujuanPo::all();
-        $data_utang = Utang::all();
+        $budgetClient = Penjualan::all();
+        $saldo = SaldoAwal::all();
+        $persetujuanPo = PersetujuanPo::all();
+
+        $totalInvoice = 0;
         $totalPo = 0;
-        $totalRealCost = 0;
-        $totalUtang = 0;
-        foreach ($data as $row) {
-            $totalPo += $row->total_po;
+        $totalBudget = 0;
+        $totalSaldo = 0;
+        $totalPersetujuan = 0;
+
+        foreach ($invoice as $row_invoice) {
+            $totalInvoice += $row_invoice->tagihan;
         }
 
-        foreach ($data as $row_real_cost) {
-            $totalRealCost += $row_real_cost->sisa_tagihan;
+        foreach ($data as $row) {
+            $totalPo += $row->sisa_tagihan;
         }
-        foreach ($data_utang as $utang) {
-            $totalUtang += $utang->tagihan;
+
+        foreach ($budgetClient as $row_budget) {
+            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
         }
-        $subTotal = $totalRealCost + $totalUtang;
-        $keuntungan = $totalPo + $subTotal - $totalRealCost;
-        return view('dashboard.finance', compact('module', 'totalPo', 'subTotal', 'totalRealCost', 'keuntungan'));
+
+        foreach ($saldo as $row_saldo) {
+            $totalSaldo += $row_saldo->saldo;
+        }
+
+        foreach ($persetujuanPo as $row_persetujuan) {
+            $totalPersetujuan += $row_persetujuan->sisa_tagihan;
+        }
+        $piutang = $totalBudget - $totalPo;
+        $kas = $totalSaldo + $totalInvoice - $totalPersetujuan;
+        return view('dashboard.finance', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
     }
 
     public function dashboard_direktur()
     {
         $module = 'Dashboard';
+        $invoice = Invoice::all();
         $data = PersetujuanPo::all();
-        $data_utang = Utang::all();
+        $budgetClient = Penjualan::all();
+        $saldo = SaldoAwal::all();
+        $persetujuanPo = PersetujuanPo::all();
+
+        $totalInvoice = 0;
         $totalPo = 0;
-        $totalRealCost = 0;
-        $totalUtang = 0;
-        foreach ($data as $row) {
-            $totalPo += $row->total_po;
+        $totalBudget = 0;
+        $totalSaldo = 0;
+        $totalPersetujuan = 0;
+
+        foreach ($invoice as $row_invoice) {
+            $totalInvoice += $row_invoice->tagihan;
         }
 
-        foreach ($data as $row_real_cost) {
-            $totalRealCost += $row_real_cost->sisa_tagihan;
+        foreach ($data as $row) {
+            $totalPo += $row->sisa_tagihan;
         }
-        foreach ($data_utang as $utang) {
-            $totalUtang += $utang->tagihan;
+
+        foreach ($budgetClient as $row_budget) {
+            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
         }
-        $subTotal = $totalRealCost + $totalUtang;
-        $keuntungan = $totalPo + $subTotal - $totalRealCost;
-        return view('dashboard.direktur', compact('module', 'totalPo', 'subTotal', 'totalRealCost', 'keuntungan'));
+
+        foreach ($saldo as $row_saldo) {
+            $totalSaldo += $row_saldo->saldo;
+        }
+
+        foreach ($persetujuanPo as $row_persetujuan) {
+            $totalPersetujuan += $row_persetujuan->sisa_tagihan;
+        }
+        $piutang = $totalBudget - $totalPo;
+        $kas = $totalSaldo + $totalInvoice - $totalPersetujuan;
+        return view('dashboard.direktur', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
     }
 
     public function dashboard_pajak()
     {
         $module = 'Dashboard';
+        $invoice = Invoice::all();
         $data = PersetujuanPo::all();
-        $data_utang = Utang::all();
+        $budgetClient = Penjualan::all();
+        $saldo = SaldoAwal::all();
+        $persetujuanPo = PersetujuanPo::all();
+
+        $totalInvoice = 0;
         $totalPo = 0;
-        $totalRealCost = 0;
-        $totalUtang = 0;
-        foreach ($data as $row) {
-            $totalPo += $row->total_po;
+        $totalBudget = 0;
+        $totalSaldo = 0;
+        $totalPersetujuan = 0;
+
+        foreach ($invoice as $row_invoice) {
+            $totalInvoice += $row_invoice->tagihan;
         }
 
-        foreach ($data as $row_real_cost) {
-            $totalRealCost += $row_real_cost->sisa_tagihan;
+        foreach ($data as $row) {
+            $totalPo += $row->sisa_tagihan;
         }
-        foreach ($data_utang as $utang) {
-            $totalUtang += $utang->tagihan;
+
+        foreach ($budgetClient as $row_budget) {
+            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
         }
-        $subTotal = $totalRealCost + $totalUtang;
-        $keuntungan = $totalPo + $subTotal - $totalRealCost;
-        return view('dashboard.pajak', compact('module', 'totalPo', 'subTotal', 'totalRealCost', 'keuntungan'));
+
+        foreach ($saldo as $row_saldo) {
+            $totalSaldo += $row_saldo->saldo;
+        }
+
+        foreach ($persetujuanPo as $row_persetujuan) {
+            $totalPersetujuan += $row_persetujuan->sisa_tagihan;
+        }
+        $piutang = $totalBudget - $totalPo;
+        $kas = $totalSaldo + $totalInvoice - $totalPersetujuan;
+        return view('dashboard.pajak', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
     }
 }

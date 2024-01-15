@@ -15,6 +15,7 @@ class RealCost extends Model
     protected $fillable = [
         'uuid',
         'uuid_client',
+        'uuid_penjualan',
         'satuan_real_cost',
         'pajak_po',
         'pajak_pph',

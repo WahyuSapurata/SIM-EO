@@ -163,6 +163,20 @@
         <div id="kt_content_container" class="container">
             <div class="row">
 
+                <div class="card mb-5 py-3" style="width: max-content">
+                    <div style="font-size: 15px; font-weight: bold">
+                        <table>
+                            <tr>
+                                <td>Client</td>
+                                <td>: <span id="nama_client"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Event</td>
+                                <td>: <span id="nama_event"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body p-0">
                         <div class="container">
@@ -340,6 +354,45 @@
         $('#uuid_fee_penjualan').val(lastPart);
         formDataFee.append('uuid_client', lastPart);
 
+        $.ajax({
+            url: '/procurement/get-dataclient',
+            method: 'GET',
+            async: false, // Pastikan request berjalan secara sinkron
+            success: function(res) {
+                if (res.success === true) {
+                    $.each(res.data, function(x, y) {
+                        if (y.uuid === lastPart) {
+                            $('#nama_client').text(y.nama_client);
+                            $('#nama_event').text(y.event);
+                        }
+                    })
+                } else {
+                    console.error('Gagal mengambil data:', res.message);
+                }
+            },
+            error: function(error) {
+                console.error('Gagal melakukan permintaan AJAX:', error);
+            }
+        });
+
+        const checkFee = (checkFee) => {
+            $('#export-excel').click(function(e) {
+                e.preventDefault();
+                if (checkFee === null) {
+                    swal
+                        .fire({
+                            title: 'Peringatan',
+                            text: 'Fee Management belum di tambah',
+                            icon: "warning",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                } else {
+                    window.open(`/procurement/export-excel/${lastPart}`, "_blank");
+                }
+            });
+        }
+
         const getFee = () => {
             $.ajax({
                 url: '/procurement/fee-management/' + lastPart,
@@ -347,6 +400,7 @@
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
                     if (res.success === true) {
+                        checkFee(res.data);
                         if (res.data != null) {
                             let totalFee = res.data.total_fee;
                             var cetakButton = document.getElementById('cetakButton');
@@ -364,7 +418,7 @@
                                         var grandTotal = 0;
                                         $.each(res.data, function(x, y) {
                                             grandTotal += y.harga_satuan * y.freq * y
-                                                .qty
+                                                .qty;
                                         })
                                         let grandHasilTotal = (parseFloat(grandTotal) +
                                             parseFloat(
@@ -570,10 +624,5 @@
                 '/procurement/get-penjualan/' + lastPart, columns,
                 columnDefs);
         })
-
-        $('#export-excel').click(function(e) {
-            e.preventDefault();
-            window.open(`/procurement/export-excel/${lastPart}`, "_blank");
-        });
     </script>
 @endsection

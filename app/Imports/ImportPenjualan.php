@@ -23,6 +23,7 @@ class ImportPenjualan implements ToModel, WithHeadingRow
 
     public function model(array $row)
     {
+        // Membuat dan menyimpan model Penjualan
         $penjualan = new Penjualan([
             'uuid_client' => $this->uuid_client,
             'uuid_user' => auth()->user()->uuid,
@@ -35,8 +36,12 @@ class ImportPenjualan implements ToModel, WithHeadingRow
             'ket' => $row['ket'],
         ]);
 
-        $piutang = new RealCost([
+        $penjualan->save();
+
+        // Mengatur UUID penjualan pada model RealCost
+        $realCost = new RealCost([
             'uuid_client' => $this->uuid_client,
+            'uuid_penjualan' => $penjualan->uuid, // Menggunakan UUID yang dihasilkan oleh Penjualan
             'kegiatan' => $row['kegiatan'],
             'qty' => $row['qty'],
             'satuan_kegiatan' => $row['satuan_kegiatan'],
@@ -46,6 +51,8 @@ class ImportPenjualan implements ToModel, WithHeadingRow
             'ket' => $row['ket'],
         ]);
 
-        return compact('penjualan', 'piutang');
+        $realCost->save();
+
+        return compact('penjualan', 'realCost');
     }
 }

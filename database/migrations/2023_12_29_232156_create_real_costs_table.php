@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->uuid('uuid_client')->nullable();
+            $table->uuid('uuid_penjualan')->nullable();
             $table->string('satuan_real_cost')->nullable();
             $table->string('pajak_po')->nullable();
             $table->string('pajak_pph')->nullable();

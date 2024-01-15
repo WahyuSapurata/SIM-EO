@@ -59,13 +59,15 @@ class NonVendorController extends BaseController
     {
         $uuidArray = explode(',', $request->uuid_penjualan);
         $realCost = RealCost::whereIn('uuid', $uuidArray)->get();
+
         // Ambil data pajak berdasarkan deskripsi_pajak yang sesuai dengan nilai-nilai pada $pajakPoValues
         $pajakPoValues = $realCost->pluck('pajak_po')->merge($realCost->pluck('pajak_pph'))->filter()->unique()->toArray();
         $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
 
         // Buat koleksi baru untuk menyimpan data pajak sesuai dengan urutan pada $pajakPoValues
-        $orderedPajak = collect($pajakPoValues)->map(function ($value) use ($pajak) {
-            return $pajak->firstWhere('deskripsi_pajak', $value);
+        $orderedPajak = $realCost->map(function ($value) use ($pajak) {
+            $value->pajak_data = $pajak->where('deskripsi_pajak', $value->pajak_po ?? $value->pajak_pph)->first();
+            return $value;
         });
 
         $client = DataClient::where('uuid', $realCost[0]->uuid_client)->first();

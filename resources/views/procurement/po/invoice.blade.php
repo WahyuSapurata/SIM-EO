@@ -211,24 +211,29 @@
 
                     @foreach ($orderedPajak as $pajak)
                         @php
-                            // Mengecek apakah deskripsi pajak sudah ada sebelumnya
-                            $existingPajakRow = collect($combinedPajakRows)
-                                ->where('deskripsi_pajak', $pajak->deskripsi_pajak)
-                                ->first();
+                            // Pastikan pajak_data tidak null
+                            if ($pajak->pajak_data) {
+                                // Hitung jumlah pajak
+                                $jumlahPajak = ($pajak->satuan_real_cost * $pajak->qty * $pajak->freq - $pajak->disc_item) * ($pajak->pajak_data->pajak / 100);
 
-                            if ($existingPajakRow) {
-                                // Jika deskripsi pajak sudah ada, tambahkan jumlah pajak ke baris yang sudah ada
-                                $existingPajakRow['jumlah_pajak'] += $subtotalTotal * ($pajak->pajak / 100);
-                            } else {
-                                // Jika deskripsi pajak belum ada, tambahkan baris baru ke dalam array
-                                $combinedPajakRows[] = [
-                                    'deskripsi_pajak' => $pajak->deskripsi_pajak,
-                                    'jumlah_pajak' => $subtotalTotal * ($pajak->pajak / 100),
-                                ];
+                                // Mengecek apakah deskripsi pajak dan jumlah pajak sudah ada sebelumnya
+                                $existingPajakRowKey = optional($pajak->pajak_data)->deskripsi_pajak;
+                                $existingPajakRow = &$combinedPajakRows[$existingPajakRowKey];
+
+                                if ($existingPajakRow) {
+                                    // Jika deskripsi pajak sudah ada, tambahkan jumlah pajak ke baris yang sudah ada
+                                    $existingPajakRow['jumlah_pajak'] += $jumlahPajak;
+                                } else {
+                                    // Jika deskripsi pajak belum ada, tambahkan baris baru ke dalam array
+                                    $combinedPajakRows[$existingPajakRowKey] = [
+                                        'deskripsi_pajak' => $existingPajakRowKey,
+                                        'jumlah_pajak' => $jumlahPajak,
+                                    ];
+                                }
+
+                                // Hitung total pajak
+                                $subTotalPajak += $jumlahPajak;
                             }
-
-                            // Hitung total pajak
-                            $subTotalPajak += $subtotalTotal * ($pajak->pajak / 100);
                         @endphp
                     @endforeach
 

@@ -17,6 +17,7 @@
                                             <th>No Po</th>
                                             <th>Client</th>
                                             <th>Project/Event</th>
+                                            <th>Jatuh Tempo</th>
                                             <th>Total Po</th>
                                             <th>File PDF</th>
                                             <th>Sisa Tagihan</th>
@@ -172,6 +173,9 @@
             className: 'text-center',
         }, {
             data: 'event',
+            className: 'text-center',
+        }, {
+            data: 'jatuh_tempo',
             className: 'text-center',
         }, {
             data: null,

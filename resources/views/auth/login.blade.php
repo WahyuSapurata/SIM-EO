@@ -69,10 +69,10 @@ License: For each use you must have a valid license purchased only from above li
                                 <!--begin::Heading-->
                                 <div class="text-center mb-11">
                                     <!--begin::Title-->
-                                    <h1 class="text-white fw-bolder mb-3">Login</h1>
+                                    <h1 class="text-white fw-bolder mb-3">SIDE</h1>
                                     <!--end::Title-->
                                     <!--begin::Subtitle-->
-                                    <div class="text-gray-500 fw-semibold fs-6">Masukkan akun anda..!</div>
+                                    <div class="text-white fw-semibold fs-6">SISTEM DOUBLEHELIX</div>
                                     <!--end::Subtitle=-->
                                 </div>
                                 <!--begin::Heading-->
