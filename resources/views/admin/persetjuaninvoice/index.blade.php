@@ -20,7 +20,7 @@
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>File</th>
-                                            <th>Sisa Tagihan</th>
+                                            <th>Jumlah Terbayar</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -87,7 +87,7 @@
                     <input type="hidden" name="uuid">
 
                     <div class="mb-10">
-                        <label class="form-label">Sisa Tagihan</label>
+                        <label class="form-label">Jumlah Terbayar</label>
                         <input type="text" id="tagihan" class="form-control" name="tagihan">
                         <small class="text-danger tagihan_error"></small>
                     </div>
@@ -149,7 +149,7 @@
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
             uuid_persetujuanInvoice = $(this).attr('data-uuid');
-            control.overlay_form('Tambah', 'Persetujuan Invoice');
+            control.overlay_form('', 'Persetujuan Invoice');
         })
 
         $(document).on('keyup', '#search_', function(e) {

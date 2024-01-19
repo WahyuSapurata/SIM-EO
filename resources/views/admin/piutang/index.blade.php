@@ -35,13 +35,13 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
-                                            <th>No Piutang</th>
+                                            <th>No Invoice</th>
                                             <th>Tanggal Piutang</th>
-                                            <th>Vendor</th>
+                                            <th>Client</th>
                                             <th>Deskripsi</th>
                                             <th>Piutang</th>
                                             <th>File</th>
-                                            <th>Tagihan</th>
+                                            <th>Jumlah Terbayarkan</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -108,7 +108,7 @@
                     <input type="hidden" name="uuid">
 
                     <div class="mb-10">
-                        <label class="form-label">Tagihan</label>
+                        <label class="form-label">Jumlah Terbayarkan</label>
                         <input type="text" id="tagihan" class="form-control" name="tagihan">
                         <small class="text-danger tagihan_error"></small>
                     </div>
@@ -162,7 +162,7 @@
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
             uuid_piutang = $(this).attr('data-uuid');
-            control.overlay_form('Tambah', 'Piutang');
+            control.overlay_form('', 'Pembayaran Piutang');
         })
 
         $(document).on('keyup', '#search_', function(e) {
@@ -183,7 +183,7 @@
             data: 'tanggal_invoice',
             className: 'text-center',
         }, {
-            data: 'vendor',
+            data: 'client',
             className: 'text-center',
         }, {
             data: 'deskripsi',

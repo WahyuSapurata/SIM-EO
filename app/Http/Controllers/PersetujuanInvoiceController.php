@@ -43,7 +43,7 @@ class PersetujuanInvoiceController extends BaseController
             $invoice = Invoice::where('uuid', $params)->first();
             $invoice->update(['tagihan' => $numericValue === 0 ? $invoice->total : $numericValue]);
 
-            if ($numericValue != 0) {
+            if ($numericValue != 0 && $numericValue != $invoice->total) {
                 $utang = new Piutang();
                 $utang->uuid_persetujuanInvoice = $data->uuid;
                 $utang->utang = $invoice->total - $numericValue;

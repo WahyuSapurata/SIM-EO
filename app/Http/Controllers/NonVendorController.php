@@ -9,6 +9,7 @@ use App\Models\DataPajak;
 use App\Models\NonVendor;
 use App\Models\Po;
 use App\Models\RealCost;
+use App\Models\Utang;
 use Carbon\Carbon;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class NonVendorController extends BaseController
 {
     public function index()
     {
-        $module = 'Persetujuan Po Non Vendor';
+        $module = 'Persetujuan PO Non Vendor';
         return view('admin.persetujuannonvendor.index', compact('module'));
     }
 
@@ -30,30 +31,30 @@ class NonVendorController extends BaseController
         return $this->sendResponse($dataFull, 'Get data success');
     }
 
-    // public function update(UpdatePersetujuanPo $updatePersetujuanPo, $params)
-    // {
-    //     // Hapus karakter non-numerik (koma dan spasi)
-    //     $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updatePersetujuanPo->sisa_tagihan);
-    //     try {
-    //         $data = ModelsPersetujuanPo::where('uuid', $params)->first();
-    //         $data->sisa_tagihan = $numericValue ? $numericValue : $data->total_po;
-    //         $data->save();
+    public function update(UpdateNonVendorRequest $updateNonVendorRequest, $params)
+    {
+        // Hapus karakter non-numerik (koma dan spasi)
+        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updateNonVendorRequest->sisa_tagihan);
+        try {
+            $data = NonVendor::where('uuid', $params)->first();
+            $data->sisa_tagihan = $numericValue ? $numericValue : $data->total_po;
+            $data->save();
 
-    //         $uuidArray = explode(',', $data->uuid_penjualan);
-    //         Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updatePersetujuanPo->status]);
+            $uuidArray = explode(',', $data->uuid_realCost);
+            Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updateNonVendorRequest->status]);
 
-    //         if ($numericValue != 0) {
-    //             $utang = new Utang();
-    //             $utang->uuid_persetujuanPo = $data->uuid;
-    //             $utang->utang = $data->total_po - $numericValue;
-    //             $utang->save();
-    //         }
-    //     } catch (\Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-    //     }
+            if ($numericValue != 0 && $numericValue != $data->total_po) {
+                $utang = new Utang();
+                $utang->uuid_persetujuanPo = $data->uuid;
+                $utang->utang = $data->total_po - $numericValue;
+                $utang->save();
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
 
-    //     return $this->sendResponse($data, 'Update data success');
-    // }
+        return $this->sendResponse($data, 'Update data success');
+    }
 
     public function exportToPDF(Request $request)
     {
@@ -118,11 +119,14 @@ class NonVendorController extends BaseController
         $subtotalTotal = 0;
         $subTotalPajak = 0;
         foreach ($realCost as $row) {
-            $jumlah = $row->satuan_real_cost * $row->freq * $row->qty;
+            $jumlah = $row->satuan_real_cost * $row->freq * $row->qty - $row->disc_item;
             $subtotalTotal += $jumlah;
         }
         foreach ($orderedPajak as $row_pajak) {
-            $subTotalPajak += $subtotalTotal * ($row_pajak->pajak / 100);
+            if ($row_pajak->pajak_data) {
+                $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
+                $subTotalPajak += $jumlahPajak;
+            }
         }
         try {
             $data = new NonVendor();

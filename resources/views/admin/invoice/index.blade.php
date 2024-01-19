@@ -150,7 +150,7 @@
                         <small class="text-danger total_error"></small>
                     </div>
 
-                    <div class="mb-10">
+                    <div id="pajak" class="mb-10 d-none">
                         <label class="form-label">Pajak</label>
                         <select name="uuid_pajak" class="form-select" data-control="select2" id="uuid_pajak-select"
                             data-placeholder="Pilih jenis inputan">
@@ -210,6 +210,14 @@
             }
         });
 
+        $(document).on('change', '#from_select_kop', function() {
+            if ($(this).val() === 'PT. LINGKARAN GANDA BERKARYA') {
+                $('#pajak').removeClass('d-none');
+            } else {
+                $('#pajak').addClass('d-none');
+            }
+        });
+
         $(document).on('click', '#button-side-form', function() {
             control.overlay_form('Tambah', 'Invoice');
         })
@@ -224,16 +232,20 @@
 
                 // Mengonversi data formulir menjadi objek
                 var formArray = $(".form-data").serializeArray();
+                var no_invoice;
                 var formDataInvoice = {};
 
                 $.each(formArray, function(i, field) {
                     formDataInvoice[field.name] = field.value;
+                    if (field.name === "no_invoice") {
+                        no_invoice = field.value
+                    }
                 });
 
                 // Mengonversi objek formDataInvoice menjadi string query parameter
                 var queryString = objectToQueryString(formDataInvoice);
 
-                var regex = /^\d{4}$/;
+                var regex = /^\d{4,}$/;
 
                 $.ajax({
                     url: '/admin/data-invoice/get-invoice',
@@ -243,21 +255,23 @@
                         if (res.success === true) {
                             if (regex.test(no_invoice) === false) {
                                 $('.no_invoice_error').text(
-                                    'No invoice po harus 4 digit')
+                                    'No invoice harus minimal 4 digit')
                             } else {
                                 if (res.data.length > 0) {
                                     $.each(res.data, function(x, y) {
-                                        if (y.file === no_invoice) {
+                                        var dataNomor = y.no_invoice.substring(8);
+                                        if (dataNomor === no_invoice) {
                                             $('.no_invoice_error').text(
                                                 'No invoice telah di gunakan')
                                         } else {
                                             control.submitWindow(
-                                                `/admin/add-export-invoice?${queryString}`,
+                                                `/admin/data-invoice/add-export-invoice?${queryString}`,
                                                 'Tambah', 'Invoice', 'GET');
                                         }
                                     })
                                 } else {
-                                    control.submitWindow(`/admin/add-export-invoice?${queryString}`,
+                                    control.submitWindow(
+                                        `/admin/data-invoice/add-export-invoice?${queryString}`,
                                         'Tambah', 'Invoice', 'GET');
                                 }
                             }
@@ -271,7 +285,7 @@
                 });
             } else {
                 let uuid = $("input[name='uuid']").val();
-                control.submitFormMultipartData('/admin/update-invoice/' + uuid, 'Update',
+                control.submitFormMultipartData('/admin/data-invoice/update-invoice/' + uuid, 'Update',
                     'Invoice', 'POST');
             }
         });
@@ -398,6 +412,8 @@
             text: "DoubleHelix Indonesia"
         }, {
             text: "PT. LINGKARAN GANDA BERKARYA"
+        }, {
+            text: "Kop Kosong"
         }];
 
         $(function() {

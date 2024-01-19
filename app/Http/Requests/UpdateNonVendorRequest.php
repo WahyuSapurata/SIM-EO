@@ -11,7 +11,7 @@ class UpdateNonVendorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class UpdateNonVendorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'status' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'status.required' => 'Harap menyetujuai persetujuan non vendor',
         ];
     }
 }

@@ -190,8 +190,12 @@
                             <li>Dokumen Tagihan tidak dapat diproses apabila tidak memenuhi persyaratan
                                 penagihan. Dokumen Tagihan Akan di proses apabila telah melengkapi seluruh
                                 berkas tagihan.</li>
-                            <li>Mohon kirim tagihan dalam bentuk Hardcopy, ke Jl. Pandang Raya No.8
-                                Panakukang, Makassar 90231</li>
+                            <li>Mohon kirim tagihan dalam bentuk Hardcopy, ke
+                                {{ auth()->user()->lokasi === 'makassar'
+                                    ? 'Jl. Pandang Raya No.8
+                                                                Panakukang, Makassar 90231'
+                                    : 'Jl. KH Moh Naim II No. 2A, Cipete Utara, Jakarta Selatan' }}
+                            </li>
                             <li>Purchase order ini diterbitkan atas dasar kesepakatan kedua belah Pihak, Sah dan
                                 berlaku walaupun tidak ada stempel dan tanda tangan oleh kedua belah Pihak.</li>
                         </ul>

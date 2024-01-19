@@ -131,13 +131,15 @@ class PoController extends BaseController
         $subtotalTotal = 0;
         $subTotalPajak = 0;
         foreach ($realCost as $row) {
-            $jumlah = $row->satuan_real_cost * $row->freq * $row->qty;
+            $jumlah = $row->satuan_real_cost * $row->freq * $row->qty - $row->disc_item;
             $subtotalTotal += $jumlah;
         }
         foreach ($orderedPajak as $row_pajak) {
-            $subTotalPajak += $subtotalTotal * ($row_pajak->pajak / 100);
+            if ($row_pajak->pajak_data) {
+                $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
+                $subTotalPajak += $jumlahPajak;
+            }
         }
-
         try {
             $data = new PersetujuanPo();
             $data->uuid_penjualan = $storePoRequest->uuid_penjualan;

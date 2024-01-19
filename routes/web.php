@@ -34,6 +34,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
             Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
             Route::get('/reload-pesetujuannonvendor/{params}', 'NonVendorController@reload')->name('reload-pesetujuannonvendor');
+            Route::post('/update-pesetujuannonvendor/{params}', 'NonVendorController@update')->name('update-pesetujuannonvendor');
         });
 
         Route::prefix('master-data')->group(function () {

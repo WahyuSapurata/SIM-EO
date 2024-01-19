@@ -14,12 +14,12 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
-                                            <th>No Po</th>
+                                            <th>No PO</th>
                                             <th>Client</th>
                                             <th>Project/Event</th>
                                             <th>Utang</th>
                                             <th>File PDF</th>
-                                            <th>Tagihan</th>
+                                            <th>Jumlah Terbayarkan</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -86,7 +86,7 @@
                     <input type="hidden" name="uuid">
 
                     <div class="mb-10">
-                        <label class="form-label">Tagihan</label>
+                        <label class="form-label">Jumlah Terbayarkan</label>
                         <input type="text" id="tagihan" class="form-control" name="tagihan">
                         <small class="text-danger tagihan_error"></small>
                     </div>
@@ -144,7 +144,7 @@
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
             uuid_utang = $(this).attr('data-uuid');
-            control.overlay_form('Tambah', 'Utang');
+            control.overlay_form('', 'Pembayaran Utang');
         })
 
         $(document).on('keyup', '#search_', function(e) {

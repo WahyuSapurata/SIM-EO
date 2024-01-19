@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePiutangRequest;
 use App\Http\Requests\UpdatePiutangRequest;
+use App\Models\DataClient;
 use App\Models\DataVendor;
 use App\Models\Invoice;
 use App\Models\PersetujuanInvoice;
@@ -23,16 +24,16 @@ class PiutangController extends BaseController
         $dataFull = Piutang::all();
         $dataPersetujuanInvoice = PersetujuanInvoice::all();
         $dataInvoice = Invoice::all();
-        $dataVendor = DataVendor::all();
+        $dataClient = DataClient::all();
 
-        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataVendor) {
+        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
             $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
             $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice)->first();
-            $vendor = $dataVendor->where('uuid', $invoice->uuid_vendor)->first();
+            $client = $dataClient->where('uuid', $invoice->uuid_vendor)->first();
 
             $item->no_invoice = $invoice->no_invoice;
             $item->tanggal_invoice = $invoice->tanggal_invoice;
-            $item->vendor = $vendor->nama_perusahaan;
+            $item->client = $client->nama_client;
             $item->deskripsi = $invoice->deskripsi;
             $item->file = $invoice->file;
 

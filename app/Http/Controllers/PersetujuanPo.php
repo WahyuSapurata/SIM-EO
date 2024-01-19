@@ -12,7 +12,7 @@ class PersetujuanPo extends BaseController
 {
     public function index()
     {
-        $module = 'Persetujun Po';
+        $module = 'Persetujun PO';
         return view('admin.pesetujuanpo.index', compact('module'));
     }
 
@@ -37,7 +37,7 @@ class PersetujuanPo extends BaseController
             $uuidArray = explode(',', $data->uuid_penjualan);
             Po::whereIn('uuid_penjualan', $uuidArray)->update(['status' => $updatePersetujuanPo->status]);
 
-            if ($numericValue != 0) {
+            if ($numericValue != 0 && $numericValue != $data->total_po) {
                 $utang = new Utang();
                 $utang->uuid_persetujuanPo = $data->uuid;
                 $utang->utang = $data->total_po - $numericValue;

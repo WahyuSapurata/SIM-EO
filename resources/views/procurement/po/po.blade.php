@@ -36,7 +36,7 @@
                         <rect width="16" height="16" fill="white" />
                     </g>
                 </svg>
-                Cetak Po
+                Cetak PO
             </button>
 
             <button type="button" data-bs-toggle="modal" data-bs-target="#kt_modal_2"
@@ -55,7 +55,7 @@
                         <rect width="16" height="16" fill="white" />
                     </g>
                 </svg> --}}
-                Buat Po Non Vendor
+                Buat PO Non Vendor
             </button>
         </div>
         <!--end::Actions-->
@@ -566,7 +566,7 @@
                 no_invoice: no_invoice
             };
 
-            var regex = /^\d{4}$/;
+            var regex = /^\d{4,}$/;
             // Mengonversi objek dataPo menjadi string query parameter
             let queryString = objectToQueryString(dataPo);
 
@@ -578,7 +578,7 @@
                     if (res.success === true) {
                         if (regex.test(no_invoice) === false) {
                             $('.no_invoice_error').text(
-                                'No invoice po harus 4 digit')
+                                'No invoice po harus minimal 4 digit')
                         } else {
                             if (res.data.length > 0) {
                                 $.each(res.data, function(x, y) {
@@ -649,7 +649,8 @@
                 no_invoice: no_invoice
             };
 
-            var regex = /^\d{4}$/;
+            var regex = /^\d{4,}$/;
+
             // Mengonversi objek dataPo menjadi string query parameter
             let queryString = objectToQueryString(dataPo);
 
@@ -661,7 +662,7 @@
                     if (res.success === true) {
                         if (regex.test(no_invoice) === false) {
                             $('.no_invoiceNonVendor_error').text(
-                                'No invoice po harus 4 digit')
+                                'No invoice po harus minimal 4 digit')
                         } else {
                             if (res.data.length > 0) {
                                 $.each(res.data, function(x, y) {

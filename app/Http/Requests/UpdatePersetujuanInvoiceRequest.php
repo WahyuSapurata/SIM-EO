@@ -29,7 +29,7 @@ class UpdatePersetujuanInvoiceRequest extends FormRequest
     public function messages()
     {
         return [
-            'status.required' => 'Harap menyetujuai PO',
+            'status.required' => 'Harap menyetujuai persetujuan invoice',
         ];
     }
 }

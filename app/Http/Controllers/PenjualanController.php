@@ -79,6 +79,7 @@ class PenjualanController extends BaseController
 
             $realCost = new RealCost();
             $realCost->uuid_client = $storePenjualanRequest->uuid_client;
+            $realCost->uuid_penjualan = $data->uuid;
             $realCost->kegiatan = $storePenjualanRequest->kegiatan;
             $realCost->qty = $storePenjualanRequest->qty;
             $realCost->satuan_kegiatan = $storePenjualanRequest->satuan_kegiatan;

@@ -652,7 +652,7 @@
                                 <span class="menu-icon">
                                     <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                                     <span class="svg-icon svg-icon-2">
-                                        <img src="{{ isset($path[2]) && $path[2] === 'kategori' ? url('admin/assets/media/icons/aside/databankact.svg') : url('/admin/assets/media/icons/aside/databankdef.svg') }}"
+                                        <img src="{{ isset($path[2]) && $path[2] === 'kategori' ? url('admin/assets/media/icons/aside/kategoriact.svg') : url('/admin/assets/media/icons/aside/kategoridef.svg') }}"
                                             alt="">
                                     </span>
                                     <!--end::Svg Icon-->

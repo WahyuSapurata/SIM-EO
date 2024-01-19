@@ -20,7 +20,7 @@
                                             <th>Jatuh Tempo</th>
                                             <th>Total Po</th>
                                             <th>File PDF</th>
-                                            <th>Sisa Tagihan</th>
+                                            <th>Jumlah Terbayar</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -87,7 +87,7 @@
                     <input type="hidden" name="uuid">
 
                     <div class="mb-10">
-                        <label class="form-label">Sisa Tagihan</label>
+                        <label class="form-label">Jumlah Terbayar</label>
                         <input type="text" id="sisa_tagihan" class="form-control" name="sisa_tagihan">
                         <small class="text-danger sisa_tagihan_error"></small>
                     </div>
@@ -138,14 +138,14 @@
                 formData.append(field.name, field.value);
             });
             formData.append('uuid', uuid_persetujuanPo);
-            control.submitForm('/admin/persetujuan-po/update-persetujuanpo/' + uuid_persetujuanPo, 'Tambah',
+            control.submitForm('/admin/persetujuan-po/update-pesetujuannonvendor/' + uuid_persetujuanPo, 'Tambah',
                 'Persetujuan Po Non Vendor', 'POST', formData);
         });
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();
             uuid_persetujuanPo = $(this).attr('data-uuid');
-            control.overlay_form('Tambah', 'Persetujuan Po Non Vendor');
+            control.overlay_form('', 'Persetujuan PO Non Vendor');
         })
 
         $(document).on('click', '.button-reload', function(e) {
