@@ -165,6 +165,13 @@
             control.overlay_form('', 'Pembayaran Piutang');
         })
 
+        $(document).on('click', '#button-lunas', function(e) {
+            e.preventDefault();
+            let uuid = $(this).attr('data-uuid');
+            control.submitFormMultipartData('/admin/Utang-piutang/lunas/' + uuid, 'Lunas',
+                'Piutang', 'POST');
+        })
+
         $(document).on('keyup', '#search_', function(e) {
             e.preventDefault();
             control.searchTable(this.value);
@@ -208,7 +215,8 @@
                             </svg>
                             Lihat File
                         </div>
-                    </a>`;
+                    </a>
+                    `;
                 return result;
             }
         }, {
@@ -248,6 +256,10 @@
                                     </svg>
 
 
+                                    </a>
+
+                                    <a href="javascript:;" id="button-lunas" type="button" data-uuid_penjualan=, $('#uuid_penjualan').val()"Persetujuan Po Non Vendor" class="btn btn-success btn-icon btn-sm" data-uuid="${data}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512" fill="white"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
                                     </a>
 
                                     `;

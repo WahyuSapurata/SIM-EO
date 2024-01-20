@@ -24,7 +24,8 @@ class Invoice extends Model
         'total',
         'uuid_pajak',
         'file',
-        'tagihan'
+        'tagihan',
+        'ket'
     ];
 
     protected static function boot()

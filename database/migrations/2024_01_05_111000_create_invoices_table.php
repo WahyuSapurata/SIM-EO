@@ -23,8 +23,9 @@ return new class extends Migration
             $table->uuid('uuid_bank');
             $table->string('total');
             $table->uuid('uuid_pajak')->nullable();
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->string('tagihan')->nullable();
+            $table->string('ket')->nullable();
             $table->timestamps();
         });
     }

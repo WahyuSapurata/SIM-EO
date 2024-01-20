@@ -58,4 +58,16 @@ class PiutangController extends BaseController
 
         return $this->sendResponse($data, 'Update data success');
     }
+
+    public function lunas($params)
+    {
+        try {
+            $dataRealCost = Piutang::where('uuid', $params)->first();
+            $dataRealCost->delete();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        return $this->sendResponse('success', 'Data di lunaskan');
+    }
 }

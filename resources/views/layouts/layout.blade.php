@@ -174,6 +174,7 @@
     <!--begin::Global Javascript Bundle(used by all pages)-->
     <script src="{{ asset('admin/assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+    <script src="{{ asset('admin/assets/plugins/custom/datatables/rowDataTable.js') }}"></script>
 
     <script src="{{ asset('admin/assets/plugins/custom/prismjs/prismjs.bundle.js') }}"></script>
     <script src="{{ asset('admin/assets/plugins/custom/jquery-ui/jquery-ui.js') }}"></script>

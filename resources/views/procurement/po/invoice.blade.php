@@ -65,7 +65,7 @@
                 <div style="margin-left: 24px; font-size: 25px">Double Helix Indonesia</div>
             </div>
             <div style="width: 100%">
-                <div style="text-align: right; font-size: 18px; color: #456a8c">Pembelian</div>
+                <div style="text-align: right; font-size: 18px; color: #456a8c"></div>
                 <table style="font-size: 13px">
                     <tr style="font-weight: bold">
                         <td>Tanggal</td>
@@ -193,7 +193,7 @@
                             <li>Mohon kirim tagihan dalam bentuk Hardcopy, ke
                                 {{ auth()->user()->lokasi === 'makassar'
                                     ? 'Jl. Pandang Raya No.8
-                                                                Panakukang, Makassar 90231'
+                                                                                                Panakukang, Makassar 90231'
                                     : 'Jl. KH Moh Naim II No. 2A, Cipete Utara, Jakarta Selatan' }}
                             </li>
                             <li>Purchase order ini diterbitkan atas dasar kesepakatan kedua belah Pihak, Sah dan

@@ -44,6 +44,7 @@
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>Pajak</th>
+                                            <th>Ket</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -119,7 +120,7 @@
 
                     <div class="mb-10">
                         <label class="form-label">No Invoice</label>
-                        <input type="text" id="no_invoice" class="form-control" name="no_invoice">
+                        <input type="text" id="no_invoice_data" class="form-control" name="no_invoice">
                         <small class="text-danger no_invoice_error"></small>
                     </div>
 
@@ -225,40 +226,41 @@
         $(document).on('submit', ".form-data", function(e) {
             e.preventDefault();
             let type = $(this).attr('data-type');
-            if (type == 'add') {
-                function objectToQueryString(obj) {
-                    return Object.keys(obj).map(key => key + '=' + encodeURIComponent(obj[key])).join('&');
+
+            function objectToQueryString(obj) {
+                return Object.keys(obj).map(key => key + '=' + encodeURIComponent(obj[key])).join('&');
+            }
+
+            // Mengonversi data formulir menjadi objek
+            var formArray = $(".form-data").serializeArray();
+            var no_invoice;
+            var formDataInvoice = {};
+
+            $.each(formArray, function(i, field) {
+                formDataInvoice[field.name] = field.value;
+                if (field.name === "no_invoice") {
+                    no_invoice = field.value
                 }
+            });
 
-                // Mengonversi data formulir menjadi objek
-                var formArray = $(".form-data").serializeArray();
-                var no_invoice;
-                var formDataInvoice = {};
+            // Mengonversi objek formDataInvoice menjadi string query parameter
+            var queryString = objectToQueryString(formDataInvoice);
 
-                $.each(formArray, function(i, field) {
-                    formDataInvoice[field.name] = field.value;
-                    if (field.name === "no_invoice") {
-                        no_invoice = field.value
-                    }
-                });
+            var regex = /^\d{4,}$/;
 
-                // Mengonversi objek formDataInvoice menjadi string query parameter
-                var queryString = objectToQueryString(formDataInvoice);
-
-                var regex = /^\d{4,}$/;
-
-                $.ajax({
-                    url: '/admin/data-invoice/get-invoice',
-                    method: 'GET',
-                    async: false, // Pastikan request berjalan secara sinkron
-                    success: function(res) {
-                        if (res.success === true) {
-                            if (regex.test(no_invoice) === false) {
-                                $('.no_invoice_error').text(
-                                    'No invoice harus minimal 4 digit')
-                            } else {
-                                if (res.data.length > 0) {
-                                    $.each(res.data, function(x, y) {
+            $.ajax({
+                url: '/admin/data-invoice/get-invoice',
+                method: 'GET',
+                async: false, // Pastikan request berjalan secara sinkron
+                success: function(res) {
+                    if (res.success === true) {
+                        if (regex.test(no_invoice) === false) {
+                            $('.no_invoice_error').text(
+                                'No invoice harus minimal 4 digit')
+                        } else {
+                            if (res.data.length > 0) {
+                                $.each(res.data, function(x, y) {
+                                    if (type === 'add') {
                                         var dataNomor = y.no_invoice.substring(8);
                                         if (dataNomor === no_invoice) {
                                             $('.no_invoice_error').text(
@@ -268,26 +270,28 @@
                                                 `/admin/data-invoice/add-export-invoice?${queryString}`,
                                                 'Tambah', 'Invoice', 'GET');
                                         }
-                                    })
-                                } else {
-                                    control.submitWindow(
-                                        `/admin/data-invoice/add-export-invoice?${queryString}`,
-                                        'Tambah', 'Invoice', 'GET');
-                                }
+                                    } else {
+                                        let uuid = $("input[name='uuid']").val();
+                                        control.submitWindow(
+                                            `/admin/data-invoice/update-invoice?${queryString}`,
+                                            'Update', 'Invoice', 'GET');
+                                    }
+                                })
+                            } else {
+                                control.submitWindow(
+                                    `/admin/data-invoice/add-export-invoice?${queryString}`,
+                                    'Tambah', 'Invoice', 'GET');
                             }
-                        } else {
-                            console.error('Gagal mengambil data:', res.message);
                         }
-                    },
-                    error: function(error) {
-                        console.error('Gagal melakukan permintaan AJAX:', error);
+                    } else {
+                        console.error('Gagal mengambil data:', res.message);
                     }
-                });
-            } else {
-                let uuid = $("input[name='uuid']").val();
-                control.submitFormMultipartData('/admin/data-invoice/update-invoice/' + uuid, 'Update',
-                    'Invoice', 'POST');
-            }
+                },
+                error: function(error) {
+                    console.error('Gagal melakukan permintaan AJAX:', error);
+                }
+            });
+
         });
 
         $(document).on('click', '.button-update', function(e) {
@@ -336,6 +340,9 @@
             }
         }, {
             data: 'pajak',
+            className: 'text-center',
+        }, {
+            data: 'ket',
             className: 'text-center',
         }, {
             data: 'uuid',

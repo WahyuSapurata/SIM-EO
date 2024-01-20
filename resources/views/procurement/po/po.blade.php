@@ -212,6 +212,7 @@
                                         <th>Total Real Cost</th>
                                         <th>Pajak</th>
                                         <th>Disc</th>
+                                        <th>Ket</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -223,7 +224,7 @@
                                         <td style="text-align: left !important;" colspan="2" id="total-subtotal">
                                             Rp 0
                                         </td>
-                                        <td style="text-align: left !important;" colspan="4" id="subtotal-realCost">
+                                        <td style="text-align: left !important;" colspan="5" id="subtotal-realCost">
                                             Rp 0
                                         </td>
                                     </tr>
@@ -793,6 +794,9 @@
                     '0,0'); // Format to rupiah
                 return 'Rp ' + value;
             }
+        }, {
+            data: 'ket',
+            className: 'text-center',
         }, {
             data: 'uuid',
         }];

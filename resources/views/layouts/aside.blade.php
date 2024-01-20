@@ -303,7 +303,7 @@
                                 </span>
                                 <span class="menu-title"
                                     style="{{ isset($path[2]) && $path[2] === 'persetujuanpo' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Persetujuan
-                                    Po</span>
+                                    PO</span>
                             </a>
                         </div>
                         <!--end::Menu item-->
@@ -322,7 +322,7 @@
                                 </span>
                                 <span class="menu-title"
                                     style="{{ isset($path[2]) && $path[2] === 'pesetujuannonvendor' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Persetujuan
-                                    Po Non Vendor</span>
+                                    PO Non Vendor</span>
                             </a>
                         </div>
                     </div>

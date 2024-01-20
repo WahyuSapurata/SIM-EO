@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePersetujuanInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\PersetujuanInvoice;
 use App\Models\Piutang;
+use Illuminate\Http\Request;
 
 class PersetujuanInvoiceController extends BaseController
 {
@@ -54,5 +55,24 @@ class PersetujuanInvoiceController extends BaseController
         }
 
         return $this->sendResponse($data, 'Update data success');
+    }
+
+    public function reload(Request $request)
+    {
+        try {
+            $dataInvoice = Invoice::where('uuid', $request->uuid)->first();
+
+            // Menghapus file PDF jika ada
+            if ($dataInvoice->file && file_exists(public_path('pdf-invoice/' . $dataInvoice->file))) {
+                unlink(public_path('pdf-invoice/' . $dataInvoice->file));
+            }
+
+            // Mengupdate data Invoice
+            $dataInvoice->update(['ket' => $request->ket, 'file' => null]);
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        return $this->sendResponse('success', 'Update data success');
     }
 }

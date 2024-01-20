@@ -158,6 +158,10 @@ class Control {
                                 $("select[name='" + x + "']").trigger("change");
                             }
 
+                            if (res.data.no_invoice) {
+                                $('#no_invoice_data').val(res.data.no_invoice.substring(8));
+                            }
+
                         });
                     }
 

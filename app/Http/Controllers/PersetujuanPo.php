@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdatePersetujuanPo;
 use App\Models\PersetujuanPo as ModelsPersetujuanPo;
 use App\Models\Po;
+use App\Models\RealCost;
 use App\Models\Utang;
 use Illuminate\Http\Request;
 
@@ -48,5 +49,24 @@ class PersetujuanPo extends BaseController
         }
 
         return $this->sendResponse($data, 'Update data success');
+    }
+
+    public function reload(Request $request)
+    {
+        $uuidArray = explode(',', $request->uuid_penjualan);
+        try {
+            $dataRealCost = ModelsPersetujuanPo::where('uuid', $request->uuid)->first();
+            if ($dataRealCost->file && file_exists(public_path('pdf/' . $dataRealCost->file))) {
+                unlink(public_path('pdf/' . $dataRealCost->file));
+            }
+            $dataRealCost->delete();
+
+            RealCost::whereIn('uuid', $uuidArray)->update(['ket' => $request->ket]);
+            Po::whereIn('uuid_penjualan', $uuidArray)->delete();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        return $this->sendResponse('success', 'Delete data success');
     }
 }

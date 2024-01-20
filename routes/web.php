@@ -29,11 +29,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::prefix('persetujuan-po')->group(function () {
             Route::get('/persetujuanpo', 'PersetujuanPo@index')->name('persetujuanpo');
             Route::get('/get-persetujuanpo', 'PersetujuanPo@get')->name('get-persetujuanpo');
+            Route::post('/reload-persetujuanpo', 'PersetujuanPo@reload')->name('reload-persetujuanpo');
             Route::post('/update-persetujuanpo/{params}', 'PersetujuanPo@update')->name('update-persetujuanpo');
 
             Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
             Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
-            Route::get('/reload-pesetujuannonvendor/{params}', 'NonVendorController@reload')->name('reload-pesetujuannonvendor');
+            Route::post('/reload-pesetujuannonvendor', 'NonVendorController@reload')->name('reload-pesetujuannonvendor');
             Route::post('/update-pesetujuannonvendor/{params}', 'NonVendorController@update')->name('update-pesetujuannonvendor');
         });
 
@@ -89,11 +90,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/add-export-invoice', 'InvoiceController@exportToPDF')->name('add-export-invoice');
             Route::get('/get-invoice', 'InvoiceController@get')->name('get-invoice');
             Route::get('/show-invoice/{params}', 'InvoiceController@show')->name('show-invoice');
-            Route::post('/update-invoice/{params}', 'InvoiceController@update')->name('update-invoice');
+            Route::get('/update-invoice', 'InvoiceController@update')->name('update-invoice');
             Route::delete('/delete-invoice/{params}', 'InvoiceController@delete')->name('delete-invoice');
 
             Route::get('/persetujuaninvoice', 'PersetujuanInvoiceController@index')->name('persetujuaninvoice');
             Route::get('/get-persetujuaninvoice', 'PersetujuanInvoiceController@get')->name('get-persetujuaninvoice');
+            Route::post('/reload-persetujuaninvoice', 'PersetujuanInvoiceController@reload')->name('reload-persetujuaninvoice');
             Route::post('/update-persetujuaninvoice/{params}', 'PersetujuanInvoiceController@update')->name('update-persetujuaninvoice');
         });
 
@@ -105,6 +107,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/piutang', 'PiutangController@index')->name('piutang');
             Route::get('/get-piutang', 'PiutangController@get')->name('get-piutang');
             Route::post('/update-piutang/{params}', 'PiutangController@update')->name('update-piutang');
+            Route::post('/lunas/{params}', 'PiutangController@lunas')->name('lunas');
         });
 
         Route::get('/laporan', 'Laporan@index')->name('laporan');

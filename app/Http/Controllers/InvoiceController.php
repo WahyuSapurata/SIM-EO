@@ -87,26 +87,102 @@ class InvoiceController extends BaseController
         return $this->sendResponse($data, 'Show data success');
     }
 
-    public function update(UpdateInvoiceRequest $updateInvoiceRequest, $params)
+    public function update(UpdateInvoiceRequest $updateInvoiceRequest)
     {
-        $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updateInvoiceRequest->total);
-        try {
-            $data = Invoice::where('uuid', $params)->first();
-            $data->uuid_vendor = $updateInvoiceRequest->uuid_vendor;
-            $data->no_invoice = $updateInvoiceRequest->no_invoice;
-            $data->tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
-            $data->deskripsi = $updateInvoiceRequest->deskripsi;
-            $data->penanggung_jawab = $updateInvoiceRequest->penanggung_jawab;
-            $data->jabatan = $updateInvoiceRequest->jabatan;
-            $data->uuid_bank = $updateInvoiceRequest->uuid_bank;
-            $data->total = $numericValue;
-            $data->uuid_pajak = $updateInvoiceRequest->uuid_pajak;
-            $data->save();
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-        }
+        $data = Invoice::where('uuid', $updateInvoiceRequest->uuid)->first();
 
-        return $this->sendResponse($data, 'Update data success');
+        $kop = $updateInvoiceRequest->kop;
+        $uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+        $no_invoice = $updateInvoiceRequest->no_invoice;
+        $tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
+        $deskripsi = $updateInvoiceRequest->deskripsi;
+        $penanggung_jawab = $updateInvoiceRequest->penanggung_jawab;
+        $jabatan = $updateInvoiceRequest->jabatan;
+        $uuid_bank = $updateInvoiceRequest->uuid_bank;
+        $total = (int) str_replace(['Rp', ',', ' '], '', $updateInvoiceRequest->total);
+        $uuid_pajak = $updateInvoiceRequest->uuid_pajak;
+
+
+        $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+        $huruf = $formatter->format($total);
+
+        // Buat nama file PDF dengan nomor urut
+        $tahun = date('Y'); // Mendapatkan tahun saat ini
+        $duaAngkaTerakhir = substr($tahun, -2);
+        $no_inv = 'INV/' . $duaAngkaTerakhir . date('m') . $no_invoice;
+
+        $dataClient = DataClient::where('uuid', $uuid_vendor)->first();
+
+        $dataBank = DataBank::where('uuid', $uuid_bank)->first();
+
+        $dataPajak = DataPajak::where('uuid', $uuid_pajak)->first();
+
+        if ($data->file === null) {
+            $this->validate($updateInvoiceRequest, [
+                'kop' => 'required',
+            ], [
+                'required' => 'Kolom :attribute harus di isi.',
+            ], [
+                'kop' => 'Kop',
+            ]);
+
+            // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+            if ($kop === 'CV. INIEVENT LANCAR JAYA') {
+                $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            } elseif ($kop === 'DoubleHelix Indonesia') {
+                $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            } elseif ($kop === 'PT. LINGKARAN GANDA BERKARYA') {
+                $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+            } elseif ($kop === 'Kop Kosong') {
+                $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            }
+
+            $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';
+
+            $pdfFilePath = 'pdf-invoice/' . $pdfFileName; // Direktori dalam direktori public
+
+            SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
+
+            try {
+                $data->uuid_vendor = $uuid_vendor;
+                $data->no_invoice = $no_inv;
+                $data->tanggal_invoice = $tanggal_invoice;
+                $data->deskripsi = $deskripsi;
+                $data->penanggung_jawab = $penanggung_jawab;
+                $data->jabatan = $jabatan;
+                $data->uuid_bank = $uuid_bank;
+                $data->total = $total;
+                $data->uuid_pajak = $uuid_pajak;
+                $data->file = $pdfFileName;
+                $data->save();
+            } catch (\Exception $e) {
+                return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+            }
+
+            // Kembalikan link untuk diakses oleh pengguna
+            return response()->json([
+                'success' => true,
+                'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
+                'message' => 'PDF Invoice has been generated and saved successfully.',
+            ]);
+        } else {
+            try {
+                $data->uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+                $data->no_invoice = $no_inv;
+                $data->tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
+                $data->deskripsi = $updateInvoiceRequest->deskripsi;
+                $data->penanggung_jawab = $updateInvoiceRequest->penanggung_jawab;
+                $data->jabatan = $updateInvoiceRequest->jabatan;
+                $data->uuid_bank = $updateInvoiceRequest->uuid_bank;
+                $data->total = $total;
+                $data->uuid_pajak = $updateInvoiceRequest->uuid_pajak;
+                $data->save();
+            } catch (\Exception $e) {
+                return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+            }
+
+            return $this->sendResponse($data, 'Update data success');
+        }
     }
 
 
