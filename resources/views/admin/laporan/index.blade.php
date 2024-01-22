@@ -7,7 +7,7 @@
             class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
             <!--begin::Title-->
             <input type="text" id="tanggal" class="form-control kt_datepicker_7" name="tanggal"
-                placeholder="Pilih Tanggal">
+                placeholder="Filer Tanggal">
             <!--end::Title-->
         </div>
         <!--end::Page title-->
@@ -263,7 +263,19 @@
 
         $('#export-excel').click(function(e) {
             e.preventDefault();
-            window.open(`/procurement/export-excel/${lastPart}`, "_blank");
+            let val = $('#tanggal').val();
+            console.log(val);
+            if (!val) {
+                swal
+                    .fire({
+                        text: `Filter tanggal priode terlebih dahulu`,
+                        icon: "warning",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    })
+                return;
+            }
+            window.open(`/admin/export-laporan/${val}`, "_blank");
         });
     </script>
 @endsection

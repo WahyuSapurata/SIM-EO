@@ -113,6 +113,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/laporan', 'Laporan@index')->name('laporan');
         Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
         Route::get('/get-laporan/{params}', 'Laporan@getLaporan')->name('get-laporan');
+        Route::get('/export-laporan/{params}', 'Laporan@exportToExcel')->name('export-laporan');
         Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
 
         Route::prefix('data-operasional')->group(function () {

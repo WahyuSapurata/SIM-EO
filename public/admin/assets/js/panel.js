@@ -947,7 +947,7 @@ class Control {
             },
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
-                var subtotalTotal = parseFloat(saldoAwal);
+                var subtotalTotal = saldoAwal === undefined ? 0 : parseFloat(saldoAwal);
 
                 // Calculate total for 'masuk' and 'keluar' columns
                 api.rows({ search: 'applied' }).data().each(function (value) {

@@ -20,7 +20,7 @@ class PersetujuanOperasionalKantorController extends BaseController
         $numericValue = (int) str_replace(['Rp', ',', ' '], '', $updatePersetujuanOperasionalKantorRequest->sisa_tagihan);
         try {
             $data = OperasionalKantor::where('uuid', $params)->first();
-            $data->sisa_tagihan = $numericValue;
+            $data->sisa_tagihan = $numericValue ? $numericValue : $data->qty * $data->freq * $data->harga_satuan;
             $data->save();
 
             $persetujuan = new PersetujuanOperasionalKantor();
