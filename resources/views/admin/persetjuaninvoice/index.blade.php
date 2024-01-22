@@ -54,7 +54,7 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
                                             <th>No Invoice</th>
-                                            <th>Tanggal Invoice</th>
+                                            <th>Jatuh Tempo</th>
                                             <th>Client</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>

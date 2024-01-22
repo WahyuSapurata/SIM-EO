@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUtangRequest;
 use App\Http\Requests\UpdateUtangRequest;
+use App\Models\NonVendor;
 use App\Models\PersetujuanPo;
 use App\Models\Utang;
 
@@ -20,13 +21,20 @@ class UtangController extends BaseController
         // Mengambil semua data pengguna
         $dataFull = Utang::all();
         $dataPersetujuanPo = PersetujuanPo::all();
+        $dataNonVendor = NonVendor::all();
 
-        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanPo) {
+        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanPo, $dataNonVendor) {
+            // Mencari data PersetujuanPo berdasarkan uuid_persetujuanPo
             $persetujuanPo = $dataPersetujuanPo->where('uuid', $item->uuid_persetujuanPo)->first();
-            $item->no_po = $persetujuanPo->no_po;
-            $item->client = $persetujuanPo->client;
-            $item->event = $persetujuanPo->event;
-            $item->file = $persetujuanPo->file;
+
+            // Mencari data NonVendor berdasarkan uuid_persetujuanPo
+            $persetujuanNonVendor = $dataNonVendor->where('uuid', $item->uuid_persetujuanPo)->first();
+
+            // Mengisi nilai-nilai baru pada item
+            $item->no_po = $persetujuanPo ? $persetujuanPo->no_po : ($persetujuanNonVendor ? $persetujuanNonVendor->no_po : null);
+            $item->client = $persetujuanPo ? $persetujuanPo->client : ($persetujuanNonVendor ? $persetujuanNonVendor->client : null);
+            $item->event = $persetujuanPo ? $persetujuanPo->event : ($persetujuanNonVendor ? $persetujuanNonVendor->event : null);
+            $item->file = $persetujuanPo ? $persetujuanPo->file : ($persetujuanNonVendor ? $persetujuanNonVendor->file : null);
 
             return $item;
         });

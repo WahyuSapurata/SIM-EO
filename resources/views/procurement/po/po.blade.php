@@ -571,55 +571,19 @@
             // Mengonversi objek dataPo menjadi string query parameter
             let queryString = objectToQueryString(dataPo);
 
+            let file;
+
             $.ajax({
                 url: '/procurement/get-po',
                 method: 'GET',
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
                     if (res.success === true) {
-                        if (regex.test(no_invoice) === false) {
-                            $('.no_invoice_error').text(
-                                'No invoice po harus minimal 4 digit')
-                        } else {
-                            if (res.data.length > 0) {
-                                $.each(res.data, function(x, y) {
-                                    if (y.file === no_invoice) {
-                                        $('.no_invoice_error').text(
-                                            'No invoice po telah di gunakan')
-                                    } else {
-
-                                        control.submitForm('/procurement/add-po', 'Tambah',
-                                            'Po',
-                                            'POST', formData);
-                                        // Membuka URL dengan query parameter
-                                        control.submitWindowPo(
-                                            `/procurement/export-invoice?${queryString}`,
-                                            'Tambah', 'Po', 'GET');
-                                        $("#disc").val(null);
-                                        $("#tempo").val(null);
-                                        $("#no_invoice").val(null);
-                                        get();
-                                        uncheckSelectedCheckboxes();
-                                        $('#kt_modal_1').modal('hide');
-                                    }
-                                })
-                            } else {
-
-                                control.submitForm('/procurement/add-po', 'Tambah',
-                                    'Po',
-                                    'POST', formData);
-                                // Membuka URL dengan query parameter
-                                control.submitWindowPo(
-                                    `/procurement/export-invoice?${queryString}`,
-                                    'Tambah', 'Po', 'GET');
-                                $("#disc").val(null);
-                                $("#tempo").val(null);
-                                $("#no_invoice").val(null);
-                                get();
-                                uncheckSelectedCheckboxes();
-                                $('#kt_modal_1').modal('hide');
+                        $.each(res.data, function(x, y) {
+                            if (y.file === no_invoice) {
+                                file = y.file;
                             }
-                        }
+                        })
                     } else {
                         console.error('Gagal mengambil data:', res.message);
                     }
@@ -628,6 +592,32 @@
                     console.error('Gagal melakukan permintaan AJAX:', error);
                 }
             });
+
+            if (regex.test(no_invoice) === false) {
+                $('.no_invoice_error').text(
+                    'No invoice po harus minimal 4 digit')
+            } else {
+                if (file === no_invoice) {
+                    $('.no_invoice_error').text(
+                        'No invoice po telah di gunakan')
+                } else {
+
+                    control.submitForm('/procurement/add-po', 'Tambah',
+                        'Po',
+                        'POST', formData);
+                    // Membuka URL dengan query parameter
+                    control.submitWindowPo(
+                        `/procurement/export-invoice?${queryString}`,
+                        'Tambah', 'Po', 'GET');
+                    $("#disc").val(null);
+                    $("#tempo").val(null);
+                    $("#no_invoice").val(null);
+                    get();
+                    uncheckSelectedCheckboxes();
+                    $('#kt_modal_1').modal('hide');
+                }
+            }
+
             var cetakButton = document.getElementById('cetakButton');
             var cetakButtonNonVendor = document.getElementById('cetakButtonNonVendor');
             // Jika tidak ada, tambahkan class 'disabled-link'
@@ -655,54 +645,21 @@
             // Mengonversi objek dataPo menjadi string query parameter
             let queryString = objectToQueryString(dataPo);
 
+            let file;
             $.ajax({
                 url: '/procurement/get-po',
                 method: 'GET',
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
                     if (res.success === true) {
-                        if (regex.test(no_invoice) === false) {
-                            $('.no_invoiceNonVendor_error').text(
-                                'No invoice po harus minimal 4 digit')
+                        if (res.success === true) {
+                            $.each(res.data, function(x, y) {
+                                if (y.file === no_invoice) {
+                                    file = y.file;
+                                }
+                            })
                         } else {
-                            if (res.data.length > 0) {
-                                $.each(res.data, function(x, y) {
-                                    if (y.file === no_invoice) {
-                                        $('.no_invoiceNonVendor_error').text(
-                                            'No invoice po telah di gunakan')
-                                    } else {
-
-                                        control.submitForm('/procurement/add-po', 'Tambah',
-                                            'Po',
-                                            'POST', formData);
-                                        // Membuka URL dengan query parameter
-                                        control.submitWindowPo(
-                                            `/procurement/export-invoiceNonVendor?${queryString}`,
-                                            'Tambah', 'Po', 'GET');
-
-                                        $("#tempoNonVendor").val(null);
-                                        $("#no_invoiceNonVendor").val(null);
-                                        get();
-                                        uncheckSelectedCheckboxes();
-                                        $('#kt_modal_2').modal('hide');
-                                    }
-                                })
-                            } else {
-
-                                control.submitForm('/procurement/add-po', 'Tambah',
-                                    'Po',
-                                    'POST', formData);
-                                // Membuka URL dengan query parameter
-                                control.submitWindowPo(
-                                    `/procurement/export-invoiceNonVendor?${queryString}`,
-                                    'Tambah', 'Po', 'GET');
-
-                                $("#tempoNonVendor").val(null);
-                                $("#no_invoiceNonVendor").val(null);
-                                get();
-                                uncheckSelectedCheckboxes();
-                                $('#kt_modal_2').modal('hide');
-                            }
+                            console.error('Gagal mengambil data:', res.message);
                         }
                     } else {
                         console.error('Gagal mengambil data:', res.message);
@@ -712,6 +669,31 @@
                     console.error('Gagal melakukan permintaan AJAX:', error);
                 }
             });
+
+            if (regex.test(no_invoice) === false) {
+                $('.no_invoiceNonVendor_error').text(
+                    'No invoice po harus minimal 4 digit')
+            } else {
+                if (file === no_invoice) {
+                    $('.no_invoiceNonVendor_error').text(
+                        'No invoice po telah di gunakan')
+                } else {
+                    control.submitForm('/procurement/add-po', 'Tambah',
+                        'Po',
+                        'POST', formData);
+                    // Membuka URL dengan query parameter
+                    control.submitWindowPo(
+                        `/procurement/export-invoiceNonVendor?${queryString}`,
+                        'Tambah', 'Po', 'GET');
+
+                    $("#tempoNonVendor").val(null);
+                    $("#no_invoiceNonVendor").val(null);
+                    get();
+                    uncheckSelectedCheckboxes();
+                    $('#kt_modal_2').modal('hide');
+                }
+            }
+
             var cetakButton = document.getElementById('cetakButton');
             var cetakButtonNonVendor = document.getElementById('cetakButtonNonVendor');
             // Jika tidak ada, tambahkan class 'disabled-link'

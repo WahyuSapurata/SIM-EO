@@ -59,7 +59,8 @@
 
 <body>
     <div class="container">
-        <div style="display: flex; align-items: center; border-bottom: 4px solid #bf504d; padding-bottom: 20px">
+        <div
+            style="display: flex; align-items: center; border-bottom: 4px solid #bf504d; padding-bottom: 20px; height: 100px;">
         </div>
 
         <div style="width: 100%; margin-top: 30px">

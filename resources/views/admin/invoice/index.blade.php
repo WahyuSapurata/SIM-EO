@@ -39,7 +39,7 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
                                             <th>No Invoice</th>
-                                            <th>Tanggal Invoice</th>
+                                            <th>Jatuh Tempo</th>
                                             <th>Client</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
@@ -125,7 +125,7 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Tanggal Invoice</label>
+                        <label class="form-label">Jatuh Tempo</label>
                         <input type="text" id="tanggal_invoice" class="form-control kt_datepicker_7"
                             name="tanggal_invoice">
                         <small class="text-danger tanggal_invoice_error"></small>
@@ -248,41 +248,19 @@
 
             var regex = /^\d{4,}$/;
 
+            let no;
             $.ajax({
                 url: '/admin/data-invoice/get-invoice',
                 method: 'GET',
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
                     if (res.success === true) {
-                        if (regex.test(no_invoice) === false) {
-                            $('.no_invoice_error').text(
-                                'No invoice harus minimal 4 digit')
-                        } else {
-                            if (res.data.length > 0) {
-                                $.each(res.data, function(x, y) {
-                                    if (type === 'add') {
-                                        var dataNomor = y.no_invoice.substring(8);
-                                        if (dataNomor === no_invoice) {
-                                            $('.no_invoice_error').text(
-                                                'No invoice telah di gunakan')
-                                        } else {
-                                            control.submitWindow(
-                                                `/admin/data-invoice/add-export-invoice?${queryString}`,
-                                                'Tambah', 'Invoice', 'GET');
-                                        }
-                                    } else {
-                                        let uuid = $("input[name='uuid']").val();
-                                        control.submitWindow(
-                                            `/admin/data-invoice/update-invoice?${queryString}`,
-                                            'Update', 'Invoice', 'GET');
-                                    }
-                                })
-                            } else {
-                                control.submitWindow(
-                                    `/admin/data-invoice/add-export-invoice?${queryString}`,
-                                    'Tambah', 'Invoice', 'GET');
+                        $.each(res.data, function(x, y) {
+                            var dataNomor = y.no_invoice.substring(8);
+                            if (dataNomor === no_invoice) {
+                                no = dataNomor
                             }
-                        }
+                        })
                     } else {
                         console.error('Gagal mengambil data:', res.message);
                     }
@@ -291,6 +269,28 @@
                     console.error('Gagal melakukan permintaan AJAX:', error);
                 }
             });
+
+            if (regex.test(no_invoice) === false) {
+                $('.no_invoice_error').text(
+                    'No invoice harus minimal 4 digit')
+            } else {
+                if (type === 'add') {
+                    if (no === no_invoice) {
+                        $('.no_invoice_error').text(
+                            'No invoice telah di gunakan')
+                    } else {
+                        control.submitWindow(
+                            `/admin/data-invoice/add-export-invoice?${queryString}`,
+                            'Tambah', 'Invoice', 'GET');
+                    }
+                } else {
+                    let uuid = $("input[name='uuid']").val();
+                    control.submitWindow(
+                        `/admin/data-invoice/update-invoice?${queryString}`,
+                        'Update', 'Invoice', 'GET');
+                }
+
+            }
 
         });
 
@@ -362,7 +362,9 @@
                     success: function(res) {
                         if (res.success === true) {
                             $.each(res.data, function(x, y) {
-                                data_invoice = y;
+                                if (y.uuid_invoice === data) {
+                                    data_invoice = y;
+                                }
                             })
                         } else {
                             console.error('Gagal mengambil data:', res.message);
