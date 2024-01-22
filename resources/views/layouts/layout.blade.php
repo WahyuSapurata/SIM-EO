@@ -189,6 +189,10 @@
     <script src="{{ asset('admin/assets/js/panel.js') }}"></script>
     <!-- Contoh dengan menggunakan CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- Include Moment.js dan library lokal bahasa Indonesia -->
+    {{-- <script src="https://cdn.jsdelivr.net/momentjs/2.29.1/moment-with-locales.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.29.1/locale/id.js"></script> --}}
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 
     {{-- <script src="resources/js/face-api.js"></script> --}}

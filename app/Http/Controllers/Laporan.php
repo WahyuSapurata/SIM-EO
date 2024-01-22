@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSaldoAwalRequest;
 use App\Models\Invoice;
+use App\Models\OperasionalKantor;
 use App\Models\PersetujuanPo;
 use App\Models\Piutang;
 use App\Models\SaldoAwal;
@@ -41,26 +42,47 @@ class Laporan extends BaseController
         return $this->sendResponse($dataFull, 'Get data success');
     }
 
-    public function getLaporan()
+    public function getLaporan($params)
     {
-        $po = PersetujuanPo::all()->toArray();
-        $invoice = Invoice::all()->toArray();
-        $utang = Utang::all()->toArray();
-        $piutang = Piutang::all()->toArray();
+        // Memisahkan tanggal berdasarkan kata kunci "to"
+        $dateParts = explode(' to ', $params);
 
-        // Menggabungkan variabel $po dan $utang menjadi satu array
-        $mergedData = array_merge($po, $utang);
+        // $dateParts[0] akan berisi tanggal awal dan $dateParts[1] akan berisi tanggal akhir
+        $startDateStr = trim($dateParts[0]);
+        $endDateStr = trim($dateParts[1]);
 
-        // Menambahkan variabel $invoice dan $piutang ke dalam array
-        $mergedData = array_merge($mergedData, $invoice, $piutang);
+        // Ambil data dari model PersetujuanPo
+        $persetujuanPo = PersetujuanPo::all();
 
-        // Mengurutkan array berdasarkan tanggal created_at
-        usort($mergedData, function ($a, $b) {
-            return strtotime($a['created_at']) - strtotime($b['created_at']);
+        // Ambil data dari model Invoice
+        $persetujuanInvoice = Invoice::all();
+
+        // Ambil data dari model Utang
+        $utang = Utang::all();
+
+        // Ambil data dari model Piutang
+        $piutang = Piutang::all();
+
+        // $operasional = OperasionalKantor::all()
+
+        // Gabungkan semua data dalam satu variabel
+        $mergedData = $persetujuanPo->merge($persetujuanInvoice)->merge($utang)->merge($piutang);
+
+        // Modifikasi data jika diperlukan
+        $combinedData = $mergedData->map(function ($item) {
+            // Tambahkan logika modifikasi data di sini
+            $item->tanggal = $item->created_at->format('d-m-Y');
+            $item->deskripsi = $item->event ?? $item->deskripsi ?? ($item instanceof Utang ? 'Pembayaran utang sebesar ' . "Rp. " . number_format($item->utang, 0, ',', '.') : "Rp " . number_format($item->utang, 0, ',', '.')) ?? ($item instanceof Piutang ? 'Pembayaran piutang sebesar ' . "Rp. " . number_format($item->utang, 0, ',', '.') : "Rp. " . number_format($item->utang, 0, ',', '.'));
+            $item->keluar = ($item instanceof PersetujuanPo || $item instanceof Utang) ? $item->sisa_tagihan + $item->tagihan : 0;
+            $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? $item->tagihan : 0;
+            return $item;
         });
 
-        dd($mergedData);
+        $filteredData = $combinedData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
+        // Mengurutkan data berdasarkan tanggal create yang terbaru
+        $sortedData = $filteredData->sortBy('created_at')->values()->all();
 
-        return $this->sendResponse($mergedData, 'Get data success');
+        // Mengembalikan respon
+        return $this->sendResponse($sortedData, 'Get data success');
     }
 }

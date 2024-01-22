@@ -811,7 +811,7 @@ class Control {
         this.table.DataTable({
             responsive: true,
             pageLength: 10,
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             processing: true,
             ajax: url,
             columns: columns,
@@ -839,7 +839,7 @@ class Control {
         const dataTable = this.table.DataTable({
             responsive: true,
             pageLength: 10,
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             processing: true,
             ajax: url,
             columns: columns,
@@ -892,7 +892,7 @@ class Control {
         const dataTable = this.table.DataTable({
             responsive: true,
             pageLength: 10,
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             processing: true,
             ajax: url,
             columns: columns,
@@ -916,6 +916,46 @@ class Control {
 
                 // Update the total row in the footer
                 $('#total-subtotal').html('Rp ' + numeral(subtotalTotal).format('0,0'));
+            },
+
+        });
+    }
+
+    async initDatatable3(url, columns, saldoAwal) {
+        // Destroy the existing DataTable
+        if (this.table && $.fn.DataTable.isDataTable(this.table)) {
+            this.table.DataTable().destroy();
+        }
+
+        await this.table.dataTable().fnClearTable();
+        await this.table.dataTable().fnDraw();
+        await this.table.dataTable().fnDestroy();
+
+        // Initialize a new DataTable
+        const dataTable = this.table.DataTable({
+            responsive: true,
+            pageLength: 10,
+            order: [[0, "asc"]],
+            processing: true,
+            ajax: url,
+            columns: columns,
+            rowCallback: function (row, data, index) {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                var rowIndex = startIndex + index + 1;
+                $('td', row).eq(0).html(rowIndex);
+            },
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var subtotalTotal = parseFloat(saldoAwal);
+
+                // Calculate total for 'masuk' and 'keluar' columns
+                api.rows({ search: 'applied' }).data().each(function (value) {
+                    subtotalTotal += (value.masuk - value.keluar);
+                });
+
+                // Update the total row in the footer
+                $('#total-saldo').html('Rp ' + numeral(subtotalTotal).format('0,0'));
             },
 
         });
