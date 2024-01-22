@@ -85,7 +85,14 @@ class Laporan extends BaseController
         $combinedData = $mergedData->map(function ($item) {
             // Tambahkan logika modifikasi data di sini
             $item->tanggal = optional($item->created_at)->format('d-m-Y');
-            $item->deskripsi = $item->event ?? $item->deskripsi ?? ($item instanceof Utang ? 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.') : "Rp " . number_format($item->utang, 0, ',', '.')) ?? ($item instanceof Piutang ? 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.') : "Rp " . number_format($item->utang, 0, ',', '.'));
+            $item->deskripsi = $item->event ?? $item->deskripsi ?? '';
+
+            if ($item instanceof Utang) {
+                $item->deskripsi .= 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            } elseif ($item instanceof Piutang) {
+                $item->deskripsi .= 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            }
+
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
             $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
             return $item;
@@ -137,7 +144,14 @@ class Laporan extends BaseController
         $combinedData = $mergedData->map(function ($item) {
             // Tambahkan logika modifikasi data di sini
             $item->tanggal = optional($item->created_at)->format('d-m-Y');
-            $item->deskripsi = $item->event ?? $item->deskripsi ?? ($item instanceof Utang ? 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.') : "Rp " . number_format($item->utang, 0, ',', '.')) ?? ($item instanceof Piutang ? 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.') : "Rp " . number_format($item->utang, 0, ',', '.'));
+            $item->deskripsi = $item->event ?? $item->deskripsi ?? '';
+
+            if ($item instanceof Utang) {
+                $item->deskripsi .= 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            } elseif ($item instanceof Piutang) {
+                $item->deskripsi .= 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            }
+
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
             $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
             return $item;
