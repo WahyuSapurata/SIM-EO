@@ -27,10 +27,18 @@ class PenjualanController extends BaseController
 
     public function get($params)
     {
+        // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'finance' || auth()->user()->role === 'admin' || auth()->user()->role === 'direktur') {
             $dataFull = Penjualan::where('uuid_client', $params)->get();
         } else {
-            $dataFull = Penjualan::where('uuid_client', $params)->where('uuid_user', auth()->user()->uuid)->get();
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataFull = Penjualan::join('users', 'penjualans.uuid_user', '=', 'users.uuid')
+                ->where('penjualans.uuid_client', $params)
+                ->where('users.lokasi', $lokasiUser)
+                ->select('penjualans.*') // Sesuaikan dengan nama kolom pada penjualans
+                ->get();
         }
         $realCost = RealCost::all();
 

@@ -20,7 +20,13 @@ class DataClientController extends BaseController
         if (auth()->user()->role === 'finance' || auth()->user()->role === 'admin' || auth()->user()->role === 'direktur') {
             $dataFull = DataClient::all();
         } else {
-            $dataFull = DataClient::where('uuid_user', auth()->user()->uuid)->get();
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan DataClient berdasarkan lokasi user dengan melakukan join
+            $dataFull = DataClient::join('users', 'data_clients.uuid_user', '=', 'users.uuid')
+                ->where('users.lokasi', $lokasiUser)
+                ->select('data_clients.*') // Sesuaikan dengan nama kolom pada data_clients
+                ->get();
         }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
