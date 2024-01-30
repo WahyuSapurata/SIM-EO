@@ -28,7 +28,7 @@ class PenjualanController extends BaseController
     public function get($params)
     {
         // Mengambil data penjualan berdasarkan parameter
-        if (auth()->user()->role === 'finance' || auth()->user()->role === 'admin' || auth()->user()->role === 'direktur') {
+        if (auth()->user()->role === 'finance' || auth()->user()->role === 'direktur') {
             $dataFull = Penjualan::where('uuid_client', $params)->get();
         } else {
             $lokasiUser = auth()->user()->lokasi;

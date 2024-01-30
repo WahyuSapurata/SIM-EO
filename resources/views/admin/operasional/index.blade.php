@@ -38,6 +38,7 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
+                                            <th>Tanggal Input</th>
                                             <th>Deskripsi</th>
                                             <th>Spesifikasi</th>
                                             <th>Harga Satuan</th>
@@ -53,7 +54,7 @@
                                     </tbody>
                                     <tfoot class="bg-primary">
                                         <tr class="fw-bolder fs-6 text-gray-800">
-                                            <td style="text-align: left !important;" colspan="8">TOTAL PENGAJUAN KANTOR
+                                            <td style="text-align: left !important;" colspan="9">TOTAL PENGAJUAN KANTOR
                                                 MAKASSAR</td>
                                             <td style="text-align: left !important;" colspan="2" id="total-subtotal">
                                                 Rp 0
@@ -119,6 +120,12 @@
 
                     <input type="hidden" name="id">
                     <input type="hidden" name="uuid">
+
+                    <div class="mb-10">
+                        <label class="form-label">Tanggal Input</label>
+                        <input type="text" id="tanggal" class="form-control kt_datepicker_7" name="tanggal">
+                        <small class="text-danger tanggal_error"></small>
+                    </div>
 
                     <div class="mb-10">
                         <label class="form-label">Deskripsi</label>
@@ -263,6 +270,9 @@
                         }
                     },
                     {
+                        data: 'tanggal',
+                        className: 'text-center',
+                    }, {
                         data: 'deskripsi',
                         className: 'text-center',
                     }, {

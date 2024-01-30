@@ -159,7 +159,7 @@ class Control {
                             }
 
                             if (res.data.no_invoice) {
-                                $('#no_invoice_data').val(res.data.no_invoice.substring(8));
+                                $('#no_invoice_data').val(res.data.no_invoice.substring(12));
                             }
 
                         });
@@ -393,27 +393,63 @@ class Control {
         });
     }
 
-    // submitWindow(url, role_data = null, module = null) {
-    //     let this_ = this;
-    //     let table_ = this.table;
+    submitNoForm(url, role_data = null, module = null, method) {
+        let this_ = this;
+        let table_ = this.table;
 
-    //     window.open(url,
-    //         "_blank");
-    //     swal
-    //         .fire({
-    //             text: `${module} berhasil di ${role_data}`,
-    //             icon: "success",
-    //             showConfirmButton: false,
-    //             timer: 1500,
-    //         })
-    //         .then(function () {
-    //             $("#side_form_close").trigger("click");
-    //             table_.DataTable().ajax.reload();
-    //             $("form")[0].reset();
-    //             $("#from_select").val(null).trigger("change");
-    //             // $(".form-select").val(null).trigger("change");
-    //         });
-    // }
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+        });
+
+        $.ajax({
+            type: method,
+            url: url,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $(".text-danger").html("");
+                if (response.success == true) {
+                    swal
+                        .fire({
+                            text: `${module} berhasil di ${role_data}`,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+                        .then(function () {
+                            $("#side_form_close").trigger("click");
+                            table_.DataTable().ajax.reload();
+                            $("form")[0].reset();
+                            $("#from_select").val(null).trigger("change");
+                            $("#from_select_kop").val(null).trigger("change");
+                            $("#from_select_client").val(null).trigger("change");
+                            $("#from_select_bank").val(null).trigger("change");
+                            $("#from_select_uuid_client").val(null).trigger("change");
+                            // $(".form-select").val(null).trigger("change");
+                        });
+                } else {
+                    $("form")[0].reset();
+                    $("#from_select").val(null).trigger("change");
+                    // $(".form-select").val(null).trigger("change");
+                    swal.fire({
+                        title: response.message,
+                        text: response.data,
+                        icon: "warning",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
+            },
+            error: function (xhr) {
+                $(".text-danger").html("");
+                $.each(xhr.responseJSON["errors"], function (key, value) {
+                    $(`.${key}_error`).html(value);
+                });
+            },
+        });
+    }
 
     submitWindow(url, role_data = null, module = null, method) {
         let this_ = this;
@@ -716,26 +752,18 @@ class Control {
 
     push_select3(data, element) {
         $(element).html("");
-        let html = "<option></option>";
+        let html = "<option>Pilih lokasi</option>";
         $.each(data, function (x, y) {
             html += `<option value="${y.text}">${y.text}</option>`;
         });
         $(element).html(html);
     }
 
-    push_select4(data, element) {
+    push_select_kop(data, element) {
         $(element).html("");
         let html = "<option></option>";
         $.each(data, function (x, y) {
-            const nilaiMapping = {
-                'Sangat Baik': '5',
-                'Baik': '4',
-                'Cukup': '3',
-                'Kurang': '2',
-                'Sangat Kurang': '1',
-            };
-
-            html += `<option value="${nilaiMapping[y.text] || ''}">${y.text}</option>`;
+            html += `<option value="${y.text}">${y.text}</option>`;
         });
         $(element).html(html);
     }

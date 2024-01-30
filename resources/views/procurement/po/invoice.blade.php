@@ -106,7 +106,12 @@
                 <tbody>
                     <tr class="tr">
                         <td class="td">
-                            Double Helix Makassar,<br>
+                            Double Helix @if (auth()->user()->lokasi === 'makassar')
+                                Makassar,
+                            @else
+                                Jakarta,
+                            @endif
+                            <br>
                             {{ $client->event }}
                         </td>
                         <td class="td"></td>
@@ -193,7 +198,7 @@
                             <li>Mohon kirim tagihan dalam bentuk Hardcopy, ke
                                 {{ auth()->user()->lokasi === 'makassar'
                                     ? 'Jl. Pandang Raya No.8
-                                                                                                Panakukang, Makassar 90231'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Panakukang, Makassar 90231'
                                     : 'Jl. KH Moh Naim II No. 2A, Cipete Utara, Jakarta Selatan' }}
                             </li>
                             <li>Purchase order ini diterbitkan atas dasar kesepakatan kedua belah Pihak, Sah dan
@@ -208,6 +213,7 @@
                         <td>Sub Total</td>
                         <td>{{ 'Rp. ' . number_format($subtotalTotal, 0, ',', '.') }}</td>
                     </tr>
+
                     @php
                         $combinedPajakRows = [];
                         $subTotalPajak = 0;
@@ -217,30 +223,34 @@
                         @php
                             // Pastikan pajak_data tidak null
                             if ($pajak->pajak_data) {
-                                // Hitung jumlah pajak
-                                $jumlahPajak = ($pajak->satuan_real_cost * $pajak->qty * $pajak->freq - $pajak->disc_item) * ($pajak->pajak_data->pajak / 100);
+                                // Loop melalui setiap data pajak pada $pajak->pajak_data
+                                foreach ($pajak->pajak_data as $pajakData) {
+                                    // Hitung jumlah pajak untuk setiap data pajak
+                                    $jumlahPajakPerData = ($pajak->satuan_real_cost * $pajak->qty * $pajak->freq - $pajak->disc_item) * ($pajakData['pajak'] / 100);
 
-                                // Mengecek apakah deskripsi pajak dan jumlah pajak sudah ada sebelumnya
-                                $existingPajakRowKey = optional($pajak->pajak_data)->deskripsi_pajak;
-                                $existingPajakRow = &$combinedPajakRows[$existingPajakRowKey];
+                                    // Mengecek apakah deskripsi pajak sudah ada sebelumnya
+                                    $existingPajakRowKey = $pajakData['deskripsi_pajak'];
+                                    $existingPajakRow = &$combinedPajakRows[$existingPajakRowKey];
 
-                                if ($existingPajakRow) {
-                                    // Jika deskripsi pajak sudah ada, tambahkan jumlah pajak ke baris yang sudah ada
-                                    $existingPajakRow['jumlah_pajak'] += $jumlahPajak;
-                                } else {
-                                    // Jika deskripsi pajak belum ada, tambahkan baris baru ke dalam array
-                                    $combinedPajakRows[$existingPajakRowKey] = [
-                                        'deskripsi_pajak' => $existingPajakRowKey,
-                                        'jumlah_pajak' => $jumlahPajak,
-                                    ];
+                                    if ($existingPajakRow) {
+                                        // Jika deskripsi pajak sudah ada, tambahkan jumlah pajak per data ke baris yang sudah ada
+                                        $existingPajakRow['jumlah_pajak'] += $jumlahPajakPerData;
+                                    } else {
+                                        // Jika deskripsi pajak belum ada, tambahkan baris baru ke dalam array
+                                        $combinedPajakRows[$existingPajakRowKey] = [
+                                            'deskripsi_pajak' => $existingPajakRowKey,
+                                            'jumlah_pajak' => $jumlahPajakPerData,
+                                        ];
+                                    }
+
+                                    // Hitung total pajak
+                                    $subTotalPajak += $jumlahPajakPerData;
                                 }
-
-                                // Hitung total pajak
-                                $subTotalPajak += $jumlahPajak;
                             }
                         @endphp
                     @endforeach
 
+                    {{-- Iterasi untuk menampilkan data pajak --}}
                     @foreach ($combinedPajakRows as $combinedPajakRow)
                         <tr>
                             <td>{{ $combinedPajakRow['deskripsi_pajak'] }}</td>

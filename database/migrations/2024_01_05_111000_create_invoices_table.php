@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->uuid('uuid_vendor');
+            $table->uuid('uuid_user');
             $table->string('no_invoice');
+            $table->string('tanggal');
             $table->string('tanggal_invoice');
             $table->string('deskripsi');
             $table->string('penanggung_jawab');

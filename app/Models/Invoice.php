@@ -15,7 +15,9 @@ class Invoice extends Model
     protected $fillable = [
         'uuid',
         'uuid_vendor',
+        'uuid_user',
         'no_invoice',
+        'tanggal',
         'tanggal_invoice',
         'deskripsi',
         'penanggung_jawab',

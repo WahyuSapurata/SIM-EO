@@ -17,6 +17,7 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
+                                            <th>Tanggal Input</th>
                                             <th>Deskripsi</th>
                                             <th>Spesifikasi</th>
                                             <th>Kategori</th>
@@ -180,6 +181,9 @@
             render: function(data, type, row, meta) {
                 return meta.row + meta.settings._iDisplayStart + 1;
             }
+        }, {
+            data: 'tanggal',
+            className: 'text-center',
         }, {
             data: 'deskripsi',
             className: 'text-center',

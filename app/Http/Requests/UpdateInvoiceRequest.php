@@ -24,6 +24,7 @@ class UpdateInvoiceRequest extends FormRequest
         return [
             'uuid_vendor' => 'required',
             'no_invoice' => 'required',
+            'tanggal' => 'required',
             'tanggal_invoice' => 'required',
             'deskripsi' => 'required',
             'penanggung_jawab' => 'required',
@@ -38,6 +39,7 @@ class UpdateInvoiceRequest extends FormRequest
         return [
             'uuid_vendor.required' => 'Kolom vendor harus di isi.',
             'no_invoice.required' => 'Kolom no invoice harus di isi.',
+            'tanggal.required' => 'Kolom tanggal harus di isi.',
             'tanggal_invoice.required' => 'Kolom tanggal invoice perusahaan harus di isi.',
             'deskripsi.required' => 'Kolom deskripsi harus di isi.',
             'penanggung_jawab.required' => 'Kolom penanggung jawab harus di isi.',

@@ -22,8 +22,19 @@ class InvoiceController extends BaseController
 
     public function get()
     {
-        // Mengambil semua data pengguna
-        $dataFull = Invoice::all();
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'finance') {
+            $dataFull = Invoice::all();
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataFull = Invoice::join('users', 'invoices.uuid_user', '=', 'users.uuid')
+                ->where('users.lokasi', $lokasiUser)
+                ->select('invoices.*') // Sesuaikan dengan nama kolom pada penjualans
+                ->get();
+        }
+
         $dataVendor = DataClient::all();
         $dataPajak = DataPajak::all();
 
@@ -55,26 +66,6 @@ class InvoiceController extends BaseController
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($combinedData, 'Get data success');
     }
-
-    // public function store(Request $request)
-    // {
-    //     try {
-    //         // Memecah string UUID menjadi dua UUID terpisah
-    //         $uuids = explode(',', $request->uuid_penjualan);
-
-    //         // Membuat objek Po untuk setiap UUID
-    //         foreach ($uuids as $uuid) {
-    //             $data = new Po();
-    //             $data->uuid_penjualan = $uuid;
-    //             $data->status = 'progres';
-    //             $data->save();
-    //         }
-    //     } catch (\Exception $e) {
-    //         return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-    //     }
-
-    //     return $this->sendResponse('success', 'Added data success');
-    // }
 
     public function show($params)
     {
@@ -109,7 +100,11 @@ class InvoiceController extends BaseController
         // Buat nama file PDF dengan nomor urut
         $tahun = date('Y'); // Mendapatkan tahun saat ini
         $duaAngkaTerakhir = substr($tahun, -2);
-        $no_inv = 'INV/' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        if (auth()->user()->lokasi === 'makassar') {
+            $no_inv = 'INV/MKS-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        } else {
+            $no_inv = 'INV/JKT-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        }
 
         $dataClient = DataClient::where('uuid', $uuid_vendor)->first();
 
@@ -145,7 +140,9 @@ class InvoiceController extends BaseController
 
             try {
                 $data->uuid_vendor = $uuid_vendor;
+                $data->uuid_user = auth()->user()->uuid;
                 $data->no_invoice = $no_inv;
+                $data->tanggal = $updateInvoiceRequest->tanggal;
                 $data->tanggal_invoice = $tanggal_invoice;
                 $data->deskripsi = $deskripsi;
                 $data->penanggung_jawab = $penanggung_jawab;
@@ -168,7 +165,9 @@ class InvoiceController extends BaseController
         } else {
             try {
                 $data->uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+                $data->uuid_user = auth()->user()->uuid;
                 $data->no_invoice = $no_inv;
+                $data->tanggal = $updateInvoiceRequest->tanggal;
                 $data->tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
                 $data->deskripsi = $updateInvoiceRequest->deskripsi;
                 $data->penanggung_jawab = $updateInvoiceRequest->penanggung_jawab;
@@ -184,7 +183,6 @@ class InvoiceController extends BaseController
             return $this->sendResponse($data, 'Update data success');
         }
     }
-
 
     public function delete($params)
     {
@@ -220,7 +218,11 @@ class InvoiceController extends BaseController
         // Buat nama file PDF dengan nomor urut
         $tahun = date('Y'); // Mendapatkan tahun saat ini
         $duaAngkaTerakhir = substr($tahun, -2);
-        $no_inv = 'INV/' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        if (auth()->user()->lokasi === 'makassar') {
+            $no_inv = 'INV/MKS-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        } else {
+            $no_inv = 'INV/JKT-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        }
 
         $dataClient = DataClient::where('uuid', $uuid_vendor)->first();
 
@@ -248,7 +250,9 @@ class InvoiceController extends BaseController
         try {
             $data = new Invoice();
             $data->uuid_vendor = $uuid_vendor;
+            $data->uuid_user = auth()->user()->uuid;
             $data->no_invoice = $no_inv;
+            $data->tanggal = $storeInvoiceRequest->tanggal;
             $data->tanggal_invoice = $tanggal_invoice;
             $data->deskripsi = $deskripsi;
             $data->penanggung_jawab = $penanggung_jawab;

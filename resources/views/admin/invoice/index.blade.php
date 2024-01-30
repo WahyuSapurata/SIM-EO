@@ -39,6 +39,7 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
                                             <th>No Invoice</th>
+                                            <th>Tanggal</th>
                                             <th>Jatuh Tempo</th>
                                             <th>Client</th>
                                             <th>Deskripsi</th>
@@ -125,6 +126,12 @@
                     </div>
 
                     <div class="mb-10">
+                        <label class="form-label">Tanggal</label>
+                        <input type="text" id="tanggal" class="form-control kt_datepicker_7" name="tanggal">
+                        <small class="text-danger tanggal_error"></small>
+                    </div>
+
+                    <div class="mb-10">
                         <label class="form-label">Jatuh Tempo</label>
                         <input type="text" id="tanggal_invoice" class="form-control kt_datepicker_7"
                             name="tanggal_invoice">
@@ -133,8 +140,8 @@
 
                     <div class="mb-10">
                         <label class="form-label">Client</label>
-                        <select name="uuid_vendor" class="form-select" data-control="select2" id="from_select_uuid_client"
-                            data-placeholder="Pilih jenis inputan">
+                        <select name="uuid_vendor" class="form-select" data-control="select2"
+                            id="from_select_uuid_client" data-placeholder="Pilih jenis inputan">
                         </select>
                         <small class="text-danger uuid_vendor_error"></small>
                     </div>
@@ -256,7 +263,7 @@
                 success: function(res) {
                     if (res.success === true) {
                         $.each(res.data, function(x, y) {
-                            var dataNomor = y.no_invoice.substring(8);
+                            var dataNomor = y.no_invoice.substring(12);
                             if (dataNomor === no_invoice) {
                                 no = dataNomor
                             }
@@ -285,9 +292,35 @@
                     }
                 } else {
                     let uuid = $("input[name='uuid']").val();
-                    control.submitWindow(
-                        `/admin/data-invoice/update-invoice?${queryString}`,
-                        'Update', 'Invoice', 'GET');
+                    let file;
+                    $.ajax({
+                        url: '/admin/data-invoice/get-invoice',
+                        method: 'GET',
+                        async: false, // Pastikan request berjalan secara sinkron
+                        success: function(res) {
+                            if (res.success === true) {
+                                $.each(res.data, function(x, y) {
+                                    if (uuid === y.uuid) {
+                                        file = y.file
+                                    }
+                                })
+                            } else {
+                                console.error('Gagal mengambil data:', res.message);
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Gagal melakukan permintaan AJAX:', error);
+                        }
+                    });
+                    if (file) {
+                        control.submitNoForm(
+                            `/admin/data-invoice/update-invoice?${queryString}`,
+                            'Update', 'Invoice', 'GET');
+                    } else {
+                        control.submitWindow(
+                            `/admin/data-invoice/update-invoice?${queryString}`,
+                            'Update', 'Invoice', 'GET');
+                    }
                 }
 
             }
@@ -320,6 +353,9 @@
             }
         }, {
             data: 'no_invoice',
+            className: 'text-center',
+        }, {
+            data: 'tanggal',
             className: 'text-center',
         }, {
             data: 'tanggal_invoice',
@@ -426,7 +462,7 @@
         }];
 
         $(function() {
-            control.push_select3(kop, '#from_select_kop');
+            control.push_select_kop(kop, '#from_select_kop');
             control.push_select_client('/procurement/get-dataclient', '#from_select_uuid_client');
             control.push_select_pajak_uuid('/admin/master-data/get-datapajak', '#uuid_pajak-select');
             control.push_select_bank('/admin/master-data/get-databank', '#from_select_bank');

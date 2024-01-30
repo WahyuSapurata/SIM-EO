@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePersetujuanPo;
+use App\Models\DataClient;
+use App\Models\Penjualan;
 use App\Models\PersetujuanPo as ModelsPersetujuanPo;
 use App\Models\Po;
 use App\Models\RealCost;
+use App\Models\User;
 use App\Models\Utang;
 use Illuminate\Http\Request;
 
@@ -21,9 +24,29 @@ class PersetujuanPo extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = ModelsPersetujuanPo::all();
+        $dataClient = DataClient::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($dataClient) {
+            $data = $dataClient->where('nama_client', $item->client)->first();
+            $item->uuid_user = $data->uuid_user;
+            return $item;
+        });
+
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'finance') {
+            $dataCombined = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            $dataUser = User::all();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
+                $user = $dataUser->where('uuid', $item->uuid_user)->first();
+                return $user->lokasi === $lokasiUser;
+            });
+        }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function update(UpdatePersetujuanPo $updatePersetujuanPo, $params)

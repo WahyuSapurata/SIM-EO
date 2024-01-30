@@ -17,7 +17,7 @@ class DataClientController extends BaseController
     public function get()
     {
         // Mengambil semua data pengguna
-        if (auth()->user()->role === 'finance' || auth()->user()->role === 'admin' || auth()->user()->role === 'direktur') {
+        if (auth()->user()->role === 'finance' || auth()->user()->role === 'direktur') {
             $dataFull = DataClient::all();
         } else {
             $lokasiUser = auth()->user()->lokasi;

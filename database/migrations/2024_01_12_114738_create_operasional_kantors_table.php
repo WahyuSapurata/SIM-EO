@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('operasional_kantors', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->string('tanggal');
             $table->string('deskripsi');
             $table->string('spsifikasi');
             $table->string('harga_satuan');

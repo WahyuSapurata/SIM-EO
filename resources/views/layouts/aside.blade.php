@@ -82,6 +82,25 @@
                 </div>
                 <!--end::Menu item-->
 
+                <!--begin::Menu item-->
+                <div class="menu-item">
+                    <a class="menu-link {{ $path[1] === 'persetujuanpo' ? 'active' : '' }}"
+                        href="{{ route('admin.persetujuanpo') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <img src="{{ $path[1] === 'persetujuanpo' ? url('admin/assets/media/icons/aside/persetujuanpoact.svg') : url('/admin/assets/media/icons/aside/persetujuanpodef.svg') }}"
+                                    alt="">
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title"
+                            style="{{ $path[1] === 'persetujuanpo' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Persetujuan
+                            PO</span>
+                    </a>
+                </div>
+                <!--end::Menu item-->
+
                 <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'master-data' ? 'show' : '' }}"
                     data-kt-menu-trigger="click">
                     <!--begin::Menu link-->
@@ -164,23 +183,65 @@
                 </div>
                 <!--end::Menu item-->
 
-                <!--begin::Menu item-->
-                <div class="menu-item">
-                    <a class="menu-link {{ $path[1] === 'invoice-finance' ? 'active' : '' }}"
-                        href="{{ route('finance.invoice-finance') }}">
+                <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'data-invoice' ? 'show' : '' }}"
+                    data-kt-menu-trigger="click">
+                    <!--begin::Menu link-->
+                    <a href="#" class="menu-link py-3 {{ $path[1] == 'data-invoice' ? 'active' : '' }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                             <span class="svg-icon svg-icon-2">
-                                <img src="{{ $path[1] === 'invoice-finance' ? url('admin/assets/media/icons/aside/invoiceact.svg') : url('/admin/assets/media/icons/aside/invoicedef.svg') }}"
+                                <img src="{{ $path[1] == 'data-invoice' ? url('admin/assets/media/icons/aside/masterdataact.svg') : url('/admin/assets/media/icons/aside/masterdatadef.svg') }}"
                                     alt="">
                             </span>
                             <!--end::Svg Icon-->
                         </span>
                         <span class="menu-title"
-                            style="{{ $path[1] === 'invoice-finance' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Invoice</span>
+                            style="{{ $path[1] == 'data-invoice' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Data
+                            Invoice</span>
+                        <span class="menu-arrow"></span>
                     </a>
+                    <!--end::Menu link-->
+
+                    <!--begin::Menu sub-->
+                    <div class="menu-sub gap-2 menu-sub-accordion my-2">
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'invoice' ? 'active' : '' }}"
+                                href="{{ route('admin.invoice') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'invoice' ? url('admin/assets/media/icons/aside/invoiceact.svg') : url('/admin/assets/media/icons/aside/invoicedef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'invoice' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Invoice</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'persetujuaninvoice' ? 'active' : '' }}"
+                                href="{{ route('admin.persetujuaninvoice') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'persetujuaninvoice' ? url('admin/assets/media/icons/aside/persetujuanpoact.svg') : url('/admin/assets/media/icons/aside/persetujuanpodef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'persetujuaninvoice' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Persetujuan
+                                    Invoice</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+                    </div>
                 </div>
-                <!--end::Menu item-->
 
                 <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'master-data' ? 'show' : '' }}"
                     data-kt-menu-trigger="click">
@@ -389,7 +450,6 @@
                     </div>
                 </div>
 
-
                 <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'Utang-piutang' ? 'show' : '' }}"
                     data-kt-menu-trigger="click">
                     <!--begin::Menu link-->
@@ -404,7 +464,7 @@
                         </span>
                         <span class="menu-title"
                             style="{{ $path[1] == 'Utang-piutang' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Utang
-                            Pitang</span>
+                            Piutang</span>
                         <span class="menu-arrow"></span>
                     </a>
                     <!--end::Menu link-->

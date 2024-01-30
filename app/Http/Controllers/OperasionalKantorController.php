@@ -28,6 +28,7 @@ class OperasionalKantorController extends BaseController
         $data = array();
         try {
             $data = new OperasionalKantor();
+            $data->tanggal = $storeOperasionalKantorRequest->tanggal;
             $data->deskripsi = $storeOperasionalKantorRequest->deskripsi;
             $data->spsifikasi = $storeOperasionalKantorRequest->spsifikasi;
             $data->harga_satuan = $numericValue;
@@ -59,6 +60,7 @@ class OperasionalKantorController extends BaseController
         $numericValue = (int) str_replace(['Rp', ',', ' '], '', $storeOperasionalKantorRequest->harga_satuan);
         try {
             $data = OperasionalKantor::where('uuid', $params)->first();
+            $data->tanggal = $storeOperasionalKantorRequest->tanggal;
             $data->deskripsi = $storeOperasionalKantorRequest->deskripsi;
             $data->spsifikasi = $storeOperasionalKantorRequest->spsifikasi;
             $data->harga_satuan = $numericValue;
