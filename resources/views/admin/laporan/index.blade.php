@@ -144,7 +144,7 @@
 
         const getSaldo = () => {
             $.ajax({
-                url: '/admin/get-saldo/',
+                url: '/admin/data-laporan/get-saldo/',
                 method: 'GET',
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
@@ -185,7 +185,7 @@
 
             let saldo = $('#saldo').val();
             formData.append('saldo', saldo)
-            control.submitForm('/admin/add-saldo', 'Tambah',
+            control.submitForm('/admin/data-laporan/add-saldo', 'Tambah',
                 'Saldo',
                 'POST', formData);
             $('#kt_modal_2').modal('hide');
@@ -257,7 +257,7 @@
             }];
 
             $(function() {
-                control.initDatatable3(`/admin/get-laporan/${selectedDateStr}`, columns, saldoAwal);
+                control.initDatatable3(`/admin/data-laporan/get-laporan/${selectedDateStr}`, columns, saldoAwal);
             })
         }
 
@@ -275,7 +275,7 @@
                     })
                 return;
             }
-            window.open(`/admin/export-laporan/${val}`, "_blank");
+            window.open(`/admin/data-laporan/export-laporan/${val}`, "_blank");
         });
     </script>
 @endsection

@@ -20,7 +20,7 @@ class Laporan extends BaseController
 {
     public function index()
     {
-        $module = 'Laporan';
+        $module = 'Arus Kas';
         return view('admin.laporan.index', compact('module'));
     }
 

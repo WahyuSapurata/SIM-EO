@@ -538,6 +538,14 @@
                     $(this).val('Rp ' + value);
                 }
             });
+
+            $('#total_fee').on('input', function() {
+                let value = $(this).val();
+                if (value !== "") {
+                    value = numeral(value).format('0,0'); // Format to rupiah
+                    $(this).val('Rp ' + value);
+                }
+            });
         });
 
         $(document).on('click', '#button-side-form', function() {

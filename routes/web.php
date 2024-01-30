@@ -110,11 +110,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::post('/lunas/{params}', 'PiutangController@lunas')->name('lunas');
         });
 
-        Route::get('/laporan', 'Laporan@index')->name('laporan');
-        Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
-        Route::get('/get-laporan/{params}', 'Laporan@getLaporan')->name('get-laporan');
-        Route::get('/export-laporan/{params}', 'Laporan@exportToExcel')->name('export-laporan');
-        Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
+        Route::prefix('data-laporan')->group(function () {
+            Route::get('/laporan', 'Laporan@index')->name('laporan');
+            Route::get('/get-saldo', 'Laporan@get')->name('get-saldo');
+            Route::get('/get-laporan/{params}', 'Laporan@getLaporan')->name('get-laporan');
+            Route::get('/export-laporan/{params}', 'Laporan@exportToExcel')->name('export-laporan');
+            Route::post('/add-saldo', 'Laporan@store')->name('add-saldo');
+
+            Route::get('/laporan-fee', 'FeeManajementController@index')->name('laporan-fee');
+            Route::get('/get-laporan-fee', 'FeeManajementController@get_laporanFee')->name('get-laporan-fee');
+            // Route::get('/export-laporan-fee/{params}', 'Laporan@exportToExcel')->name('export-laporan-fee');
+        });
 
         Route::prefix('data-operasional')->group(function () {
             Route::get('/operasionalkantor', 'OperasionalKantorController@index')->name('operasionalkantor');
