@@ -602,21 +602,21 @@
                         'No invoice po telah di gunakan')
                 } else {
 
-                    // control.submitForm('/procurement/add-po', 'Tambah',
-                    //     'Po',
-                    //     'POST', formData);
-                    // // Membuka URL dengan query parameter
-                    // control.submitWindowPo(
-                    //     `/procurement/export-invoice?${queryString}`,
-                    //     'Tambah', 'Po', 'GET');
-                    // $("#disc").val(null);
-                    // $("#tempo").val(null);
-                    // $("#no_invoice").val(null);
-                    // get();
-                    // uncheckSelectedCheckboxes();
-                    // $('#kt_modal_1').modal('hide');
+                    control.submitForm('/procurement/add-po', 'Tambah',
+                        'Po',
+                        'POST', formData);
+                    // Membuka URL dengan query parameter
+                    control.submitWindowPo(
+                        `/procurement/export-invoice?${queryString}`,
+                        'Tambah', 'Po', 'GET');
+                    $("#disc").val(null);
+                    $("#tempo").val(null);
+                    $("#no_invoice").val(null);
+                    get();
+                    uncheckSelectedCheckboxes();
+                    $('#kt_modal_1').modal('hide');
 
-                    window.open(`/procurement/export-invoice?${queryString}`, "_blank");
+                    // window.open(`/procurement/export-invoice?${queryString}`, "_blank");
                 }
             }
 

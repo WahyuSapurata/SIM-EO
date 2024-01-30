@@ -198,7 +198,7 @@
                             <li>Mohon kirim tagihan dalam bentuk Hardcopy, ke
                                 {{ auth()->user()->lokasi === 'makassar'
                                     ? 'Jl. Pandang Raya No.8
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Panakukang, Makassar 90231'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Panakukang, Makassar 90231'
                                     : 'Jl. KH Moh Naim II No. 2A, Cipete Utara, Jakarta Selatan' }}
                             </li>
                             <li>Purchase order ini diterbitkan atas dasar kesepakatan kedua belah Pihak, Sah dan
@@ -228,6 +228,11 @@
                                     // Hitung jumlah pajak untuk setiap data pajak
                                     $jumlahPajakPerData = ($pajak->satuan_real_cost * $pajak->qty * $pajak->freq - $pajak->disc_item) * ($pajakData['pajak'] / 100);
 
+                                    // Periksa apakah "PPH" muncul di awal deskripsi pajak (tanpa memperhatikan huruf besar atau kecil)
+                                    if (stripos($pajakData['deskripsi_pajak'], 'pph') === 0) {
+                                        $jumlahPajakPerData *= -1; // Jika jenis pajak adalah PPH, kurangi jumlah pajak
+                                    }
+
                                     // Mengecek apakah deskripsi pajak sudah ada sebelumnya
                                     $existingPajakRowKey = $pajakData['deskripsi_pajak'];
                                     $existingPajakRow = &$combinedPajakRows[$existingPajakRowKey];
@@ -254,8 +259,13 @@
                     @foreach ($combinedPajakRows as $combinedPajakRow)
                         <tr>
                             <td>{{ $combinedPajakRow['deskripsi_pajak'] }}</td>
-                            <td style="border: 1px solid">(
-                                {{ 'Rp. ' . number_format($combinedPajakRow['jumlah_pajak']) }})</td>
+                            <td style="border: 1px solid">
+                                @php
+                                    // Jika pajak PPH, tampilkan tanpa tanda minus
+                                    $formattedJumlahPajak = stripos($combinedPajakRow['deskripsi_pajak'], 'pph') !== false ? 'Rp. ' . number_format(abs($combinedPajakRow['jumlah_pajak'])) : 'Rp. ' . number_format($combinedPajakRow['jumlah_pajak']);
+                                @endphp
+                                ({{ $formattedJumlahPajak }})
+                            </td>
                         </tr>
                     @endforeach
 
@@ -268,9 +278,9 @@
                     </tr>
                     <tr>
                         <td>TOTAL</td>
-                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc)) }}
-                        </td>
+                        <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak - $discount) }}</td>
                     </tr>
+
                     <tr>
                         <td>Sisa Tagihan</td>
                         <td>{{ 'Rp. ' . number_format($subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc)) }}

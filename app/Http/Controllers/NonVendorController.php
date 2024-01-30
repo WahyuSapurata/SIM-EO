@@ -61,13 +61,16 @@ class NonVendorController extends BaseController
         $uuidArray = explode(',', $request->uuid_penjualan);
         $realCost = RealCost::whereIn('uuid', $uuidArray)->get();
 
-        // Ambil data pajak berdasarkan deskripsi_pajak yang sesuai dengan nilai-nilai pada $pajakPoValues
-        $pajakPoValues = $realCost->pluck('pajak_po')->merge($realCost->pluck('pajak_pph'))->filter()->unique()->toArray();
-        $pajak = DataPajak::whereIn('deskripsi_pajak', $pajakPoValues)->get();
-
         // Buat koleksi baru untuk menyimpan data pajak sesuai dengan urutan pada $pajakPoValues
-        $orderedPajak = $realCost->map(function ($value) use ($pajak) {
-            $value->pajak_data = $pajak->where('deskripsi_pajak', $value->pajak_po ?? $value->pajak_pph)->first();
+        $orderedPajak = $realCost->map(function ($value) {
+            $deskripsiPajak = [$value->pajak_po, $value->pajak_pph];
+
+            // Ambil data pajak berdasarkan deskripsi
+            $pajak = DataPajak::whereIn('deskripsi_pajak', $deskripsiPajak)->get();
+
+            // Tambahkan data pajak ke dalam nilai aktual
+            $value->pajak_data = $pajak->toArray();
+
             return $value;
         });
 
@@ -124,8 +127,21 @@ class NonVendorController extends BaseController
         }
         foreach ($orderedPajak as $row_pajak) {
             if ($row_pajak->pajak_data) {
-                $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
-                $subTotalPajak += $jumlahPajak;
+                // $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
+                // $subTotalPajak += $jumlahPajak;
+
+                foreach ($row_pajak->pajak_data as $pajakData) {
+                    // Hitung jumlah pajak untuk setiap data pajak
+                    $jumlahPajakPerData = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($pajakData['pajak'] / 100);
+
+                    // Periksa apakah "PPH" muncul di awal deskripsi pajak (tanpa memperhatikan huruf besar atau kecil)
+                    if (stripos($pajakData['deskripsi_pajak'], 'pph') === 0) {
+                        $jumlahPajakPerData *= -1; // Jika jenis pajak adalah PPH, kurangi jumlah pajak
+                    }
+
+                    // Hitung total pajak
+                    $subTotalPajak += $jumlahPajakPerData;
+                }
             }
         }
         try {

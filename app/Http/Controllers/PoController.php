@@ -100,69 +100,82 @@ class PoController extends BaseController
         // Hitung jumlah hari
         $jumlahHari = $tanggalSekarang->diffInDays($tanggal31);
 
-        return view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
+        // return view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
-        // $html = view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
+        $html = view('procurement.po.invoice', compact('vendor', 'realCost', 'client', 'disc', 'tempo', 'jumlahHari', 'orderedPajak', 'no_invoice'))->render();
 
-        // // Buat nama file PDF dengan nomor urut
-        // $tahun = date('Y'); // Mendapatkan tahun saat ini
-        // $duaAngkaTerakhir = substr($tahun, -2);
+        // Buat nama file PDF dengan nomor urut
+        $tahun = date('Y'); // Mendapatkan tahun saat ini
+        $duaAngkaTerakhir = substr($tahun, -2);
 
-        // if (auth()->user()->lokasi === 'makassar') {
-        //     $no_po = 'PO/MKS-' . $duaAngkaTerakhir . date('m') . $no_invoice;
-        // } else {
-        //     $no_po = 'PO/JKT-' . $duaAngkaTerakhir . date('m') . $no_invoice;
-        // }
+        if (auth()->user()->lokasi === 'makassar') {
+            $no_po = 'PO/MKS-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        } else {
+            $no_po = 'PO/JKT-' . $duaAngkaTerakhir . date('m') . $no_invoice;
+        }
 
-        // // Pastikan $client dan $vendor tidak null sebelum mengakses propertinya
-        // $clientEvent = $client ? $client->event : '';
-        // $vendorAlamatPerusahaan = $vendor ? $vendor->alamat_perusahaan : '';
+        // Pastikan $client dan $vendor tidak null sebelum mengakses propertinya
+        $clientEvent = $client ? $client->event : '';
+        $vendorAlamatPerusahaan = $vendor ? $vendor->alamat_perusahaan : '';
 
-        // $pdfFileName = 'Purchase Invoice-' . $clientEvent . ' - ' . $vendorAlamatPerusahaan . time() . '.pdf';
+        $pdfFileName = 'Purchase Invoice-' . $clientEvent . ' - ' . $vendorAlamatPerusahaan . time() . '.pdf';
 
-        // $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
+        $pdfFilePath = 'pdf/' . $pdfFileName; // Direktori dalam direktori public
 
-        // SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
+        SnappyPdf::loadHTML($html)->save(public_path($pdfFilePath));
 
-        // // Simpan informasi PDF ke dalam database menggunakan model Po
-        // $pdfInfoCollection = Po::whereIn('uuid_penjualan', $uuidArray)->get();
+        // Simpan informasi PDF ke dalam database menggunakan model Po
+        $pdfInfoCollection = Po::whereIn('uuid_penjualan', $uuidArray)->get();
 
-        // foreach ($pdfInfoCollection as $pdfInfo) {
-        //     $pdfInfo->file = $no_invoice;
-        //     $pdfInfo->save();
-        // }
+        foreach ($pdfInfoCollection as $pdfInfo) {
+            $pdfInfo->file = $no_invoice;
+            $pdfInfo->save();
+        }
 
-        // $subtotalTotal = 0;
-        // $subTotalPajak = 0;
-        // foreach ($realCost as $row) {
-        //     $jumlah = $row->satuan_real_cost * $row->freq * $row->qty - $row->disc_item;
-        //     $subtotalTotal += $jumlah;
-        // }
-        // foreach ($orderedPajak as $row_pajak) {
-        //     if ($row_pajak->pajak_data) {
-        //         $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
-        //         $subTotalPajak += $jumlahPajak;
-        //     }
-        // }
-        // try {
-        //     $data = new PersetujuanPo();
-        //     $data->uuid_penjualan = $storePoRequest->uuid_penjualan;
-        //     $data->no_po = $no_po;
-        //     $data->jatuh_tempo = $tempo;
-        //     $data->client = $client->nama_client;
-        //     $data->event = $client->event;
-        //     $data->total_po = $subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc);
-        //     $data->file = $pdfFileName;
-        //     $data->save();
-        // } catch (\Exception $e) {
-        //     return $this->sendError($e->getMessage(), $e->getMessage(), 400);
-        // }
+        $subtotalTotal = 0;
+        $subTotalPajak = 0;
+        foreach ($realCost as $row) {
+            $jumlah = $row->satuan_real_cost * $row->freq * $row->qty - $row->disc_item;
+            $subtotalTotal += $jumlah;
+        }
+        foreach ($orderedPajak as $row_pajak) {
+            if ($row_pajak->pajak_data) {
+                // $jumlahPajak = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($row_pajak->pajak_data->pajak / 100);
+                // $subTotalPajak += $jumlahPajak;
 
-        // // Kembalikan link untuk diakses oleh pengguna
-        // return response()->json([
-        //     'success' => true,
-        //     'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
-        //     'message' => 'PDF Po has been generated and saved successfully.',
-        // ]);
+                foreach ($row_pajak->pajak_data as $pajakData) {
+                    // Hitung jumlah pajak untuk setiap data pajak
+                    $jumlahPajakPerData = ($row_pajak->satuan_real_cost * $row_pajak->qty * $row_pajak->freq - $row_pajak->disc_item) * ($pajakData['pajak'] / 100);
+
+                    // Periksa apakah "PPH" muncul di awal deskripsi pajak (tanpa memperhatikan huruf besar atau kecil)
+                    if (stripos($pajakData['deskripsi_pajak'], 'pph') === 0) {
+                        $jumlahPajakPerData *= -1; // Jika jenis pajak adalah PPH, kurangi jumlah pajak
+                    }
+
+                    // Hitung total pajak
+                    $subTotalPajak += $jumlahPajakPerData;
+                }
+            }
+        }
+        try {
+            $data = new PersetujuanPo();
+            $data->uuid_penjualan = $storePoRequest->uuid_penjualan;
+            $data->no_po = $no_po;
+            $data->jatuh_tempo = $tempo;
+            $data->client = $client->nama_client;
+            $data->event = $client->event;
+            $data->total_po = $subtotalTotal + $subTotalPajak - (int) str_replace(['Rp', ',', ' '], '', $disc);
+            $data->file = $pdfFileName;
+            $data->save();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+
+        // Kembalikan link untuk diakses oleh pengguna
+        return response()->json([
+            'success' => true,
+            'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
+            'message' => 'PDF Po has been generated and saved successfully.',
+        ]);
     }
 }
