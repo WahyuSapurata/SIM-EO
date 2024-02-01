@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('utangs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->uuid('uuid_user');
             $table->uuid('uuid_persetujuanPo');
             $table->string('utang');
             $table->string('tagihan')->nullable();

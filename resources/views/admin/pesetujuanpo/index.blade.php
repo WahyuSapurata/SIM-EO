@@ -65,7 +65,7 @@
                                             <th>Total Po</th>
                                             <th>File PDF</th>
                                             <th>Jumlah Terbayar</th>
-                                            @if ($role === 'finance')
+                                            @if ($role === 'finance' || $role === 'direktur')
                                                 <th>Aksi</th>
                                             @endif
                                         </tr>
@@ -259,7 +259,7 @@
                     return 'Rp ' + value;
                 }
             },
-            @if ($role === 'finance')
+            @if ($role === 'finance' || $role === 'direktur')
                 {
                     data: 'uuid',
                 }
@@ -310,7 +310,7 @@
         $(function() {
             control.push_select3(setuju, '#from_select');
             control.initDatatable('/admin/persetujuan-po/get-persetujuanpo', columns,
-                @if ($role === 'finance')
+                @if ($role === 'finance' || $role === 'direktur')
                     columnDefs
                 @endif );
         })

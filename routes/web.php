@@ -181,6 +181,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::delete('/delete-realCost/{params}', 'RealCostController@delete')->name('delete-realCost');
 
         Route::get('/export-invoiceNonVendor', 'NonVendorController@exportToPDF')->name('export-invoiceNonVendor');
+
+        Route::get('/persetujuanpo-prc', 'PersetujuanPo@index')->name('persetujuanpo-prc');
+        Route::get('/pesetujuannonvendor-prc', 'NonVendorController@index')->name('pesetujuannonvendor-prc');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

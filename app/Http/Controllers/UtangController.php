@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUtangRequest;
 use App\Http\Requests\UpdateUtangRequest;
 use App\Models\NonVendor;
 use App\Models\PersetujuanPo;
+use App\Models\User;
 use App\Models\Utang;
 
 class UtangController extends BaseController
@@ -39,8 +40,20 @@ class UtangController extends BaseController
             return $item;
         });
 
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $dataCombined = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            $dataUser = User::all();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
+                $user = $dataUser->where('uuid', $item->uuid_user)->first();
+                return $user->lokasi === $lokasiUser;
+            });
+        }
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($combinedData, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function update(UpdateUtangRequest $updateUtangRequest, $params)

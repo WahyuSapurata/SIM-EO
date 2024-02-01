@@ -14,6 +14,7 @@ class OperasionalKantor extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
+        'uuid_user',
         'tanggal',
         'deskripsi',
         'spsifikasi',

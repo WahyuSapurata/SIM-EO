@@ -16,7 +16,11 @@ class PersetujuanPo extends BaseController
 {
     public function index()
     {
-        $module = 'Persetujun PO';
+        if (auth()->user()->role === 'finance' || auth()->user()->role === 'direktur') {
+            $module = 'Persetujuan PO';
+        } else {
+            $module = 'Daftar PO';
+        }
         return view('admin.pesetujuanpo.index', compact('module'));
     }
 
@@ -33,7 +37,7 @@ class PersetujuanPo extends BaseController
         });
 
         // Mengambil data penjualan berdasarkan parameter
-        if (auth()->user()->role === 'finance') {
+        if (auth()->user()->role === 'direktur') {
             $dataCombined = $combinedData;
         } else {
             $lokasiUser = auth()->user()->lokasi;
@@ -63,6 +67,7 @@ class PersetujuanPo extends BaseController
 
             if ($numericValue != 0 && $numericValue != $data->total_po) {
                 $utang = new Utang();
+                $utang->uuid_user = auth()->user()->uuid;
                 $utang->uuid_persetujuanPo = $data->uuid;
                 $utang->utang = $data->total_po - $numericValue;
                 $utang->save();

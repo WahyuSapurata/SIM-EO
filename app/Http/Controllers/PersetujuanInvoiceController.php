@@ -46,6 +46,7 @@ class PersetujuanInvoiceController extends BaseController
 
             if ($numericValue != 0 && $numericValue != $invoice->total) {
                 $utang = new Piutang();
+                $utang->uuid_user = auth()->user()->uuid;
                 $utang->uuid_persetujuanInvoice = $data->uuid;
                 $utang->utang = $invoice->total - $numericValue;
                 $utang->save();

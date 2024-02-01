@@ -251,7 +251,7 @@
                 text: "admin"
             },
             {
-                text: "direktur"
+                text: "finance"
             },
             {
                 text: "pajak"
@@ -272,7 +272,7 @@
             let fromSelectValue = $(this).val();
 
             // Cek apakah nilai sama dengan 'procurement'
-            if (fromSelectValue === 'procurement' || fromSelectValue === 'admin') {
+            if (fromSelectValue === 'procurement' || fromSelectValue === 'admin' || fromSelectValue === 'finance') {
                 // Tambahkan elemen HTML jika nilai adalah 'procurement'
                 let newElement = `<div class="mb-10">
                     <label class="form-label">Lokasi</label>

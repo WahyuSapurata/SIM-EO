@@ -14,16 +14,22 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
+                                            <th>Nama Event</th>
                                             <th>Client</th>
-                                            <th>Nominal Fee Management</th>
+                                            <th>Budget Client</th>
+                                            <th>Real Cost</th>
+                                            <th>Persentase Keuntungan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
                                     <tfoot class="bg-primary rounded">
                                         <tr class="fw-bolder fs-6 text-gray-800">
-                                            <td style="text-align: left !important;" colspan="2">Total</td>
-                                            <td style="text-align: left !important;" colspan="1" id="total">
+                                            <td style="text-align: left !important;" colspan="3">Total</td>
+                                            <td style="text-align: left !important;" colspan="1" id="total_budget">
+                                                Rp 0
+                                            </td>
+                                            <td style="text-align: left !important;" colspan="2" id="total_realCost">
                                                 Rp 0
                                             </td>
                                         </tr>
@@ -72,15 +78,34 @@
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 }, {
-                    data: 'client',
+                    data: 'event',
+                    className: 'text-center',
+                }, {
+                    data: 'nama_client',
                     className: 'text-center',
                 }, {
                     data: null,
                     className: 'text-center',
                     render: function(data, type, row, meta) {
-                        const value = numeral(row.total_fee).format(
+                        const value = numeral(row.budget).format(
                             '0,0'); // Format to rupiah
                         return 'Rp ' + value;
+                    }
+                }, {
+                    data: null,
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        const value = numeral(row.real_cost).format(
+                            '0,0'); // Format to rupiah
+                        return 'Rp ' + value;
+                    }
+                }, {
+                    data: 'persentase_keuntungan',
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        const value = Math.round(
+                        data); // Format to rupiah with one decimal place
+                        return value + '%';
                     }
                 }],
 
@@ -92,18 +117,27 @@
                 },
                 footerCallback: function(row, data, start, end, display) {
                     var api = this.api();
-                    var subtotalTotal = 0;
+                    var totalBudget = 0;
+                    var totalRealCost = 0;
 
                     // Calculate total for 'harga_satuan' column
-                    api.column(2, {
+                    api.column(3, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                        subtotalTotal += value.total_fee;
+                        totalBudget += value.budget;
+                    });
+
+                    api.column(4, {
+                        search: 'applied'
+                    }).data().each(function(value) {
+                        // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                        totalRealCost += value.real_cost;
                     });
 
                     // Update the total row in the footer
-                    $('#total').html('Rp ' + numeral(subtotalTotal).format('0,0'));
+                    $('#total_budget').html('Rp ' + numeral(totalBudget).format('0,0'));
+                    $('#total_realCost').html('Rp ' + numeral(totalRealCost).format('0,0'));
                 },
             });
         };

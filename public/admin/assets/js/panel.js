@@ -752,7 +752,7 @@ class Control {
 
     push_select3(data, element) {
         $(element).html("");
-        let html = "<option>Pilih lokasi</option>";
+        let html = "<option></option>";
         $.each(data, function (x, y) {
             html += `<option value="${y.text}">${y.text}</option>`;
         });

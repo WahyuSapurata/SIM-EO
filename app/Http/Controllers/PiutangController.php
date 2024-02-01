@@ -9,6 +9,7 @@ use App\Models\DataVendor;
 use App\Models\Invoice;
 use App\Models\PersetujuanInvoice;
 use App\Models\Piutang;
+use App\Models\User;
 
 class PiutangController extends BaseController
 {
@@ -40,8 +41,22 @@ class PiutangController extends BaseController
             return $item;
         });
 
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $dataCombined = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            $dataUser = User::all();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
+                $user = $dataUser->where('uuid', $item->uuid_user)->first();
+                return $user->lokasi === $lokasiUser;
+            });
+        }
+        //
+
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($combinedData, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function update(UpdatePiutangRequest $updatePiutangRequest, $params)

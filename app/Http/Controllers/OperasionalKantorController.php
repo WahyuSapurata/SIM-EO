@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOperasionalKantorRequest;
 use App\Http\Requests\UpdateOperasionalKantorRequest;
 use App\Models\OperasionalKantor;
+use App\Models\User;
 
 class OperasionalKantorController extends BaseController
 {
@@ -18,8 +19,21 @@ class OperasionalKantorController extends BaseController
     {
         $dataFull = OperasionalKantor::all();
 
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $dataCombined = $dataFull;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            $dataUser = User::all();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $dataFull->filter(function ($item) use ($lokasiUser, $dataUser) {
+                $user = $dataUser->where('uuid', $item->uuid_user)->first();
+                return $user->lokasi === $lokasiUser;
+            });
+        }
+
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function store(StoreOperasionalKantorRequest $storeOperasionalKantorRequest)
@@ -28,6 +42,7 @@ class OperasionalKantorController extends BaseController
         $data = array();
         try {
             $data = new OperasionalKantor();
+            $data->uuid_user = auth()->user()->uuid;
             $data->tanggal = $storeOperasionalKantorRequest->tanggal;
             $data->deskripsi = $storeOperasionalKantorRequest->deskripsi;
             $data->spsifikasi = $storeOperasionalKantorRequest->spsifikasi;

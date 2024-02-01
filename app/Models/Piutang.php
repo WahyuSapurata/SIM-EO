@@ -14,6 +14,7 @@ class Piutang extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
+        'uuid_user',
         'uuid_persetujuanInvoice',
         'utang',
         'tagihan',

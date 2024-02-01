@@ -6,6 +6,8 @@ use App\Http\Requests\StoreFeeManajementRequest;
 use App\Http\Requests\UpdateFeeManajementRequest;
 use App\Models\DataClient;
 use App\Models\FeeManajement;
+use App\Models\Penjualan;
+use App\Models\RealCost;
 
 class FeeManajementController extends BaseController
 {
@@ -35,7 +37,7 @@ class FeeManajementController extends BaseController
 
     public function index()
     {
-        $module = 'Laporan Fee Management';
+        $module = 'Laporan Event';
         return view('admin.laporan.fee', compact('module'));
     }
 
@@ -49,11 +51,37 @@ class FeeManajementController extends BaseController
         // $endDateStr = trim($dateParts[1]);
 
         // Modifikasi data jika diperlukan
-        $data = FeeManajement::all();
+        $data = DataClient::all();
         $combinedData = $data->map(function ($item) {
-            $client = DataClient::where('uuid', $item->uuid_client)->first();
+            $jumlah_budget = 0;
+            $jumlah_realCost = 0;
 
-            $item->client = $client->nama_client;
+            // Ambil semua data penjualan berdasarkan uuid_client
+            $budget_client = Penjualan::where('uuid_client', $item->uuid)->get();
+
+            // Ambil data fee manajemen berdasarkan uuid_client
+            $fee = FeeManajement::where('uuid_client', $item->uuid)->first();
+
+            // Ambil semua data real cost berdasarkan uuid_client dan memiliki nilai satuan_real_cost
+            $data_realCost = RealCost::where('uuid_client', $item->uuid)
+                ->whereNotNull('satuan_real_cost')
+                ->get();
+
+            foreach ($budget_client as $budget) {
+                $jumlah_budget += $budget->qty * $budget->freq * $budget->harga_satuan;
+            }
+
+            foreach ($data_realCost as $realCost) {
+                $jumlah_realCost += $realCost->qty * $realCost->freq * $realCost->satuan_real_cost;
+            }
+
+            $keuntungan = $jumlah_budget - $jumlah_realCost;
+
+            // Anda dapat menghapus baris berikut jika dd() di atas dihapus
+            $item->budget = $jumlah_budget + optional($fee)->total_fee ?? 0;
+            $item->real_cost = $jumlah_realCost;
+            $item->persentase_keuntungan = ($jumlah_realCost != 0) ? ($keuntungan / $jumlah_realCost * 100) : 0;
+
             return $item;
         });
 

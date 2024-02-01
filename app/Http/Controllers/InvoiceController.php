@@ -23,7 +23,7 @@ class InvoiceController extends BaseController
     public function get()
     {
         // Mengambil data penjualan berdasarkan parameter
-        if (auth()->user()->role === 'finance') {
+        if (auth()->user()->role === 'direktur') {
             $dataFull = Invoice::all();
         } else {
             $lokasiUser = auth()->user()->lokasi;

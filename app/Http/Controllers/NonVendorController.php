@@ -9,6 +9,7 @@ use App\Models\DataPajak;
 use App\Models\NonVendor;
 use App\Models\Po;
 use App\Models\RealCost;
+use App\Models\User;
 use App\Models\Utang;
 use Carbon\Carbon;
 use Barryvdh\Snappy\Facades\SnappyPdf;
@@ -18,7 +19,11 @@ class NonVendorController extends BaseController
 {
     public function index()
     {
-        $module = 'Persetujuan PO Non Vendor';
+        if (auth()->user()->role === 'finance' || auth()->user()->role === 'direktur') {
+            $module = 'Persetujuan PO Non Vendor';
+        } else {
+            $module = 'Daftar PO Non Vendor';
+        }
         return view('admin.persetujuannonvendor.index', compact('module'));
     }
 
@@ -26,9 +31,29 @@ class NonVendorController extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = NonVendor::all();
+        $dataClient = DataClient::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($dataClient) {
+            $data = $dataClient->where('nama_client', $item->client)->first();
+            $item->uuid_user = $data->uuid_user;
+            return $item;
+        });
+
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $dataCombined = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            $dataUser = User::all();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
+                $user = $dataUser->where('uuid', $item->uuid_user)->first();
+                return $user->lokasi === $lokasiUser;
+            });
+        }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function update(UpdateNonVendorRequest $updateNonVendorRequest, $params)
@@ -45,6 +70,7 @@ class NonVendorController extends BaseController
 
             if ($numericValue != 0 && $numericValue != $data->total_po) {
                 $utang = new Utang();
+                $utang->uuid_user = auth()->user()->uuid;
                 $utang->uuid_persetujuanPo = $data->uuid;
                 $utang->utang = $data->total_po - $numericValue;
                 $utang->save();
