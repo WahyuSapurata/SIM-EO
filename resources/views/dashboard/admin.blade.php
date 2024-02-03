@@ -4,7 +4,7 @@
         <!--begin::Container-->
         <div id="kt_content_container" class="container">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-5">
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-5">
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <div class="d-flex align-items-center gap-5">

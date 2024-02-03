@@ -1073,6 +1073,27 @@
                 </div>
             @endif
 
+            @if ($role === 'pajak')
+                <!--begin::Menu item-->
+                <div class="menu-item">
+                    <a class="menu-link {{ $path[1] === 'laporan-pajak' ? 'active' : '' }}"
+                        href="{{ route('pajak.laporan-pajak') }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <img src="{{ $path[1] === 'laporan-pajak' ? url('admin/assets/media/icons/aside/pajakact.svg') : url('/admin/assets/media/icons/aside/pajakdef.svg') }}"
+                                    alt="">
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title"
+                            style="{{ $path[1] === 'laporan-pajak' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Laporan
+                            Pajak</span>
+                    </a>
+                </div>
+                <!--end::Menu item-->
+            @endif
+
             <div class="menu-item">
                 <a class="menu-link  {{ $path[1] === 'ubahpassword' ? 'active' : '' }}"
                     href="{{ route('admin.ubahpassword') }}">

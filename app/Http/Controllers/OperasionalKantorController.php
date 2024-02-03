@@ -25,11 +25,15 @@ class OperasionalKantorController extends BaseController
         } else {
             $lokasiUser = auth()->user()->lokasi;
             $dataUser = User::all();
+
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataCombined = $dataFull->filter(function ($item) use ($lokasiUser, $dataUser) {
+            $data = $dataFull->map(function ($item) use ($dataUser) {
                 $user = $dataUser->where('uuid', $item->uuid_user)->first();
-                return $user->lokasi === $lokasiUser;
+                $item->lokasi_user = $user->lokasi;
+                return $item;
             });
+
+            $dataCombined = $data->where('lokasi_user', $lokasiUser);
         }
 
         // Mengembalikan response berdasarkan data yang sudah disaring

@@ -259,7 +259,7 @@
                 responsive: true,
                 pageLength: 10,
                 order: [
-                    [1, 'asc']
+                    [0, 'asc']
                 ],
                 processing: true,
                 ajax: '/admin/data-operasional/get-operasionalkantor',
@@ -385,7 +385,7 @@
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq
                         subtotalTotal += value.harga_satuan * value.qty * value.freq;
                     });
-
+                    console.log(subtotalTotal);
                     // Update the total row in the footer
                     $('#total-subtotal').html('Rp ' + numeral(subtotalTotal).format('0,0'));
                 },

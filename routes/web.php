@@ -197,6 +197,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
     Route::group(['prefix' => 'pajak', 'middleware' => ['auth'], 'as' => 'pajak.'], function () {
         Route::get('/dashboard-pajak', 'Dashboard@dashboard_pajak')->name('dashboard-pajak');
+
+        Route::get('/laporan-pajak', 'LaporanPajak@index')->name('laporan-pajak');
+        Route::get('/get-laporan-pajak', 'LaporanPajak@get_laporanPajak')->name('get-laporan-pajak');
     });
 
     Route::get('/logout', 'Auth@logout')->name('logout');
