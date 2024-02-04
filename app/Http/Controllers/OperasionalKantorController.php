@@ -19,26 +19,28 @@ class OperasionalKantorController extends BaseController
     {
         $dataFull = OperasionalKantor::all();
 
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+
+        // Menampilkan OperasionalKantor berdasarkan lokasi user dengan melakukan join
+        $data = $dataFull->map(function ($item) use ($dataUser) {
+            $user = $dataUser->where('uuid', $item->uuid_user)->first();
+            $item->lokasi_user = $user->lokasi;
+            return $item;
+        });
+
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
             $dataCombined = $dataFull;
         } else {
-            $lokasiUser = auth()->user()->lokasi;
-            $dataUser = User::all();
-
-            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $data = $dataFull->map(function ($item) use ($dataUser) {
-                $user = $dataUser->where('uuid', $item->uuid_user)->first();
-                $item->lokasi_user = $user->lokasi;
-                return $item;
-            });
-
-            $dataCombined = $data->where('lokasi_user', $lokasiUser);
+            // Menggunakan where untuk menyaring item yang sesuai dengan lokasi user
+            $dataCombined = $data->where('lokasi_user', $lokasiUser)->values();
         }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataCombined, 'Get data success');
     }
+
 
     public function store(StoreOperasionalKantorRequest $storeOperasionalKantorRequest)
     {

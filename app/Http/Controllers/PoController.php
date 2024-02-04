@@ -29,13 +29,6 @@ class PoController extends BaseController
         return view('procurement.po.po', compact('module'));
     }
 
-    // public function penjualan($params)
-    // {
-    //     $module = 'Daftar Penjualan';
-    //     $this->get($params);
-    //     return view('procurement.penjualan.penjualan', compact('module'));
-    // }
-
     public function get()
     {
         // Mengambil semua data pengguna
@@ -177,5 +170,17 @@ class PoController extends BaseController
             'pdf_link' => url($pdfFilePath), // Tautan ke file PDF yang disimpan
             'message' => 'PDF Po has been generated and saved successfully.',
         ]);
+    }
+
+    public function disabled(Request $request)
+    {
+        try {
+            $data = DataClient::where('uuid', $request->uuid_client)->first();
+            $data->status = 'selesai';
+            $data->save();
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), $e->getMessage(), 400);
+        }
+        return $this->sendResponse($data, 'Add data success');
     }
 }

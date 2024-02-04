@@ -33,23 +33,24 @@ class NonVendorController extends BaseController
         $dataFull = NonVendor::all();
         $dataClient = DataClient::all();
 
-        $combinedData = $dataFull->map(function ($item) use ($dataClient) {
-            $data = $dataClient->where('nama_client', $item->client)->first();
-            $item->uuid_user = $data->uuid_user;
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($dataClient, $dataUser) {
+            $uuidArray = explode(',', $item->uuid_realCost);
+            $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
+            $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
+            $user = $dataUser->where('uuid', $data->uuid_user)->first();
+            $item->lokasi_user = $user->lokasi;
             return $item;
         });
 
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
-            $dataCombined = $combinedData;
+            $dataCombined = $dataFull;
         } else {
-            $lokasiUser = auth()->user()->lokasi;
-            $dataUser = User::all();
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
-                $user = $dataUser->where('uuid', $item->uuid_user)->first();
-                return $user->lokasi === $lokasiUser;
-            });
+            $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
 
         // Mengembalikan response berdasarkan data yang sudah disaring

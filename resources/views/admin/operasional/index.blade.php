@@ -55,7 +55,7 @@
                                     <tfoot class="bg-primary">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <td style="text-align: left !important;" colspan="9">TOTAL PENGAJUAN KANTOR
-                                                MAKASSAR</td>
+                                            </td>
                                             <td style="text-align: left !important;" colspan="2" id="total-subtotal">
                                                 Rp 0
                                             </td>
@@ -379,13 +379,14 @@
                     var subtotalTotal = 0;
 
                     // Calculate total for 'harga_satuan' column
-                    api.column(8, {
+                    api.column(9, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                        subtotalTotal += value.harga_satuan * value.qty * value.freq;
+                        subtotalTotal += parseFloat(value.harga_satuan) * value.qty * value
+                            .freq;
+
                     });
-                    console.log(subtotalTotal);
                     // Update the total row in the footer
                     $('#total-subtotal').html('Rp ' + numeral(subtotalTotal).format('0,0'));
                 },

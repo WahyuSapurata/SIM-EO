@@ -62,9 +62,19 @@
                 return result;
             }
         }, {
-            data: 'venue',
-            width: '10rem',
+            data: null,
             className: 'text-center',
+            render: function(data, type, row, meta) {
+                if (row.status) {
+                    return `
+                        <div class="btn btn-success px-2 py-1">${row.status}</div>
+                        `;
+                } else {
+                    return `
+                        <div class="btn btn-warning px-2 py-1">Progres</div>
+                        `;
+                }
+            }
         }];
 
         $(function() {

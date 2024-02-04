@@ -38,8 +38,8 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
-                                            <th>Persentase Pajak</th>
                                             <th>Deskripsi Pajak</th>
+                                            <th>Persentase Pajak</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>

@@ -184,6 +184,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 
         Route::get('/persetujuanpo-prc', 'PersetujuanPo@index')->name('persetujuanpo-prc');
         Route::get('/pesetujuannonvendor-prc', 'NonVendorController@index')->name('pesetujuannonvendor-prc');
+
+        Route::post('/disabled-data', 'PoController@disabled')->name('disabled-data');
     });
 
     Route::group(['prefix' => 'finance', 'middleware' => ['auth'], 'as' => 'finance.'], function () {

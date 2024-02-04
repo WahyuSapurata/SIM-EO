@@ -130,6 +130,8 @@ class InvoiceController extends BaseController
                 $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
             } elseif ($kop === 'Kop Kosong') {
                 $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            } elseif ($kop === 'PT. MAHAKARYA KREASI SOLUSI') {
+                $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
             }
 
             $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';
@@ -239,6 +241,8 @@ class InvoiceController extends BaseController
             $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
         } elseif ($kop === 'Kop Kosong') {
             $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+        } elseif ($kop === 'PT. MAHAKARYA KREASI SOLUSI') {
+            $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
         }
 
         $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';
