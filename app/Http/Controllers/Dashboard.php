@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FeeManajement;
 use App\Models\Invoice;
 use App\Models\NonVendor;
+use App\Models\OperasionalKantor;
 use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
 use App\Models\SaldoAwal;
@@ -31,6 +32,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $dataOperasional = OperasionalKantor::all();
+
         $totalInvoice = 0;
         $subTotalPo = 0;
         $totalBudget = 0;
@@ -38,6 +41,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $operasional = 0;
 
         foreach ($invoice as $row_invoice) {
             $totalInvoice += $row_invoice->tagihan;
@@ -61,10 +66,15 @@ class Dashboard extends BaseController
         foreach ($fee as $row_fee) {
             $totalFee += $row_fee->total_fee;
         }
+
+        foreach ($dataOperasional as $row_operasional) {
+            $operasional += $row_operasional->sisa_tagihan;
+        }
+
         $totalPo = $subTotalPo + $totalNonVendor;
         $piutang = $totalBudget - $totalPo + $totalFee;
-        $kas = $totalSaldo + $totalInvoice - $totalPo;
-        return view('dashboard.admin', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
+        $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
+        return view('dashboard.admin', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
     }
 
     public function dashboard_procurement()
@@ -77,6 +87,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $dataOperasional = OperasionalKantor::all();
+
         $totalInvoice = 0;
         $subTotalPo = 0;
         $totalBudget = 0;
@@ -84,6 +96,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $operasional = 0;
 
         foreach ($invoice as $row_invoice) {
             $totalInvoice += $row_invoice->tagihan;
@@ -107,10 +121,15 @@ class Dashboard extends BaseController
         foreach ($fee as $row_fee) {
             $totalFee += $row_fee->total_fee;
         }
+
+        foreach ($dataOperasional as $row_operasional) {
+            $operasional += $row_operasional->sisa_tagihan;
+        }
+
         $totalPo = $subTotalPo + $totalNonVendor;
         $piutang = $totalBudget - $totalPo + $totalFee;
-        $kas = $totalSaldo + $totalInvoice - $totalPo;
-        return view('dashboard.procurement', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
+        $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
+        return view('dashboard.procurement', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
     }
 
     public function dashboard_finance()
@@ -123,6 +142,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $dataOperasional = OperasionalKantor::all();
+
         $totalInvoice = 0;
         $subTotalPo = 0;
         $totalBudget = 0;
@@ -130,6 +151,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $operasional = 0;
 
         foreach ($invoice as $row_invoice) {
             $totalInvoice += $row_invoice->tagihan;
@@ -153,10 +176,15 @@ class Dashboard extends BaseController
         foreach ($fee as $row_fee) {
             $totalFee += $row_fee->total_fee;
         }
+
+        foreach ($dataOperasional as $row_operasional) {
+            $operasional += $row_operasional->sisa_tagihan;
+        }
+
         $totalPo = $subTotalPo + $totalNonVendor;
         $piutang = $totalBudget - $totalPo + $totalFee;
-        $kas = $totalSaldo + $totalInvoice - $totalPo;
-        return view('dashboard.finance', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
+        $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
+        return view('dashboard.finance', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
     }
 
     public function dashboard_direktur()
@@ -169,6 +197,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $dataOperasional = OperasionalKantor::all();
+
         $totalInvoice = 0;
         $subTotalPo = 0;
         $totalBudget = 0;
@@ -176,6 +206,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $operasional = 0;
 
         foreach ($invoice as $row_invoice) {
             $totalInvoice += $row_invoice->tagihan;
@@ -199,10 +231,15 @@ class Dashboard extends BaseController
         foreach ($fee as $row_fee) {
             $totalFee += $row_fee->total_fee;
         }
+
+        foreach ($dataOperasional as $row_operasional) {
+            $operasional += $row_operasional->sisa_tagihan;
+        }
+
         $totalPo = $subTotalPo + $totalNonVendor;
         $piutang = $totalBudget - $totalPo + $totalFee;
-        $kas = $totalSaldo + $totalInvoice - $totalPo;
-        return view('dashboard.direktur', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
+        $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
+        return view('dashboard.direktur', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
     }
 
     public function dashboard_pajak()
@@ -215,6 +252,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $dataOperasional = OperasionalKantor::all();
+
         $totalInvoice = 0;
         $subTotalPo = 0;
         $totalBudget = 0;
@@ -222,6 +261,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $operasional = 0;
 
         foreach ($invoice as $row_invoice) {
             $totalInvoice += $row_invoice->tagihan;
@@ -245,9 +286,14 @@ class Dashboard extends BaseController
         foreach ($fee as $row_fee) {
             $totalFee += $row_fee->total_fee;
         }
+
+        foreach ($dataOperasional as $row_operasional) {
+            $operasional += $row_operasional->sisa_tagihan;
+        }
+
         $totalPo = $subTotalPo + $totalNonVendor;
         $piutang = $totalBudget - $totalPo + $totalFee;
-        $kas = $totalSaldo + $totalInvoice - $totalPo;
-        return view('dashboard.pajak', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas'));
+        $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
+        return view('dashboard.pajak', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
     }
 }

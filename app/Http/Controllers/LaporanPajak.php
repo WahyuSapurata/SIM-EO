@@ -40,6 +40,7 @@ class LaporanPajak extends BaseController
             // Cek apakah setidaknya satu nilai uuid cocok dengan dataRealcost
             return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
         });
+        // dd($combinedPersetujuanPo);
 
         $mergedData = collect([]);
         $mergedData = $mergedData->merge($combinedPersetujuanPo);
