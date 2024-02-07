@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('uuid_persetujuanInvoice');
             $table->string('utang');
             $table->string('tagihan')->nullable();
+            $table->string('ket')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,7 @@ class Piutang extends Model
         'uuid_persetujuanInvoice',
         'utang',
         'tagihan',
+        'ket',
     ];
 
     protected static function boot()

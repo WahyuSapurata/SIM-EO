@@ -28,6 +28,7 @@ class PiutangController extends BaseController
         $dataClient = DataClient::all();
 
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
+            $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
             $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice)->first();
             $client = $dataClient->where('uuid', $invoice->uuid_vendor)->first();
@@ -37,7 +38,7 @@ class PiutangController extends BaseController
             $item->client = $client->nama_client;
             $item->deskripsi = $invoice->deskripsi;
             $item->file = $invoice->file;
-
+            $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
 
@@ -46,12 +47,8 @@ class PiutangController extends BaseController
             $dataCombined = $combinedData;
         } else {
             $lokasiUser = auth()->user()->lokasi;
-            $dataUser = User::all();
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
-                $user = $dataUser->where('uuid', $item->uuid_user)->first();
-                return $user->lokasi === $lokasiUser;
-            });
+            $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
         //
 
@@ -78,7 +75,8 @@ class PiutangController extends BaseController
     {
         try {
             $dataRealCost = Piutang::where('uuid', $params)->first();
-            $dataRealCost->delete();
+            $dataRealCost->ket = "Lunas";
+            $dataRealCost->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }

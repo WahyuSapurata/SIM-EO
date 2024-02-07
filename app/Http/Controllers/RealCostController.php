@@ -27,6 +27,7 @@ class RealCostController extends BaseController
             $data->pajak_pph = $storeRealCostRequest->pajak_pph === "null" ? 0 : $storeRealCostRequest->pajak_pph;
             $data->disc_item = $numericValueDisc;
 
+            $data->uuid_user = auth()->user()->uuid;
             $data->uuid_client = $storeRealCostRequest->uuid_client;
             $data->kegiatan = $storeRealCostRequest->kegiatan;
             $data->qty = $storeRealCostRequest->qty;
@@ -54,9 +55,19 @@ class RealCostController extends BaseController
 
     public function get($params)
     {
-        // Mengambil semua data pengguna
-        $dataFull = RealCost::where('uuid_client', $params)->get();
         // Mengembalikan response berdasarkan data yang sudah disaring
+        if (auth()->user()->role === 'direktur') {
+            $dataFull = RealCost::where('uuid_client', $params)->get();
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan RealCost berdasarkan lokasi user dengan melakukan join
+            $dataFull = RealCost::join('users', 'real_costs.uuid_user', '=', 'users.uuid')
+                ->where('real_costs.uuid_client', $params)
+                ->where('users.lokasi', $lokasiUser)
+                ->select('real_costs.*') // Sesuaikan dengan nama kolom pada real_costs
+                ->get();
+        }
         return $this->sendResponse($dataFull, 'Get data success');
     }
 

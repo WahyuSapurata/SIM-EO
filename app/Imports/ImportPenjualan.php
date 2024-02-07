@@ -41,6 +41,7 @@ class ImportPenjualan implements ToModel, WithHeadingRow
         // Mengatur UUID penjualan pada model RealCost
         $realCost = new RealCost([
             'uuid_client' => $this->uuid_client,
+            'uuid_user' => auth()->user()->uuid,
             'uuid_penjualan' => $penjualan->uuid, // Menggunakan UUID yang dihasilkan oleh Penjualan
             'kegiatan' => $row['kegiatan'],
             'qty' => $row['qty'],

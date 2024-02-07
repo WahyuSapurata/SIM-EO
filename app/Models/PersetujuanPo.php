@@ -15,6 +15,7 @@ class PersetujuanPo extends Model
     protected $fillable = [
         'uuid',
         'uuid_penjualan',
+        'uuid_user',
         'no_po',
         'jatuh_tempo',
         'client',

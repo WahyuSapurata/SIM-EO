@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('real_costs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->uuid('uuid_user');
             $table->uuid('uuid_client')->nullable();
             $table->uuid('uuid_penjualan')->nullable();
             $table->string('satuan_real_cost')->nullable();

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('persetujuan_pos', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
+            $table->uuid('uuid_user');
             $table->string('uuid_penjualan');
             $table->string('no_po');
             $table->string('jatuh_tempo');

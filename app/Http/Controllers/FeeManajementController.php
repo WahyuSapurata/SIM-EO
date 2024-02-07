@@ -51,7 +51,18 @@ class FeeManajementController extends BaseController
         // $endDateStr = trim($dateParts[1]);
 
         // Modifikasi data jika diperlukan
-        $data = DataClient::all();
+        if (auth()->user()->role === 'direktur') {
+            $data = DataClient::all();
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $data = DataClient::join('users', 'data_clients.uuid_user', '=', 'users.uuid')
+                ->where('users.lokasi', $lokasiUser)
+                ->select('data_clients.*') // Sesuaikan dengan nama kolom pada penjualans
+                ->get();
+        }
+
         $combinedData = $data->map(function ($item) {
             $jumlah_budget = 0;
             $jumlah_realCost = 0;

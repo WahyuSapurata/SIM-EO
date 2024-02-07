@@ -342,14 +342,14 @@
                     var totalTerbayar = 0;
 
                     // Calculate total for 'harga_satuan' column
-                    api.column(5, {
+                    api.column(4, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq
                         totalPo += parseFloat(value.utang);
                     });
 
-                    api.column(7, {
+                    api.column(6, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq

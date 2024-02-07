@@ -152,6 +152,7 @@ class PoController extends BaseController
         }
         try {
             $data = new PersetujuanPo();
+            $data->uuid_user = auth()->user()->uuid;
             $data->uuid_penjualan = $storePoRequest->uuid_penjualan;
             $data->no_po = $no_po;
             $data->jatuh_tempo = $tempo;

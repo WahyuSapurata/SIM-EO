@@ -173,6 +173,7 @@ class NonVendorController extends BaseController
         }
         try {
             $data = new NonVendor();
+            $data->uuid_user = auth()->user()->uuid;
             $data->uuid_realCost = $request->uuid_penjualan;
             $data->no_po = $no_po;
             $data->jatuh_tempo = $tempo;

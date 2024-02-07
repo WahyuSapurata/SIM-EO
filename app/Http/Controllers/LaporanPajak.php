@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataClient;
+use App\Models\DataPajak;
 use App\Models\Invoice;
 use App\Models\NonVendor;
 use App\Models\PersetujuanPo;
@@ -40,7 +41,6 @@ class LaporanPajak extends BaseController
             // Cek apakah setidaknya satu nilai uuid cocok dengan dataRealcost
             return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
         });
-        // dd($combinedPersetujuanPo);
 
         $mergedData = collect([]);
         $mergedData = $mergedData->merge($combinedPersetujuanPo);
@@ -49,11 +49,23 @@ class LaporanPajak extends BaseController
         $mergedData = $mergedData->merge($persetujuanInvoice);
 
         // Modifikasi data jika diperlukan
-        $combinedData = $mergedData->map(function ($item) {
+        $combinedData = $mergedData->map(function ($item) use ($dataRealcost, $persetujuanInvoice) {
             // Tambahkan logika modifikasi data di sini
             $item->tanggal = optional($item->created_at)->format('d-m-Y');
+            $pajak = null; // Variabel $pajak didefinisikan di awal dengan nilai default null
 
             if ($item instanceof PersetujuanPo || $item instanceof NonVendor) {
+                $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
+                $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+
+                // Gabungkan dua array untuk mencakup semua nilai
+                $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
+                $realCostPo = $dataRealcost->whereIn('uuid', $uuidValues);
+
+                // Menggunakan metode first() untuk mendapatkan satu objek hasil
+                $pajak_po = $realCostPo->first()->pajak_po ?? null;
+                $pajak_pph = $realCostPo->first()->pajak_pph ?? null;
+
                 $item->client = $item->client;
                 $item->event = $item->event;
                 $item->no = $item->no_po;
@@ -61,15 +73,24 @@ class LaporanPajak extends BaseController
                 $item->file_po = $item->file;
             } elseif ($item instanceof Invoice) {
                 $clientInvoice = DataClient::where('uuid', $item->uuid_vendor)->first();
+                $dataPajak = DataPajak::where('uuid', $item->uuid_pajak)->first();
+                $pajak = $dataPajak->deskripsi_pajak ?? null; // Menggunakan $pajak untuk invoice
                 $item->client = $clientInvoice->nama_client;
                 $item->event = $clientInvoice->event;
                 $item->no = $item->no_invoice;
                 $item->nominal = $item->total;
                 $item->file_invoice = $item->file;
+                $pajak_po = null; // Reset nilai pajak_po untuk invoice
+                $pajak_pph = null; // Reset nilai pajak_pph untuk invoice
             }
+
+            // Pajak dipindahkan ke luar dari kondisi if-else untuk memastikan setiap $item memiliki atribut 'pajakData'
+            $item->pajakData = ['pajak_po' => $pajak_po, 'pajak_pph' => $pajak_pph, 'pajak' => $pajak];
 
             return $item;
         });
+
+        // dd($combinedData);
 
         // Mengurutkan data berdasarkan tanggal create yang terbaru
         $sortedData = $combinedData->sortByDesc('created_at')->values()->all();

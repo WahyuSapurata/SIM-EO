@@ -6,9 +6,12 @@ use App\Http\Requests\StoreSaldoAwalRequest;
 use App\Models\Invoice;
 use App\Models\NonVendor;
 use App\Models\OperasionalKantor;
+use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
 use App\Models\Piutang;
+use App\Models\RealCost;
 use App\Models\SaldoAwal;
+use App\Models\User;
 use App\Models\Utang;
 use Illuminate\Http\Request;
 
@@ -83,6 +86,7 @@ class Laporan extends BaseController
 
         // Modifikasi data jika diperlukan
         $combinedData = $mergedData->map(function ($item) {
+            $dataUser = User::where('uuid', $item->uuid_user)->first();
             // Tambahkan logika modifikasi data di sini
             $item->tanggal = optional($item->created_at)->format('d-m-Y');
             $item->deskripsi = $item->event ?? $item->deskripsi ?? '';
@@ -95,10 +99,22 @@ class Laporan extends BaseController
 
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
             $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
+            $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
 
-        $filteredData = $combinedData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $filteredData = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $filteredData = $combinedData->where('lokasi_user', $lokasiUser)->values();
+        }
+
+        // Filter data berdasarkan rentang tanggal
+        $filteredData = $filteredData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
+
         // Mengurutkan data berdasarkan tanggal create yang terbaru
         $sortedData = $filteredData->sortBy('created_at')->values()->all();
 
@@ -142,6 +158,7 @@ class Laporan extends BaseController
 
         // Modifikasi data jika diperlukan
         $combinedData = $mergedData->map(function ($item) {
+            $dataUser = User::where('uuid', $item->uuid_user)->first();
             // Tambahkan logika modifikasi data di sini
             $item->tanggal = optional($item->created_at)->format('d-m-Y');
             $item->deskripsi = $item->event ?? $item->deskripsi ?? '';
@@ -154,10 +171,22 @@ class Laporan extends BaseController
 
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
             $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
+            $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
 
-        $filteredData = $combinedData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $filteredData = $combinedData;
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $filteredData = $combinedData->where('lokasi_user', $lokasiUser)->values();
+        }
+
+        // Filter data berdasarkan rentang tanggal
+        $filteredData = $filteredData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
+
         // Mengurutkan data berdasarkan tanggal create yang terbaru
         $sortedData = $filteredData->sortBy('created_at')->values()->all();
 

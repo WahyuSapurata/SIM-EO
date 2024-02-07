@@ -25,6 +25,7 @@ class UtangController extends BaseController
         $dataNonVendor = NonVendor::all();
 
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanPo, $dataNonVendor) {
+            $dataUser = User::where('uuid', $item->uuid_user)->first();
             // Mencari data PersetujuanPo berdasarkan uuid_persetujuanPo
             $persetujuanPo = $dataPersetujuanPo->where('uuid', $item->uuid_persetujuanPo)->first();
 
@@ -36,7 +37,7 @@ class UtangController extends BaseController
             $item->client = $persetujuanPo ? $persetujuanPo->client : ($persetujuanNonVendor ? $persetujuanNonVendor->client : null);
             $item->event = $persetujuanPo ? $persetujuanPo->event : ($persetujuanNonVendor ? $persetujuanNonVendor->event : null);
             $item->file = $persetujuanPo ? $persetujuanPo->file : ($persetujuanNonVendor ? $persetujuanNonVendor->file : null);
-
+            $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
 
@@ -45,12 +46,8 @@ class UtangController extends BaseController
             $dataCombined = $combinedData;
         } else {
             $lokasiUser = auth()->user()->lokasi;
-            $dataUser = User::all();
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser, $dataUser) {
-                $user = $dataUser->where('uuid', $item->uuid_user)->first();
-                return $user->lokasi === $lokasiUser;
-            });
+            $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataCombined, 'Get data success');

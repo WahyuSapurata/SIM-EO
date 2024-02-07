@@ -525,10 +525,14 @@
                 control.submitForm('/procurement/add-realCost', 'Tambah',
                     'Real Cost',
                     'POST', formDataRealCost);
+                $("#pajak-select").val(null);
+                $("#pajak_pph-select").val(null);
             } else {
                 let uuid = $("input[name='uuid']").val();
                 control.submitForm('/procurement/update-realCost/' + uuid, 'Update',
                     'Real Cost', 'POST', formDataRealCost);
+                $("#pajak-select").val(null);
+                $("#pajak_pph-select").val(null);
             }
         });
 

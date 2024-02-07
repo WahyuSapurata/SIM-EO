@@ -15,6 +15,7 @@ class NonVendor extends Model
     protected $fillable = [
         'uuid',
         'uuid_realCost',
+        'uuid_user',
         'no_po',
         'jatuh_tempo',
         'client',

@@ -16,6 +16,7 @@ class RealCost extends Model
         'uuid',
         'uuid_client',
         'uuid_penjualan',
+        'uuid_user',
         'satuan_real_cost',
         'pajak_po',
         'pajak_pph',
