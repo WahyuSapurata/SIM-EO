@@ -14,24 +14,36 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
-                                            <th>Client</th>
-                                            <th>Project/Event</th>
-                                            <th>Tanggal PO/Invoice</th>
-                                            <th>No PO/Invoice</th>
-                                            <th>Nominal</th>
-                                            <th>File</th>
+                                            <th>NPWP</th>
+                                            <th>Nama Pemotong/Client</th>
+                                            <th>Nomor Faktur</th>
+                                            <th>Tanggal Faktur</th>
+                                            <th>Masa</th>
+                                            <th>Tahun</th>
+                                            <th>Status Faktur</th>
+                                            <th>DPP</th>
+                                            <th>PPN</th>
+                                            <th>Nama Event</th>
+                                            <th>Area</th>
+                                            <th>PPH 23</th>
+                                            <th>Total Tagihan</th>
+                                            <th>Realisasi Dana Masuk</th>
+                                            <th>Deskripsi</th>
+                                            <th>Selisih</th>
+                                            <th>No. Bupot</th>
+                                            <th>TGL Bupot</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     </tbody>
-                                    <tfoot class="bg-primary rounded">
+                                    {{-- <tfoot class="bg-primary rounded">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <td style="text-align: left !important;" colspan="5">Total</td>
                                             <td style="text-align: left !important;" colspan="2" id="totalNominal">
                                                 Rp 0
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot> --}}
                                 </table>
                             </div>
                         </div>
@@ -69,7 +81,7 @@
                     [1, 'asc']
                 ],
                 processing: true,
-                ajax: '/pajak/laporan/get-laporan-pajak',
+                ajax: '/pajak/laporan/get-faktur-keluar',
                 columns: [{
                     data: null,
                     render: function(data, type, row, meta) {

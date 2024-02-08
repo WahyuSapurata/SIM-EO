@@ -134,7 +134,7 @@
                 </tbody>
             </table>
             <div style="font-style: italic; font-size: 16px; margin-top: 10px; margin-bottom: 30px">Terbilang :
-                ({{ $terbilang }} rupiah)</div>
+                ({{ $total + $hasilPajak }} rupiah)</div>
 
             <table class="table">
                 <thead style="background-color: #e36c09; color: #fff;">

@@ -98,4 +98,38 @@ class LaporanPajak extends BaseController
         // Mengembalikan respon
         return $this->sendResponse($sortedData, 'Get data success');
     }
+
+    public function faktur_keluar()
+    {
+        $module = 'Faktur Keluar';
+        return view('pajak.fakturkeluar.index', compact('module'));
+    }
+
+    public function get_faktur_keluar()
+    {
+        // Menggabungkan data dari PersetujuanPo
+        $dataRealcost = RealCost::whereNotNull('pajak_po')->orWhereNotNull('pajak_pph')->get();
+
+        $mergePo = collect([]);
+
+        $persetujuanNonVendor = NonVendor::all();
+        $mergePo = $mergePo->merge($persetujuanNonVendor);
+        $persetujuanPo = PersetujuanPo::all();
+        $mergePo = $mergePo->merge($persetujuanPo);
+
+        $combinedPersetujuanPo = $mergePo->filter(function ($item) use ($dataRealcost) {
+            // Pecah nilai uuid_penjualan dan uuid_realCost menjadi array jika mengandung koma
+            $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
+            $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+
+            // Gabungkan dua array untuk mencakup semua nilai
+            $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
+
+            // Cek apakah setidaknya satu nilai uuid cocok dengan dataRealcost
+            return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
+        });
+
+        // Mengembalikan respon
+        return $this->sendResponse($combinedPersetujuanPo, 'Get data success');
+    }
 }
