@@ -11,28 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('faktur_keluars', function (Blueprint $table) {
+        Schema::create('faktur_masuks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
             $table->uuid('uuid_persetujuan');
             $table->string('npwp')->nullable();
-            $table->string('client')->nullable();
+            $table->string('nama_vendor')->nullable();
             $table->string('no_faktur')->nullable();
             $table->string('tanggal_faktur')->nullable();
             $table->string('masa')->nullable();
             $table->string('tahun')->nullable();
-            $table->string('status_faktur')->nullable();
             $table->string('dpp')->nullable();
             $table->string('ppn')->nullable();
-            $table->string('event')->nullable();
-            $table->string('area')->nullable();
             $table->string('pph')->nullable();
-            $table->string('total_tagihan')->nullable();
-            $table->string('realisasi_dana_masuk')->nullable();
-            $table->string('deskripsi')->nullable();
-            $table->string('selisih')->nullable();
             $table->string('no_bupot')->nullable();
             $table->string('tgl_bupot')->nullable();
+            $table->string('area')->nullable();
             $table->timestamps();
         });
     }
@@ -42,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('faktur_keluars');
+        Schema::dropIfExists('faktur_masuks');
     }
 };

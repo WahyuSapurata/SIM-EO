@@ -15,23 +15,17 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
                                             <th>NPWP</th>
-                                            <th>Nama Pemotong/Client</th>
-                                            <th>Nomor Faktur</th>
-                                            <th>Tanggal Faktur</th>
+                                            <th>Nama Vendor</th>
+                                            <th>Nomor Faktur Pajak</th>
+                                            <th>Tanggal Faktur Pajak</th>
                                             <th>Masa</th>
                                             <th>Tahun</th>
-                                            <th>Status Faktur</th>
                                             <th>DPP</th>
                                             <th>PPN</th>
-                                            <th>Nama Event</th>
-                                            <th>Area</th>
                                             <th>PPH 23</th>
-                                            <th>Total Tagihan</th>
-                                            <th>Realisasi Dana Masuk</th>
-                                            <th>Deskripsi</th>
-                                            <th>Selisih</th>
                                             <th>No. Bupot</th>
-                                            <th>TGL Bupot</th>
+                                            <th>TGL Kirim Bupot</th>
+                                            <th>Area</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -111,20 +105,20 @@
                         <small class="text-danger npwp_error"></small>
                     </div>
 
-                    {{-- <div class="mb-10">
-                        <label class="form-label">Nama Pemotong/Client</label>
-                        <input type="number" id="client" class="form-control" name="client">
-                        <small class="text-danger client_error"></small>
-                    </div> --}}
+                    <div class="mb-10">
+                        <label class="form-label">Nama Vendor</label>
+                        <input type="text" id="nama_vendor" class="form-control" name="nama_vendor">
+                        <small class="text-danger nama_vendor_error"></small>
+                    </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Nomor Faktur</label>
+                        <label class="form-label">Nomor Faktur Pajak</label>
                         <input type="number" id="no_faktur" class="form-control" name="no_faktur">
                         <small class="text-danger no_faktur_error"></small>
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Tanggal Faktur</label>
+                        <label class="form-label">Tanggal Faktur Pajak</label>
                         <input type="text" id="tanggal_faktur" class="form-control" name="tanggal_faktur">
                         <small class="text-danger tanggal_faktur_error"></small>
                     </div>
@@ -142,64 +136,9 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Status Faktur</label>
-                        <input type="text" id="status_faktur" class="form-control" name="status_faktur">
-                        <small class="text-danger status_faktur_error"></small>
-                    </div>
-
-                    <div class="mb-10">
                         <label class="form-label">DPP</label>
                         <input type="text" id="dpp" class="form-control" name="dpp">
                         <small class="text-danger dpp_error"></small>
-                    </div>
-
-                    {{-- <div class="mb-10">
-                        <label class="form-label">PPN</label>
-                        <input type="text" id="ppn" class="form-control" name="ppn">
-                        <small class="text-danger ppn_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">Nama Event</label>
-                        <input type="text" id="event" class="form-control" name="event">
-                        <small class="text-danger event_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">Area</label>
-                        <input type="text" id="area" class="form-control" name="area">
-                        <small class="text-danger area_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">PPH 23</label>
-                        <input type="text" id="pph" class="form-control" name="pph">
-                        <small class="text-danger pph_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">Total Tagihan</label>
-                        <input type="text" id="total_tagihan" class="form-control" name="total_tagihan">
-                        <small class="text-danger total_tagihan_error"></small>
-                    </div> --}}
-
-                    <div class="mb-10">
-                        <label class="form-label">Realisasi Dana Masuk</label>
-                        <input type="text" id="realisasi_dana_masuk" class="form-control"
-                            name="realisasi_dana_masuk">
-                        <small class="text-danger realisasi_dana_masuk_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">Deskripsi</label>
-                        <input type="text" id="deskripsi" class="form-control" name="deskripsi">
-                        <small class="text-danger deskripsi_error"></small>
-                    </div>
-
-                    <div class="mb-10">
-                        <label class="form-label">Selisih</label>
-                        <input type="text" id="selisih" class="form-control" name="selisih">
-                        <small class="text-danger selisih_error"></small>
                     </div>
 
                     <div class="mb-10">
@@ -209,7 +148,7 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">TGL Bupot</label>
+                        <label class="form-label">TGL Kirim Bupot</label>
                         <input type="text" id="tgl_bupot" class="form-control" name="tgl_bupot">
                         <small class="text-danger tgl_bupot_error"></small>
                     </div>
@@ -272,17 +211,17 @@
             e.preventDefault();
             $(".form-data")[0].reset();
             let uuid = $(this).attr('data-uuid');
-            updateFakturKeluar(uuid);
-            let url = '/pajak/laporan/show-faktur-keluar/' + uuid;
-            control.overlay_form('Update', 'Faktur Keluar', url);
+            updateFakturMasuk(uuid);
+            let url = '/pajak/laporan/show-faktur-masuk/' + uuid;
+            control.overlay_form('Update', 'Faktur Masuk', url);
         });
 
-        const updateFakturKeluar = (uuid) => {
+        const updateFakturMasuk = (uuid) => {
             console.log(uuid);
             $(document).off('submit', ".form-data").on('submit', ".form-data", function(e) {
                 e.preventDefault();
-                control.submitFormMultipartData('/pajak/laporan/storeUpdate-faktur-keluar/' + uuid, 'Update',
-                    'Faktur Keluar', 'POST');
+                control.submitFormMultipartData('/pajak/laporan/storeUpdate-faktur-masuk/' + uuid, 'Update',
+                    'Faktur Masuk', 'POST');
             });
         };
 
@@ -300,7 +239,7 @@
                     [0, 'asc']
                 ],
                 processing: true,
-                ajax: '/pajak/laporan/get-faktur-keluar',
+                ajax: '/pajak/laporan/get-faktur-masuk',
                 columns: [{
                     data: null,
                     render: function(data, type, row, meta) {
@@ -314,7 +253,7 @@
                         return data !== null ? data : '-';
                     }
                 }, {
-                    data: 'client',
+                    data: 'nama_vendor',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
                         return data !== null ? data : '-';
@@ -344,12 +283,6 @@
                         return data !== null ? data : '-';
                     }
                 }, {
-                    data: 'status_faktur',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
-                    }
-                }, {
                     data: 'dpp',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
@@ -362,46 +295,10 @@
                         return data !== null ? data : '-';
                     }
                 }, {
-                    data: 'event',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
-                    }
-                }, {
-                    data: 'area',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
-                    }
-                }, {
                     data: 'pph',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
                         return data !== null ? data : '-';
-                    }
-                }, {
-                    data: 'total_tagihan',
-                    render: function(data, type, row, meta) {
-                        const value = data !== null ? numeral(data).format('0,0') : '-';
-                        return data !== null ? 'Rp ' + value : '-';
-                    }
-                }, {
-                    data: 'realisasi_dana_masuk',
-                    render: function(data, type, row, meta) {
-                        const value = data !== null ? numeral(data).format('0,0') : '-';
-                        return data !== null ? 'Rp ' + value : '-';
-                    }
-                }, {
-                    data: 'deskripsi',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
-                    }
-                }, {
-                    data: 'selisih',
-                    render: function(data, type, row, meta) {
-                        const value = data !== null ? numeral(data).format('0,0') : '-';
-                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'no_bupot',
@@ -411,6 +308,12 @@
                     }
                 }, {
                     data: 'tgl_bupot',
+                    className: 'text-center',
+                    render: function(data, type, row, meta) {
+                        return data !== null ? data : '-';
+                    }
+                }, {
+                    data: 'area',
                     className: 'text-center',
                     render: function(data, type, row, meta) {
                         return data !== null ? data : '-';

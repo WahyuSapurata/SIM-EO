@@ -204,8 +204,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/laporan-pajak', 'LaporanPajak@index')->name('laporan-pajak');
             Route::get('/get-laporan-pajak', 'LaporanPajak@get_laporanPajak')->name('get-laporan-pajak');
 
-            Route::get('/faktur-keluar', 'LaporanPajak@faktur_keluar')->name('faktur-keluar');
-            Route::get('/get-faktur-keluar', 'LaporanPajak@get_faktur_keluar')->name('get-faktur-keluar');
+            Route::get('/faktur-keluar', 'FakturKeluarController@index')->name('faktur-keluar');
+            Route::get('/get-faktur-keluar', 'FakturKeluarController@get_faktur_keluar')->name('get-faktur-keluar');
+            Route::get('/show-faktur-keluar/{params}', 'FakturKeluarController@show')->name('show-faktur-keluar');
+            Route::post('/storeUpdate-faktur-keluar/{params}', 'FakturKeluarController@storeUpdate')->name('storeUpdate-faktur-keluar');
+
+            Route::get('/faktur-masuk', 'FakturMasukController@index')->name('faktur-masuk');
+            Route::get('/get-faktur-masuk', 'FakturMasukController@get_faktur_masuk')->name('get-faktur-masuk');
+            Route::get('/show-faktur-masuk/{params}', 'FakturMasukController@show')->name('show-faktur-masuk');
+            Route::post('/storeUpdate-faktur-masuk/{params}', 'FakturMasukController@storeUpdate')->name('storeUpdate-faktur-masuk');
         });
     });
 

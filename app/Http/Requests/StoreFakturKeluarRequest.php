@@ -11,7 +11,7 @@ class StoreFakturKeluarRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,29 @@ class StoreFakturKeluarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'npwp' => 'required',
+            'client' => 'required',
+            'no_faktur' => 'required',
+            'tanggal_faktur' => 'required',
+            'masa' => 'required',
+            'tahun' => 'required',
+            'status_faktur' => 'required',
+            'dpp' => 'required',
+            'event' => 'required',
+            'area' => 'required',
+            'total_tagihan' => 'required',
+            'realisasi_dana_masuk' => 'required',
+            'deskripsi' => 'required',
+            'selisih' => 'required',
+            'no_bupot' => 'required',
+            'tgl_bupot' => 'required',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'total_fee.required' => 'Kolom fee harus di isi.',
         ];
     }
 }

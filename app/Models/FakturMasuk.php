@@ -6,33 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Ramsey\Uuid\Uuid;
 
-class FakturKeluar extends Model
+class FakturMasuk extends Model
 {
     use HasFactory;
 
-    protected $table = 'faktur_keluars';
+    protected $table = 'faktur_masuks';
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
         'uuid_persetujuan',
         'npwp',
-        'client',
+        'nama_vendor',
         'no_faktur',
         'tanggal_faktur',
         'masa',
         'tahun',
-        'status_faktur',
         'dpp',
         'ppn',
-        'event',
-        'area',
         'pph',
-        'total_tagihan',
-        'realisasi_dana_masuk',
-        'deskripsi',
-        'selisih',
         'no_bupot',
         'tgl_bupot',
+        'area',
     ];
 
     protected static function boot()
