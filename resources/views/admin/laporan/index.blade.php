@@ -128,7 +128,7 @@
     <script>
         let control = new Control();
         let formData = new FormData();
-        let saldoAwal;
+        let saldoAwal = 0;
 
         $(".kt_datepicker_7").flatpickr({
             altInput: true,
@@ -149,14 +149,13 @@
                 async: false, // Pastikan request berjalan secara sinkron
                 success: function(res) {
                     if (res.success === true) {
-                        if (res.data != null) {
-                            let totalSaldo = res.data.saldo;
-                            saldoAwal = totalSaldo;
-                            var cetakButton = document.getElementById('cetakButton');
-                            if (totalSaldo) {
-                                // Jika ada, hapus class 'disabled-link'
-                                cetakButton.classList.add('disabled-link');
-                            }
+                        $.each(res.data, function(x, y) {
+                            saldoAwal += parseFloat(y.saldo);
+                        });
+                        var cetakButton = document.getElementById('cetakButton');
+                        if (saldoAwal) {
+                            // Jika ada, hapus class 'disabled-link'
+                            cetakButton.classList.add('disabled-link');
                         }
                     } else {
                         console.error('Gagal mengambil data:', res.message);

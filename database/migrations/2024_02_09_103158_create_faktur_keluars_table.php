@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saldo_awals', function (Blueprint $table) {
+        Schema::create('faktur_keluars', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid');
-            $table->uuid('uuid_user');
-            $table->string('saldo');
+            $table->uuid('uuid_persetujuan');
+            $table->string('npwp');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saldo_awals');
+        Schema::dropIfExists('faktur_keluars');
     }
 };

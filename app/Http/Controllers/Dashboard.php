@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataClient;
 use App\Models\DataPajak;
 use App\Models\FeeManajement;
 use App\Models\Invoice;
@@ -10,6 +11,7 @@ use App\Models\OperasionalKantor;
 use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
 use App\Models\SaldoAwal;
+use App\Models\User;
 use App\Models\Utang;
 use Illuminate\Http\Request;
 
@@ -26,14 +28,44 @@ class Dashboard extends BaseController
     public function dashboard_admin()
     {
         $module = 'Dashboard';
-        $invoice = Invoice::all();
-        $data = PersetujuanPo::all();
-        $nonVendor = NonVendor::all();
-        $budgetClient = Penjualan::all();
-        $saldo = SaldoAwal::all();
-        $fee = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $invoice = Invoice::join('users', 'invoices.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('invoices.*') // Sesuaikan dengan nama kolom pada invoices
+            ->get();
+        $data = PersetujuanPo::join('users', 'persetujuan_pos.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('persetujuan_pos.*') // Sesuaikan dengan nama kolom pada persetujuan_pos
+            ->get();
+        $nonVendor = NonVendor::join('users', 'non_vendors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('non_vendors.*') // Sesuaikan dengan nama kolom pada non_vendors
+            ->get();
+        $budgetClient = Penjualan::join('users', 'penjualans.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('penjualans.*') // Sesuaikan dengan nama kolom pada penjualans
+            ->get();
+        $saldo = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
+            ->get();
 
-        $dataOperasional = OperasionalKantor::all();
+        $dataFees = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+        // Menampilkan OperasionalKantor berdasarkan lokasi user dengan melakukan join
+        $dataFee = $dataFees->map(function ($item) use ($dataUser) {
+            $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
+            $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
+            $item->lokasi_user = $user->lokasi;
+            return $item;
+        });
+        $fee = $dataFee->where('lokasi_user', $lokasiUser)->values();
+
+        $dataOperasional = OperasionalKantor::join('users', 'operasional_kantors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('operasional_kantors.*') // Sesuaikan dengan nama kolom pada operasional_kantors
+            ->get();
 
         $totalInvoice = 0;
         $subTotalPo = 0;
@@ -81,14 +113,44 @@ class Dashboard extends BaseController
     public function dashboard_procurement()
     {
         $module = 'Dashboard';
-        $invoice = Invoice::all();
-        $data = PersetujuanPo::all();
-        $nonVendor = NonVendor::all();
-        $budgetClient = Penjualan::all();
-        $saldo = SaldoAwal::all();
-        $fee = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $invoice = Invoice::join('users', 'invoices.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('invoices.*') // Sesuaikan dengan nama kolom pada invoices
+            ->get();
+        $data = PersetujuanPo::join('users', 'persetujuan_pos.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('persetujuan_pos.*') // Sesuaikan dengan nama kolom pada persetujuan_pos
+            ->get();
+        $nonVendor = NonVendor::join('users', 'non_vendors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('non_vendors.*') // Sesuaikan dengan nama kolom pada non_vendors
+            ->get();
+        $budgetClient = Penjualan::join('users', 'penjualans.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('penjualans.*') // Sesuaikan dengan nama kolom pada penjualans
+            ->get();
+        $saldo = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
+            ->get();
 
-        $dataOperasional = OperasionalKantor::all();
+        $dataFees = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+        // Menampilkan OperasionalKantor berdasarkan lokasi user dengan melakukan join
+        $dataFee = $dataFees->map(function ($item) use ($dataUser) {
+            $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
+            $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
+            $item->lokasi_user = $user->lokasi;
+            return $item;
+        });
+        $fee = $dataFee->where('lokasi_user', $lokasiUser)->values();
+
+        $dataOperasional = OperasionalKantor::join('users', 'operasional_kantors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('operasional_kantors.*') // Sesuaikan dengan nama kolom pada operasional_kantors
+            ->get();
 
         $totalInvoice = 0;
         $subTotalPo = 0;
@@ -136,14 +198,44 @@ class Dashboard extends BaseController
     public function dashboard_finance()
     {
         $module = 'Dashboard';
-        $invoice = Invoice::all();
-        $data = PersetujuanPo::all();
-        $nonVendor = NonVendor::all();
-        $budgetClient = Penjualan::all();
-        $saldo = SaldoAwal::all();
-        $fee = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $invoice = Invoice::join('users', 'invoices.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('invoices.*') // Sesuaikan dengan nama kolom pada invoices
+            ->get();
+        $data = PersetujuanPo::join('users', 'persetujuan_pos.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('persetujuan_pos.*') // Sesuaikan dengan nama kolom pada persetujuan_pos
+            ->get();
+        $nonVendor = NonVendor::join('users', 'non_vendors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('non_vendors.*') // Sesuaikan dengan nama kolom pada non_vendors
+            ->get();
+        $budgetClient = Penjualan::join('users', 'penjualans.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('penjualans.*') // Sesuaikan dengan nama kolom pada penjualans
+            ->get();
+        $saldo = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
+            ->get();
 
-        $dataOperasional = OperasionalKantor::all();
+        $dataFees = FeeManajement::all();
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+        // Menampilkan OperasionalKantor berdasarkan lokasi user dengan melakukan join
+        $dataFee = $dataFees->map(function ($item) use ($dataUser) {
+            $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
+            $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
+            $item->lokasi_user = $user->lokasi;
+            return $item;
+        });
+        $fee = $dataFee->where('lokasi_user', $lokasiUser)->values();
+
+        $dataOperasional = OperasionalKantor::join('users', 'operasional_kantors.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('operasional_kantors.*') // Sesuaikan dengan nama kolom pada operasional_kantors
+            ->get();
 
         $totalInvoice = 0;
         $subTotalPo = 0;

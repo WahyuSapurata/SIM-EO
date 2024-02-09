@@ -33,6 +33,7 @@ class Laporan extends BaseController
         $data = array();
         try {
             $data = new SaldoAwal();
+            $data->uuid_user = auth()->user()->uuid;
             $data->saldo = $numericValue;
             $data->save();
         } catch (\Exception $e) {
@@ -43,8 +44,18 @@ class Laporan extends BaseController
 
     public function get()
     {
-        // Mengambil semua data pengguna
-        $dataFull = SaldoAwal::first();
+        if (auth()->user()->role === 'direktur') {
+            // Mengambil semua data pengguna
+            $dataFull = SaldoAwal::all();
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataFull = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
+                ->where('users.lokasi', $lokasiUser)
+                ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
+                ->get();
+        }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataFull, 'Get data success');
@@ -190,7 +201,23 @@ class Laporan extends BaseController
         // Mengurutkan data berdasarkan tanggal create yang terbaru
         $sortedData = $filteredData->sortBy('created_at')->values()->all();
 
-        $saldoAwal = SaldoAwal::first();
+        $saldoAwal = 0;
+
+        if (auth()->user()->role === 'direktur') {
+            // Mengambil semua data pengguna
+            $dataFull = SaldoAwal::all();
+        } else {
+            $lokasiUser = auth()->user()->lokasi;
+
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataFull = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
+                ->where('users.lokasi', $lokasiUser)
+                ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
+                ->get();
+        }
+        foreach ($dataFull as $data_saldo) {
+            $saldoAwal += floatval($data_saldo->saldo);
+        }
 
         // Buat objek Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -258,7 +285,7 @@ class Laporan extends BaseController
         ]);
 
         $row = 11;
-        $subtotalTotal = $saldoAwal ? floatval($saldoAwal->saldo) : 0;
+        $subtotalTotal = $saldoAwal ? floatval($saldoAwal) : 0;
 
         foreach ($sortedData as $index => $lap) {
             $sheet->setCellValue('A' . $row, $index + 1);

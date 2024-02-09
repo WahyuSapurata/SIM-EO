@@ -14,6 +14,7 @@ class SaldoAwal extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'uuid',
+        'uuid_user',
         'saldo',
     ];
 
