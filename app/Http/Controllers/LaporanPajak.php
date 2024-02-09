@@ -129,7 +129,32 @@ class LaporanPajak extends BaseController
             return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
         });
 
+        $combinedData = $combinedPersetujuanPo->map(function ($item) use ($dataRealcost) {
+            // Tambahkan logika modifikasi data di sini
+            $item->tanggal = optional($item->created_at)->format('d-m-Y');
+
+            if ($item instanceof PersetujuanPo || $item instanceof NonVendor) {
+                $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
+                $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+
+                // Gabungkan dua array untuk mencakup semua nilai
+                $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
+                $realCostPo = $dataRealcost->whereIn('uuid', $uuidValues);
+
+                // Menggunakan metode first() untuk mendapatkan satu objek hasil
+                $pajak_po = $realCostPo->first()->pajak_po ?? null;
+                $pajak_pph = $realCostPo->first()->pajak_pph ?? null;
+            }
+
+            // Pajak dipindahkan ke luar dari kondisi if-else untuk memastikan setiap $item memiliki atribut 'pajakData'
+            $item->pajakData = ['pajak_po' => $pajak_po, 'pajak_pph' => $pajak_pph];
+
+            return $item;
+        });
+
+        $sortedData = $combinedData->sortByDesc('created_at')->values()->all();
+
         // Mengembalikan respon
-        return $this->sendResponse($combinedPersetujuanPo, 'Get data success');
+        return $this->sendResponse($sortedData, 'Get data success');
     }
 }

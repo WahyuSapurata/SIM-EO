@@ -71,14 +71,12 @@
                 $('#kt_table_data').DataTable().clear().destroy();
             }
 
-            var groupedData = {}; // Menyimpan nilai grup sebelumnya
-
             // Initialize DataTable
             $('#kt_table_data').DataTable({
                 responsive: true,
                 pageLength: 10,
                 order: [
-                    [1, 'asc']
+                    [0, 'asc']
                 ],
                 processing: true,
                 ajax: '/pajak/laporan/get-faktur-keluar',
@@ -144,20 +142,20 @@
                     var rowIndex = startIndex + index + 1;
                     $('td', row).eq(0).html(rowIndex);
                 },
-                footerCallback: function(row, data, start, end, display) {
-                    var api = this.api();
-                    var totalNominal = 0;
+                // footerCallback: function(row, data, start, end, display) {
+                //     var api = this.api();
+                //     var totalNominal = 0;
 
-                    // Calculate total for 'harga_satuan' column
-                    api.column(5, {
-                        search: 'applied'
-                    }).data().each(function(value) {
-                        // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                        totalNominal += parseFloat(value);
-                    });
-                    // Update the total row in the footer
-                    $('#totalNominal').html('Rp ' + numeral(totalNominal).format('0,0'));
-                },
+                //     // Calculate total for 'harga_satuan' column
+                //     api.column(5, {
+                //         search: 'applied'
+                //     }).data().each(function(value) {
+                //         // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                //         totalNominal += parseFloat(value);
+                //     });
+                //     // Update the total row in the footer
+                //     $('#totalNominal').html('Rp ' + numeral(totalNominal).format('0,0'));
+                // },
             });
         };
 

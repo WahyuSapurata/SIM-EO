@@ -121,7 +121,7 @@
                             $totalPajak = $dataPajak->pajak / 100;
                             $hasilPajak = $total * $totalPajak;
                             $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
-                            $terbilang = $formatter->format($hasilPajak);
+                            $terbilang = $formatter->format($total + $hasilPajak);
                         @endphp
                         <td class="td">{{ 'Rp. ' . number_format($hasilPajak, 0, ',', '.') }}</td>
                     </tr>
@@ -134,7 +134,7 @@
                 </tbody>
             </table>
             <div style="font-style: italic; font-size: 16px; margin-top: 10px; margin-bottom: 30px">Terbilang :
-                ({{ $total + $hasilPajak }} rupiah)</div>
+                ({{ $terbilang }} rupiah)</div>
 
             <table class="table">
                 <thead style="background-color: #e36c09; color: #fff;">
