@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('file')->nullable();
             $table->string('tagihan')->nullable();
             $table->string('ket')->nullable();
+            $table->string('alamat_perusahaan');
+            $table->string('no_perusahaan');
             $table->timestamps();
         });
     }

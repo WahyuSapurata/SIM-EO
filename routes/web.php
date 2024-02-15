@@ -213,6 +213,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/get-faktur-masuk', 'FakturMasukController@get_faktur_masuk')->name('get-faktur-masuk');
             Route::get('/show-faktur-masuk/{params}', 'FakturMasukController@show')->name('show-faktur-masuk');
             Route::post('/storeUpdate-faktur-masuk/{params}', 'FakturMasukController@storeUpdate')->name('storeUpdate-faktur-masuk');
+
+            Route::get('/pemotongan-pajak', 'PemotonganPajakController@index')->name('pemotongan-pajak');
+            Route::get('/get-pemotongan-pajak', 'PemotonganPajakController@get')->name('get-pemotongan-pajak');
+            Route::post('/import-pemotongan-pajak', 'PemotonganPajakController@import_pemotongan_pajak')->name('import-pemotongan-pajak');
+            Route::get('/show-pemotongan-pajak/{params}', 'PemotonganPajakController@show')->name('show-pemotongan-pajak');
+            Route::post('/update-pemotongan-pajak/{params}', 'PemotonganPajakController@update')->name('update-pemotongan-pajak');
+            Route::delete('/delete-pemotongan-pajak/{params}', 'PemotonganPajakController@delete')->name('delete-pemotongan-pajak');
         });
     });
 

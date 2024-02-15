@@ -65,8 +65,14 @@
             </div>
             <div style="width: 100%; font-size: 18px; text-align: end">
                 <div style="font-size: 20px; font-weight: bold">DoubleHelix Indonesia</div>
-                <div>Base : Jl. Pandang Raya No.8,Panakukang, Makassar</div>
-                <div>Telp/fax 0411 425194</div>
+                @if (auth()->user()->lokasi === 'makassar')
+                    <div>Base : Jl. Pandang Raya No.8,Panakukang, Makassar</div>
+                    <div>Telp/fax 0411 425194</div>
+                @else
+                    <div>Base : Jl. KH. Moh. Naim II No.2A 4, RT.4/RW.11, Cipete Utara, Kec. Kby. Baru, Kota Jakarta
+                        Selatan</div>
+                    <div>Telp/fax 021-27085607</div>
+                @endif
                 <div>Email : info@doublehelix.co.id</div>
             </div>
         </div>
@@ -81,7 +87,7 @@
                     <div style="font-size: 16px; margin-left: 20px">INVOICE TO</div>
                     <div style="font-size: 20px; margin-top: 25px; margin-left: 20px">
                         {{ $dataClient->nama_client }}
-                        <br> {{ $dataClient->venue }}
+                        <br> {{ $alamat_perusahaan }}
                     </div>
                 </div>
                 <div style="width: 100%">
@@ -99,7 +105,7 @@
             </div>
 
             <table class="table">
-                <thead style="background-color: #bf504d; color: #fff;">
+                <thead style="background-color: #548ed4; color: #fff;">
                     <tr class="tr">
                         <th class="th">DESCRIPTION</th>
                         <th class="th" style="width: 150px">TOTAL PRICE (Rp)</th>
@@ -112,16 +118,39 @@
                         </td>
                         <td class="td">{{ 'Rp. ' . number_format($total, 0, ',', '.') }}</td>
                     </tr>
+                    @php
+                        $hasilPajak = 0; // Inisialisasi nilai $hasilPajak
+                    @endphp
+                    @if ($dataPajak)
+                        <tr class="tr">
+                            <td class="td">
+                                {{ $dataPajak->deskripsi_pajak }}
+                            </td>
+                            @php
+                                $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+                                $totalPajak = $dataPajak->pajak / 100;
+                                $hasilPajak = $total * $totalPajak;
+                                $terbilang = $formatter->format($total + $hasilPajak);
+                            @endphp
+                            <td class="td">{{ 'Rp. ' . number_format($hasilPajak, 0, ',', '.') }}</td>
+                        </tr>
+                    @else
+                        @php
+                            $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+                            $terbilang = $formatter->format($total);
+                        @endphp
+                    @endif
+
                     <tr class="tr">
                         <td class="td">
                             Grand Total
                         </td>
-                        <td class="td">{{ 'Rp. ' . number_format($total, 0, ',', '.') }}</td>
+                        <td class="td">{{ 'Rp. ' . number_format($total + $hasilPajak, 0, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>
             <div style="font-style: italic; font-size: 16px; margin-top: 10px; margin-bottom: 30px">Terbilang :
-                ({{ $huruf }} rupiah)</div>
+                ({{ $terbilang }} rupiah)</div>
 
             <table class="table">
                 <thead style="background-color: #bf504d; color: #fff;">

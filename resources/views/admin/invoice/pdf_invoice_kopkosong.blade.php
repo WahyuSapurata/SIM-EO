@@ -73,7 +73,7 @@
                     <div style="font-size: 16px; margin-left: 20px">INVOICE TO</div>
                     <div style="font-size: 20px; margin-top: 25px; margin-left: 20px">
                         {{ $dataClient->nama_client }}
-                        <br> {{ $dataClient->venue }}
+                        <br> {{ $alamat_perusahaan }}
                     </div>
                 </div>
                 <div style="width: 100%">
@@ -91,7 +91,7 @@
             </div>
 
             <table class="table">
-                <thead style="background-color: #bf504d; color: #fff;">
+                <thead style="background-color: #548ed4; color: #fff;">
                     <tr class="tr">
                         <th class="th">DESCRIPTION</th>
                         <th class="th" style="width: 150px">TOTAL PRICE (Rp)</th>
@@ -104,16 +104,39 @@
                         </td>
                         <td class="td">{{ 'Rp. ' . number_format($total, 0, ',', '.') }}</td>
                     </tr>
+                    @php
+                        $hasilPajak = 0; // Inisialisasi nilai $hasilPajak
+                    @endphp
+                    @if ($dataPajak)
+                        <tr class="tr">
+                            <td class="td">
+                                {{ $dataPajak->deskripsi_pajak }}
+                            </td>
+                            @php
+                                $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+                                $totalPajak = $dataPajak->pajak / 100;
+                                $hasilPajak = $total * $totalPajak;
+                                $terbilang = $formatter->format($total + $hasilPajak);
+                            @endphp
+                            <td class="td">{{ 'Rp. ' . number_format($hasilPajak, 0, ',', '.') }}</td>
+                        </tr>
+                    @else
+                        @php
+                            $formatter = new NumberFormatter('id', NumberFormatter::SPELLOUT);
+                            $terbilang = $formatter->format($total);
+                        @endphp
+                    @endif
+
                     <tr class="tr">
                         <td class="td">
                             Grand Total
                         </td>
-                        <td class="td">{{ 'Rp. ' . number_format($total, 0, ',', '.') }}</td>
+                        <td class="td">{{ 'Rp. ' . number_format($total + $hasilPajak, 0, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>
             <div style="font-style: italic; font-size: 16px; margin-top: 10px; margin-bottom: 30px">Terbilang :
-                ({{ $huruf }} rupiah)</div>
+                ({{ $terbilang }} rupiah)</div>
 
             <table class="table">
                 <thead style="background-color: #bf504d; color: #fff;">

@@ -949,7 +949,7 @@ class Control {
         });
     }
 
-    async initDatatable3(url, columns, saldoAwal) {
+    async initDatatable3(url, columns) {
         // Destroy the existing DataTable
         if (this.table && $.fn.DataTable.isDataTable(this.table)) {
             this.table.DataTable().destroy();
@@ -975,7 +975,7 @@ class Control {
             },
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
-                var subtotalTotal = saldoAwal === undefined ? 0 : parseFloat(saldoAwal);
+                var subtotalTotal = 0;
 
                 // Calculate total for 'masuk' and 'keluar' columns
                 api.rows({ search: 'applied' }).data().each(function (value) {

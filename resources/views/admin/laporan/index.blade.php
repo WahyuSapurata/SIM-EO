@@ -197,7 +197,7 @@
         })
 
         function sendDataToServer(selectedDateStr) {
-            let cumulativeSaldo = saldoAwal === undefined ? 0 : parseFloat(saldoAwal);
+            let cumulativeSaldo = 0;
             let columns = [{
                 data: null,
                 className: 'text-center',
@@ -256,7 +256,7 @@
             }];
 
             $(function() {
-                control.initDatatable3(`/admin/data-laporan/get-laporan/${selectedDateStr}`, columns, saldoAwal);
+                control.initDatatable3(`/admin/data-laporan/get-laporan/${selectedDateStr}`, columns);
             })
         }
 

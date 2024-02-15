@@ -72,6 +72,9 @@ class Laporan extends BaseController
 
         $mergedData = collect([]); // Membuat koleksi kosong
 
+        $saldoAwal = SaldoAwal::all();
+        $mergedData = $mergedData->merge($saldoAwal);
+
         // Menggabungkan data dari PersetujuanPo
         $persetujuanPo = PersetujuanPo::whereNotNull('sisa_tagihan')->get();
         $mergedData = $mergedData->merge($persetujuanPo);
@@ -106,10 +109,13 @@ class Laporan extends BaseController
                 $item->deskripsi .= 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
             } elseif ($item instanceof Piutang) {
                 $item->deskripsi .= 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            } elseif ($item instanceof SaldoAwal) {
+                $lokasi = User::where('uuid', $item->uuid_user)->first();
+                $item->deskripsi .= $lokasi->lokasi === 'makassar' ? 'Saldo awal makassar' : 'Saldo awal jakarta';
             }
 
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
-            $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
+            $item->masuk = ($item instanceof Invoice || $item instanceof Piutang || $item instanceof SaldoAwal) ? ($item->tagihan ?? 0) + ($item->saldo ?? 0) : 0;
             $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
@@ -127,7 +133,15 @@ class Laporan extends BaseController
         $filteredData = $filteredData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
 
         // Mengurutkan data berdasarkan tanggal create yang terbaru
-        $sortedData = $filteredData->sortBy('created_at')->values()->all();
+        $sortedData = $filteredData->sort(function ($a, $b) {
+            if ($a instanceof SaldoAwal && !($b instanceof SaldoAwal)) {
+                return -1; // $a (SaldoAwal) harus lebih dulu
+            } elseif (!($a instanceof SaldoAwal) && $b instanceof SaldoAwal) {
+                return 1; // $b (SaldoAwal) harus lebih dulu
+            }
+            // Jika keduanya atau tidak ada yang SaldoAwal, urutkan berdasarkan tanggal
+            return $a->created_at <=> $b->created_at;
+        })->values()->all();
 
         // Mengembalikan respon
         return $this->sendResponse($sortedData, 'Get data success');
@@ -144,6 +158,9 @@ class Laporan extends BaseController
 
         $mergedData = collect([]); // Membuat koleksi kosong
 
+        $saldoAwal = SaldoAwal::all();
+        $mergedData = $mergedData->merge($saldoAwal);
+
         // Menggabungkan data dari PersetujuanPo
         $persetujuanPo = PersetujuanPo::whereNotNull('sisa_tagihan')->get();
         $mergedData = $mergedData->merge($persetujuanPo);
@@ -178,10 +195,13 @@ class Laporan extends BaseController
                 $item->deskripsi .= 'Pembayaran utang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
             } elseif ($item instanceof Piutang) {
                 $item->deskripsi .= 'Pembayaran piutang sebesar ' . "Rp " . number_format($item->utang, 0, ',', '.');
+            } elseif ($item instanceof SaldoAwal) {
+                $lokasi = User::where('uuid', $item->uuid_user)->first();
+                $item->deskripsi .= $lokasi->lokasi === 'makassar' ? 'Saldo awal makassar' : 'Saldo awal jakarta';
             }
 
             $item->keluar = ($item instanceof PersetujuanPo || $item instanceof NonVendor || $item instanceof Utang || $item instanceof OperasionalKantor) ? ($item->sisa_tagihan ?? 0) + ($item->tagihan ?? 0) : 0;
-            $item->masuk = ($item instanceof Invoice || $item instanceof Piutang) ? ($item->tagihan ?? 0) : 0;
+            $item->masuk = ($item instanceof Invoice || $item instanceof Piutang || $item instanceof SaldoAwal) ? ($item->tagihan ?? 0) + ($item->saldo ?? 0) : 0;
             $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
@@ -199,25 +219,15 @@ class Laporan extends BaseController
         $filteredData = $filteredData->whereBetween('tanggal', [$startDateStr, $endDateStr]);
 
         // Mengurutkan data berdasarkan tanggal create yang terbaru
-        $sortedData = $filteredData->sortBy('created_at')->values()->all();
-
-        $saldoAwal = 0;
-
-        if (auth()->user()->role === 'direktur') {
-            // Mengambil semua data pengguna
-            $dataFull = SaldoAwal::all();
-        } else {
-            $lokasiUser = auth()->user()->lokasi;
-
-            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataFull = SaldoAwal::join('users', 'saldo_awals.uuid_user', '=', 'users.uuid')
-                ->where('users.lokasi', $lokasiUser)
-                ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
-                ->get();
-        }
-        foreach ($dataFull as $data_saldo) {
-            $saldoAwal += floatval($data_saldo->saldo);
-        }
+        $sortedData = $filteredData->sort(function ($a, $b) {
+            if ($a instanceof SaldoAwal && !($b instanceof SaldoAwal)) {
+                return -1; // $a (SaldoAwal) harus lebih dulu
+            } elseif (!($a instanceof SaldoAwal) && $b instanceof SaldoAwal) {
+                return 1; // $b (SaldoAwal) harus lebih dulu
+            }
+            // Jika keduanya atau tidak ada yang SaldoAwal, urutkan berdasarkan tanggal
+            return $a->created_at <=> $b->created_at;
+        })->values()->all();
 
         // Buat objek Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -285,7 +295,7 @@ class Laporan extends BaseController
         ]);
 
         $row = 11;
-        $subtotalTotal = $saldoAwal ? floatval($saldoAwal) : 0;
+        $subtotalTotal = 0;
 
         foreach ($sortedData as $index => $lap) {
             $sheet->setCellValue('A' . $row, $index + 1);

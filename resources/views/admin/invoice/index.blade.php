@@ -42,6 +42,8 @@
                                             <th>Tanggal</th>
                                             <th>Jatuh Tempo</th>
                                             <th>Client</th>
+                                            <th>Alamat Perusahaan</th>
+                                            <th>Nomor Perusahaan</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>Pajak</th>
@@ -53,7 +55,7 @@
                                     </tbody>
                                     <tfoot class="bg-primary rounded">
                                         <tr class="fw-bolder fs-6 text-gray-800">
-                                            <td style="text-align: left !important;" colspan="6">Total</td>
+                                            <td style="text-align: left !important;" colspan="8">Total</td>
                                             <td style="text-align: left !important;" colspan="4" id="total-subtotal">
                                                 Rp 0
                                             </td>
@@ -155,6 +157,18 @@
                     </div>
 
                     <div class="mb-10">
+                        <label class="form-label">Alamat Perusahaan</label>
+                        <input type="text" id="alamat_perusahaan" class="form-control" name="alamat_perusahaan">
+                        <small class="text-danger alamat_perusahaan_error"></small>
+                    </div>
+
+                    <div class="mb-10">
+                        <label class="form-label">Nomor Perusahaan</label>
+                        <input type="text" id="no_perusahaan" class="form-control" name="no_perusahaan">
+                        <small class="text-danger no_perusahaan_error"></small>
+                    </div>
+
+                    <div class="mb-10">
                         <label class="form-label">Deskripsi</label>
                         <input type="text" id="deskripsi" class="form-control" name="deskripsi">
                         <small class="text-danger deskripsi_error"></small>
@@ -166,7 +180,7 @@
                         <small class="text-danger total_error"></small>
                     </div>
 
-                    <div id="pajak" class="mb-10 d-none">
+                    <div id="pajak" class="mb-10">
                         <label class="form-label">Pajak</label>
                         <select name="uuid_pajak" class="form-select" data-control="select2" id="uuid_pajak-select"
                             data-placeholder="Pilih jenis inputan">
@@ -226,13 +240,13 @@
             }
         });
 
-        $(document).on('change', '#from_select_kop', function() {
-            if ($(this).val() === 'PT. LINGKARAN GANDA BERKARYA') {
-                $('#pajak').removeClass('d-none');
-            } else {
-                $('#pajak').addClass('d-none');
-            }
-        });
+        // $(document).on('change', '#from_select_kop', function() {
+        //     if ($(this).val() === 'PT. LINGKARAN GANDA BERKARYA') {
+        //         $('#pajak').removeClass('d-none');
+        //     } else {
+        //         $('#pajak').addClass('d-none');
+        //     }
+        // });
 
         $(document).on('click', '#button-side-form', function() {
             control.overlay_form('Tambah', 'Invoice');
@@ -389,6 +403,12 @@
                     data: 'vendor',
                     className: 'text-center',
                 }, {
+                    data: 'alamat_perusahaan',
+                    className: 'text-center',
+                }, {
+                    data: 'no_perusahaan',
+                    className: 'text-center',
+                }, {
                     data: 'deskripsi',
                     className: 'text-center',
                 }, {
@@ -488,7 +508,7 @@
                     var subtotalTotal = 0;
 
                     // Calculate total for 'harga_satuan' column
-                    api.column(6, {
+                    api.column(8, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq

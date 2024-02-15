@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFakturMasukRequest;
 use App\Http\Requests\UpdateFakturMasukRequest;
 use App\Models\DataPajak;
+use App\Models\FakturKeluar;
 use App\Models\FakturMasuk;
 use App\Models\Invoice;
+use App\Models\NonVendor;
+use App\Models\PersetujuanPo;
+use App\Models\RealCost;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -21,25 +25,50 @@ class FakturMasukController extends BaseController
     public function get_faktur_masuk()
     {
         // Menggabungkan data dari PersetujuanPo
-        $persetujuanInvoice = Invoice::whereNotNull('uuid_pajak')
-            ->whereNotNull('tagihan')
-            ->get();
+        $dataRealcost = RealCost::whereNotNull('pajak_po')->orWhereNotNull('pajak_pph')->get();
 
-        $combinedData = $persetujuanInvoice->map(function ($item) {
+        $mergePo = collect([]);
+
+        $persetujuanNonVendor = NonVendor::all();
+        $mergePo = $mergePo->merge($persetujuanNonVendor);
+        $persetujuanPo = PersetujuanPo::all();
+        $mergePo = $mergePo->merge($persetujuanPo);
+
+        $combinedPersetujuanPo = $mergePo->filter(function ($item) use ($dataRealcost) {
+            // Pecah nilai uuid_penjualan dan uuid_realCost menjadi array jika mengandung koma
+            $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
+            $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+
+            // Gabungkan dua array untuk mencakup semua nilai
+            $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
+
+            // Cek apakah setidaknya satu nilai uuid cocok dengan dataRealcost
+            return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
+        });
+
+        $combinedData = $combinedPersetujuanPo->map(function ($item) use ($dataRealcost) {
             // Tambahkan logika modifikasi data di sini
+            $total_ppn = 0;
+            $total_pph = 0;
+            if ($item instanceof PersetujuanPo || $item instanceof NonVendor) {
+                $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
+                $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+
+                // Gabungkan dua array untuk mencakup semua nilai
+                $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
+                $realCostPo = $dataRealcost->whereIn('uuid', $uuidValues);
+
+                // Menggunakan metode first() untuk mendapatkan satu objek hasil
+                $pajak_po = $realCostPo->first()->pajak_po ?? null;
+                $pajak_pph = $realCostPo->first()->pajak_pph ?? null;
+
+                // $pajak_ppn = DataPajak::where('deskripsi_pajak', $pajak_po)->first();
+                // $total_ppn = ($realCostPo->satuan_real_cost * $realCostPo->qty * $realCostPo->freq - $realCostPo->disc_item) * ($pajak_ppn->pajak / 100);
+                // dd($total_ppn);
+            }
+
             $faktur_masuk = FakturMasuk::where('uuid_persetujuan', $item->uuid)->first();
             $dataUser = User::where('uuid', $item->uuid_user)->first();
-            $dataPajak = DataPajak::where('uuid', $item->uuid_pajak)->first();
-            $deskripsiPajak = $dataPajak->deskripsi_pajak ?? null;
-
-            $ppn = null;
-            $pph = null;
-
-            if (stripos($deskripsiPajak, 'ppn') !== false) {
-                $ppn = $deskripsiPajak; // Jika jenis pajak adalah PPN
-            } else {
-                $pph = $deskripsiPajak; // Jika jenis pajak adalah PPH
-            }
 
             $item->npwp = $faktur_masuk->npwp ?? null;
             $item->nama_vendor = $faktur_masuk->nama_vendor ?? null;
@@ -48,8 +77,8 @@ class FakturMasukController extends BaseController
             $item->masa = $faktur_masuk->masa ?? null;
             $item->tahun = $faktur_masuk->tahun ?? null;
             $item->dpp = $faktur_masuk->dpp ?? null;
-            $item->ppn = $ppn;
-            $item->pph = $pph;
+            $item->ppn = $pajak_po;
+            $item->pph = $pajak_pph;
             $item->no_bupot = $faktur_masuk->no_bupot ?? null;
             $item->tgl_bupot = $faktur_masuk->tgl_bupot ?? null;
             $item->area = $dataUser->lokasi;
@@ -92,18 +121,18 @@ class FakturMasukController extends BaseController
                 $data->tgl_bupot = $request->tgl_bupot;
                 $data->save();
             } else {
-                $faktur_keluar = new FakturMasuk();
-                $faktur_keluar->uuid_persetujuan = $params;
-                $faktur_keluar->npwp = $request->npwp;
-                $faktur_keluar->nama_vendor = $request->nama_vendor;
-                $faktur_keluar->no_faktur = $request->no_faktur;
-                $faktur_keluar->tanggal_faktur = $request->tanggal_faktur;
-                $faktur_keluar->masa = $request->masa;
-                $faktur_keluar->tahun = $request->tahun;
-                $faktur_keluar->dpp = $request->dpp;
-                $faktur_keluar->no_bupot = $request->no_bupot;
-                $faktur_keluar->tgl_bupot = $request->tgl_bupot;
-                $faktur_keluar->save();
+                $faktur_masuk = new FakturMasuk();
+                $faktur_masuk->uuid_persetujuan = $params;
+                $faktur_masuk->npwp = $request->npwp;
+                $faktur_masuk->nama_vendor = $request->nama_vendor;
+                $faktur_masuk->no_faktur = $request->no_faktur;
+                $faktur_masuk->tanggal_faktur = $request->tanggal_faktur;
+                $faktur_masuk->masa = $request->masa;
+                $faktur_masuk->tahun = $request->tahun;
+                $faktur_masuk->dpp = $request->dpp;
+                $faktur_masuk->no_bupot = $request->no_bupot;
+                $faktur_masuk->tgl_bupot = $request->tgl_bupot;
+                $faktur_masuk->save();
             }
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);

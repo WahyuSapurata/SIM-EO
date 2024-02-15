@@ -35,7 +35,7 @@ class Auth extends BaseController
         } elseif (auth()->user()->role === 'direktur') {
             return redirect()->route('direktur.dashboard-direktur');
         } elseif (auth()->user()->role === 'pajak') {
-            return redirect()->route('pajak.dashboard-pajak');
+            return redirect()->route('pajak.faktur-keluar');
         }
     }
 

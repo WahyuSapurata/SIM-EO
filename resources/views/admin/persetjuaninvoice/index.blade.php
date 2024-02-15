@@ -128,6 +128,8 @@
                                             <th>No Invoice</th>
                                             <th>Jatuh Tempo</th>
                                             <th>Client</th>
+                                            <th>Alamat Perusahaan</th>
+                                            <th>Nomor Perusahaan</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>File</th>
@@ -308,6 +310,12 @@
                         data: 'vendor',
                         className: 'text-center',
                     }, {
+                        data: 'alamat_perusahaan',
+                        className: 'text-center',
+                    }, {
+                        data: 'no_perusahaan',
+                        className: 'text-center',
+                    }, {
                         data: 'deskripsi',
                         className: 'text-center',
                     }, {
@@ -421,14 +429,14 @@
                     var totalTerbayar = 0;
 
                     // Calculate total for 'harga_satuan' column
-                    api.column(5, {
+                    api.column(7, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq
                         totalPo += parseFloat(value.total);
                     });
 
-                    api.column(7, {
+                    api.column(9, {
                         search: 'applied'
                     }).data().each(function(value) {
                         // Harga satuan diubah menjadi float dan dikalikan dengan freq

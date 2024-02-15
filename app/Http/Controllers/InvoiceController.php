@@ -84,6 +84,8 @@ class InvoiceController extends BaseController
 
         $kop = $updateInvoiceRequest->kop;
         $uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+        $alamat_perusahaan = $updateInvoiceRequest->alamat_perusahaan;
+        $no_perusahaan = $updateInvoiceRequest->no_perusahaan;
         $no_invoice = $updateInvoiceRequest->no_invoice;
         $tanggal_invoice = $updateInvoiceRequest->tanggal_invoice;
         $deskripsi = $updateInvoiceRequest->deskripsi;
@@ -142,6 +144,8 @@ class InvoiceController extends BaseController
 
             try {
                 $data->uuid_vendor = $uuid_vendor;
+                $data->alamat_perusahaan = $alamat_perusahaan;
+                $data->no_perusahaan = $no_perusahaan;
                 $data->uuid_user = auth()->user()->uuid;
                 $data->no_invoice = $no_inv;
                 $data->tanggal = $updateInvoiceRequest->tanggal;
@@ -167,6 +171,8 @@ class InvoiceController extends BaseController
         } else {
             try {
                 $data->uuid_vendor = $updateInvoiceRequest->uuid_vendor;
+                $data->alamat_perusahaan = $alamat_perusahaan;
+                $data->no_perusahaan = $no_perusahaan;
                 $data->uuid_user = auth()->user()->uuid;
                 $data->no_invoice = $no_inv;
                 $data->tanggal = $updateInvoiceRequest->tanggal;
@@ -205,6 +211,8 @@ class InvoiceController extends BaseController
     {
         $kop = $storeInvoiceRequest->kop;
         $uuid_vendor = $storeInvoiceRequest->uuid_vendor;
+        $alamat_perusahaan = $storeInvoiceRequest->alamat_perusahaan;
+        $no_perusahaan = $storeInvoiceRequest->no_perusahaan;
         $no_invoice = $storeInvoiceRequest->no_invoice;
         $tanggal_invoice = $storeInvoiceRequest->tanggal_invoice;
         $deskripsi = $storeInvoiceRequest->deskripsi;
@@ -234,15 +242,15 @@ class InvoiceController extends BaseController
 
         // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
         if ($kop === 'CV. INIEVENT LANCAR JAYA') {
-            $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
         } elseif ($kop === 'DoubleHelix Indonesia') {
-            $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
         } elseif ($kop === 'PT. LINGKARAN GANDA BERKARYA') {
-            $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+            $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
         } elseif ($kop === 'Kop Kosong') {
-            $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
         } elseif ($kop === 'PT. MAHAKARYA KREASI SOLUSI') {
-            $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+            $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
         }
 
         $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';
@@ -254,6 +262,8 @@ class InvoiceController extends BaseController
         try {
             $data = new Invoice();
             $data->uuid_vendor = $uuid_vendor;
+            $data->alamat_perusahaan = $alamat_perusahaan;
+            $data->no_perusahaan = $no_perusahaan;
             $data->uuid_user = auth()->user()->uuid;
             $data->no_invoice = $no_inv;
             $data->tanggal = $storeInvoiceRequest->tanggal;

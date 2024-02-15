@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFakturKeluarRequest;
 use App\Http\Requests\UpdateFakturKeluarRequest;
+use App\Models\DataClient;
+use App\Models\DataPajak;
 use App\Models\FakturKeluar;
+use App\Models\FakturMasuk;
+use App\Models\Invoice;
 use App\Models\NonVendor;
 use App\Models\PersetujuanPo;
 use App\Models\RealCost;
@@ -22,64 +26,45 @@ class FakturKeluarController extends BaseController
     public function get_faktur_keluar()
     {
         // Menggabungkan data dari PersetujuanPo
-        $dataRealcost = RealCost::whereNotNull('pajak_po')->orWhereNotNull('pajak_pph')->get();
+        $persetujuanInvoice = Invoice::whereNotNull('uuid_pajak')
+            ->whereNotNull('tagihan')
+            ->get();
 
-        $mergePo = collect([]);
-
-        $persetujuanNonVendor = NonVendor::all();
-        $mergePo = $mergePo->merge($persetujuanNonVendor);
-        $persetujuanPo = PersetujuanPo::all();
-        $mergePo = $mergePo->merge($persetujuanPo);
-
-        $combinedPersetujuanPo = $mergePo->filter(function ($item) use ($dataRealcost) {
-            // Pecah nilai uuid_penjualan dan uuid_realCost menjadi array jika mengandung koma
-            $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
-            $uuidValuesRealCost = explode(',', $item->uuid_realCost);
-
-            // Gabungkan dua array untuk mencakup semua nilai
-            $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
-
-            // Cek apakah setidaknya satu nilai uuid cocok dengan dataRealcost
-            return $dataRealcost->whereIn('uuid', $uuidValues)->isNotEmpty();
-        });
-
-        $combinedData = $combinedPersetujuanPo->map(function ($item) use ($dataRealcost) {
+        $combinedData = $persetujuanInvoice->map(function ($item) {
             // Tambahkan logika modifikasi data di sini
-            if ($item instanceof PersetujuanPo || $item instanceof NonVendor) {
-                $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
-                $uuidValuesRealCost = explode(',', $item->uuid_realCost);
+            $faktur_keluar = FakturKeluar::where('uuid_persetujuan', $item->uuid)->first();
+            $dataClient = DataClient::where('uuid', $item->uuid_vendor)->first();
+            $dataUser = User::where('uuid', $item->uuid_user)->first();
+            $dataPajak = DataPajak::where('uuid', $item->uuid_pajak)->first();
+            $deskripsiPajak = $dataPajak->deskripsi_pajak ?? null;
 
-                // Gabungkan dua array untuk mencakup semua nilai
-                $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
-                $realCostPo = $dataRealcost->whereIn('uuid', $uuidValues);
+            $ppn = null;
+            $pph = null;
 
-                // Menggunakan metode first() untuk mendapatkan satu objek hasil
-                $pajak_po = $realCostPo->first()->pajak_po ?? null;
-                $pajak_pph = $realCostPo->first()->pajak_pph ?? null;
+            if (stripos($deskripsiPajak, 'ppn') !== false) {
+                $ppn = $deskripsiPajak; // Jika jenis pajak adalah PPN
+            } else {
+                $pph = $deskripsiPajak; // Jika jenis pajak adalah PPH
             }
 
-            $faktur_keluar = FakturKeluar::where('uuid_persetujuan', $item->uuid)->first();
-            $dataUser = User::where('uuid', $item->uuid_user)->first();
-
             $item->npwp = $faktur_keluar->npwp ?? null;
+            $item->client = $dataClient->nama_client ?? null;
             $item->no_faktur = $faktur_keluar->no_faktur ?? null;
             $item->tanggal_faktur = $faktur_keluar->tanggal_faktur ?? null;
             $item->masa = $faktur_keluar->masa ?? null;
             $item->tahun = $faktur_keluar->tahun ?? null;
             $item->status_faktur = $faktur_keluar->status_faktur ?? null;
             $item->dpp = $faktur_keluar->dpp ?? null;
-            $item->ppn = $pajak_po;
+            $item->ppn = $ppn;
+            $item->event = $dataClient->event;
             $item->area = $dataUser->lokasi;
-            $item->pph = $pajak_pph;
-            $item->total_tagihan = $item->total_po;
+            $item->pph = $pph;
+            $item->total_tagihan = $item->total;
             $item->realisasi_dana_masuk = $faktur_keluar->realisasi_dana_masuk ?? null;
             $item->deskripsi = $faktur_keluar->deskripsi ?? null;
             $item->selisih = $faktur_keluar->selisih ?? null;
             $item->no_bupot = $faktur_keluar->no_bupot ?? null;
             $item->tgl_bupot = $faktur_keluar->tgl_bupot ?? null;
-
-            // Pajak dipindahkan ke luar dari kondisi if-else untuk memastikan setiap $item memiliki atribut 'pajakData'
-            // $item->pajakData = ['pajak_po' => $pajak_po, 'pajak_pph' => $pajak_pph];
 
             return $item;
         });
