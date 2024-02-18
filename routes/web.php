@@ -31,11 +31,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/get-persetujuanpo', 'PersetujuanPo@get')->name('get-persetujuanpo');
             Route::post('/reload-persetujuanpo', 'PersetujuanPo@reload')->name('reload-persetujuanpo');
             Route::post('/update-persetujuanpo/{params}', 'PersetujuanPo@update')->name('update-persetujuanpo');
+            Route::get('/export-persetujuanpo', 'PersetujuanPo@exportToExcel')->name('export-persetujuanpo');
 
             Route::get('/pesetujuannonvendor', 'NonVendorController@index')->name('pesetujuannonvendor');
             Route::get('/get-pesetujuannonvendor', 'NonVendorController@get')->name('get-pesetujuannonvendor');
             Route::post('/reload-pesetujuannonvendor', 'NonVendorController@reload')->name('reload-pesetujuannonvendor');
             Route::post('/update-pesetujuannonvendor/{params}', 'NonVendorController@update')->name('update-pesetujuannonvendor');
+            Route::get('/export-pesetujuannonvendor', 'NonVendorController@exportToExcel')->name('export-pesetujuannonvendor');
         });
 
         Route::prefix('master-data')->group(function () {
@@ -92,22 +94,26 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-invoice/{params}', 'InvoiceController@show')->name('show-invoice');
             Route::get('/update-invoice', 'InvoiceController@update')->name('update-invoice');
             Route::delete('/delete-invoice/{params}', 'InvoiceController@delete')->name('delete-invoice');
+            Route::get('/export-invoice', 'InvoiceController@exportToExcel')->name('export-invoice');
 
             Route::get('/persetujuaninvoice', 'PersetujuanInvoiceController@index')->name('persetujuaninvoice');
             Route::get('/get-persetujuaninvoice', 'PersetujuanInvoiceController@get')->name('get-persetujuaninvoice');
             Route::post('/reload-persetujuaninvoice', 'PersetujuanInvoiceController@reload')->name('reload-persetujuaninvoice');
             Route::post('/update-persetujuaninvoice/{params}', 'PersetujuanInvoiceController@update')->name('update-persetujuaninvoice');
+            Route::get('/export-persetujuaninvoice', 'PersetujuanInvoiceController@exportToExcel')->name('export-persetujuaninvoice');
         });
 
         Route::prefix('Utang-piutang')->group(function () {
             Route::get('/utang', 'UtangController@index')->name('utang');
             Route::get('/get-utang', 'UtangController@get')->name('get-utang');
             Route::post('/update-utang/{params}', 'UtangController@update')->name('update-utang');
+            Route::get('/export-utang', 'UtangController@exportToExcel')->name('export-utang');
 
             Route::get('/piutang', 'PiutangController@index')->name('piutang');
             Route::get('/get-piutang', 'PiutangController@get')->name('get-piutang');
             Route::post('/update-piutang/{params}', 'PiutangController@update')->name('update-piutang');
             Route::post('/lunas/{params}', 'PiutangController@lunas')->name('lunas');
+            Route::get('/export-piutang', 'PiutangController@exportToExcel')->name('export-piutang');
         });
 
         Route::prefix('data-laporan')->group(function () {
@@ -129,9 +135,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-operasionalkantor/{params}', 'OperasionalKantorController@show')->name('show-operasionalkantor');
             Route::post('/update-operasionalkantor/{params}', 'OperasionalKantorController@update')->name('update-operasionalkantor');
             Route::delete('/delete-operasionalkantor/{params}', 'OperasionalKantorController@delete')->name('delete-operasionalkantor');
+            Route::get('/export-operasionalkantor', 'OperasionalKantorController@exportToExcel')->name('export-operasionalkantor');
 
             Route::get('/persetujuanoperasionalkantor', 'PersetujuanOperasionalKantorController@index')->name('persetujuanoperasionalkantor');
             Route::post('/update-persetujuanoperasionalkantor/{params}', 'PersetujuanOperasionalKantorController@update')->name('update-persetujuanoperasionalkantor');
+            Route::get('/export-persetujuanoperasionalkantor', 'PersetujuanOperasionalKantorController@exportToExcel')->name('export-persetujuanoperasionalkantor');
         });
 
         Route::get('/ubahpassword', 'UbahPassword@index')->name('ubahpassword');
@@ -179,6 +187,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
         Route::get('/show-realCost/{params}', 'RealCostController@show')->name('show-realCost');
         Route::post('/update-realCost/{params}', 'RealCostController@update')->name('update-realCost');
         Route::delete('/delete-realCost/{params}', 'RealCostController@delete')->name('delete-realCost');
+        Route::get('/export-realCost/{params}', 'RealCostController@exportToExcel')->name('export-realCost');
 
         Route::get('/export-invoiceNonVendor', 'NonVendorController@exportToPDF')->name('export-invoiceNonVendor');
 

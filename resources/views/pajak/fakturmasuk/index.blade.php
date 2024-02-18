@@ -186,7 +186,7 @@
             dateFormat: "d-m-Y",
         });
 
-        $('#realisasi_dana_masuk').on('input', function() {
+        $('#dpp').on('input', function() {
             let value = $(this).val();
             if (value !== "") {
                 value = numeral(value).format('0,0'); // Format to rupiah
@@ -284,21 +284,21 @@
                     }
                 }, {
                     data: 'dpp',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'ppn',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'pph',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'no_bupot',

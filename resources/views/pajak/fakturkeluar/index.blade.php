@@ -247,6 +247,14 @@
             dateFormat: "d-m-Y",
         });
 
+        $('#dpp').on('input', function() {
+            let value = $(this).val();
+            if (value !== "") {
+                value = numeral(value).format('0,0'); // Format to rupiah
+                $(this).val('Rp ' + value);
+            }
+        });
+
         $('#realisasi_dana_masuk').on('input', function() {
             let value = $(this).val();
             if (value !== "") {
@@ -351,15 +359,15 @@
                     }
                 }, {
                     data: 'dpp',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'ppn',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'event',
@@ -375,9 +383,9 @@
                     }
                 }, {
                     data: 'pph',
-                    className: 'text-center',
                     render: function(data, type, row, meta) {
-                        return data !== null ? data : '-';
+                        const value = data !== null ? numeral(data).format('0,0') : '-';
+                        return data !== null ? 'Rp ' + value : '-';
                     }
                 }, {
                     data: 'total_tagihan',

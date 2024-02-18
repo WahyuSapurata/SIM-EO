@@ -48,9 +48,10 @@ class FakturMasukController extends BaseController
 
         $combinedData = $combinedPersetujuanPo->map(function ($item) use ($dataRealcost) {
             // Tambahkan logika modifikasi data di sini
-            $total_ppn = 0;
-            $total_pph = 0;
             if ($item instanceof PersetujuanPo || $item instanceof NonVendor) {
+                $total_ppn = 0; // Inisialisasi total_ppn untuk setiap item
+                $total_pph = 0; // Inisialisasi total_pph untuk setiap item
+
                 $uuidValuesPenjualan = explode(',', $item->uuid_penjualan);
                 $uuidValuesRealCost = explode(',', $item->uuid_realCost);
 
@@ -58,30 +59,38 @@ class FakturMasukController extends BaseController
                 $uuidValues = array_merge($uuidValuesPenjualan, $uuidValuesRealCost);
                 $realCostPo = $dataRealcost->whereIn('uuid', $uuidValues);
 
-                // Menggunakan metode first() untuk mendapatkan satu objek hasil
-                $pajak_po = $realCostPo->first()->pajak_po ?? null;
-                $pajak_pph = $realCostPo->first()->pajak_pph ?? null;
+                // Iterasi untuk menghitung total pajak untuk setiap item
+                $realCostPo->each(function ($realCostItem) use (&$total_ppn, &$total_pph) {
+                    $pajak_po = $realCostItem->pajak_po ?? null;
+                    $pajak_pph = $realCostItem->pajak_pph ?? null;
 
-                // $pajak_ppn = DataPajak::where('deskripsi_pajak', $pajak_po)->first();
-                // $total_ppn = ($realCostPo->satuan_real_cost * $realCostPo->qty * $realCostPo->freq - $realCostPo->disc_item) * ($pajak_ppn->pajak / 100);
-                // dd($total_ppn);
+                    $pajak_ppn = DataPajak::where('deskripsi_pajak', $pajak_po)->first();
+                    $total_ppn += $pajak_ppn ? ($realCostItem->satuan_real_cost * $realCostItem->qty * $realCostItem->freq - $realCostItem->disc_item) * ($pajak_ppn->pajak / 100) : 0;
+
+                    $pajak_pph_ = DataPajak::where('deskripsi_pajak', $pajak_pph)->first();
+                    $total_pph += $pajak_pph_ ? ($realCostItem->satuan_real_cost * $realCostItem->qty * $realCostItem->freq - $realCostItem->disc_item) * ($pajak_pph_->pajak / 100) : 0;
+                });
             }
 
+            // Faktur Masuk
             $faktur_masuk = FakturMasuk::where('uuid_persetujuan', $item->uuid)->first();
+
+            // User
             $dataUser = User::where('uuid', $item->uuid_user)->first();
 
-            $item->npwp = $faktur_masuk->npwp ?? null;
-            $item->nama_vendor = $faktur_masuk->nama_vendor ?? null;
-            $item->no_faktur = $faktur_masuk->no_faktur ?? null;
-            $item->tanggal_faktur = $faktur_masuk->tanggal_faktur ?? null;
-            $item->masa = $faktur_masuk->masa ?? null;
-            $item->tahun = $faktur_masuk->tahun ?? null;
-            $item->dpp = $faktur_masuk->dpp ?? null;
-            $item->ppn = $pajak_po;
-            $item->pph = $pajak_pph;
-            $item->no_bupot = $faktur_masuk->no_bupot ?? null;
-            $item->tgl_bupot = $faktur_masuk->tgl_bupot ?? null;
-            $item->area = $dataUser->lokasi;
+            // Assigning values
+            $item->npwp = optional($faktur_masuk)->npwp;
+            $item->nama_vendor = optional($faktur_masuk)->nama_vendor;
+            $item->no_faktur = optional($faktur_masuk)->no_faktur;
+            $item->tanggal_faktur = optional($faktur_masuk)->tanggal_faktur;
+            $item->masa = optional($faktur_masuk)->masa;
+            $item->tahun = optional($faktur_masuk)->tahun;
+            $item->dpp = optional($faktur_masuk)->dpp;
+            $item->ppn = $total_ppn;
+            $item->pph = $total_pph;
+            $item->no_bupot = optional($faktur_masuk)->no_bupot;
+            $item->tgl_bupot = optional($faktur_masuk)->tgl_bupot;
+            $item->area = optional($dataUser)->lokasi;
 
             return $item;
         });
@@ -106,6 +115,7 @@ class FakturMasukController extends BaseController
     public function storeUpdate(Request $request, $params)
     {
         $data = array();
+        $dpp = (int) str_replace(['Rp', ',', ' '], '', $request->dpp);
         try {
             $data = FakturMasuk::where('uuid_persetujuan', $params)->first();
 
@@ -116,7 +126,7 @@ class FakturMasukController extends BaseController
                 $data->tanggal_faktur = $request->tanggal_faktur;
                 $data->masa = $request->masa;
                 $data->tahun = $request->tahun;
-                $data->dpp = $request->dpp;
+                $data->dpp = $dpp;
                 $data->no_bupot = $request->no_bupot;
                 $data->tgl_bupot = $request->tgl_bupot;
                 $data->save();
@@ -129,7 +139,7 @@ class FakturMasukController extends BaseController
                 $faktur_masuk->tanggal_faktur = $request->tanggal_faktur;
                 $faktur_masuk->masa = $request->masa;
                 $faktur_masuk->tahun = $request->tahun;
-                $faktur_masuk->dpp = $request->dpp;
+                $faktur_masuk->dpp = $dpp;
                 $faktur_masuk->no_bupot = $request->no_bupot;
                 $faktur_masuk->tgl_bupot = $request->tgl_bupot;
                 $faktur_masuk->save();

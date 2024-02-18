@@ -38,13 +38,15 @@ class FakturKeluarController extends BaseController
             $dataPajak = DataPajak::where('uuid', $item->uuid_pajak)->first();
             $deskripsiPajak = $dataPajak->deskripsi_pajak ?? null;
 
-            $ppn = null;
-            $pph = null;
+            $ppn = 0;
+            $pph = 0;
 
             if (stripos($deskripsiPajak, 'ppn') !== false) {
-                $ppn = $deskripsiPajak; // Jika jenis pajak adalah PPN
+                $pajak = $dataPajak->pajak / 100;
+                $ppn = $item->total * $pajak; // Jika jenis pajak adalah PPN
             } else {
-                $pph = $deskripsiPajak; // Jika jenis pajak adalah PPH
+                $pajak = $dataPajak->pajak / 100;
+                $pph = $item->total * $pajak; // Jika jenis pajak adalah PPH
             }
 
             $item->npwp = $faktur_keluar->npwp ?? null;
@@ -89,6 +91,7 @@ class FakturKeluarController extends BaseController
     public function storeUpdate(Request $request, $params)
     {
         $data = array();
+        $dpp = (int) str_replace(['Rp', ',', ' '], '', $request->dpp);
         try {
             $data = FakturKeluar::where('uuid_persetujuan', $params)->first();
 
@@ -101,7 +104,7 @@ class FakturKeluarController extends BaseController
                 $data->masa = $request->masa;
                 $data->tahun = $request->tahun;
                 $data->status_faktur = $request->status_faktur;
-                $data->dpp = $request->dpp;
+                $data->dpp = $dpp;
                 $data->realisasi_dana_masuk = $realisasi;
                 $data->deskripsi = $request->deskripsi;
                 $data->selisih = $selisih;
@@ -117,7 +120,7 @@ class FakturKeluarController extends BaseController
                 $faktur_keluar->masa = $request->masa;
                 $faktur_keluar->tahun = $request->tahun;
                 $faktur_keluar->status_faktur = $request->status_faktur;
-                $faktur_keluar->dpp = $request->dpp;
+                $faktur_keluar->dpp = $dpp;
                 $faktur_keluar->realisasi_dana_masuk = $realisasi;
                 $faktur_keluar->deskripsi = $request->deskripsi;
                 $faktur_keluar->selisih = $selisih;
