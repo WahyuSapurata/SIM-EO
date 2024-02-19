@@ -49,6 +49,10 @@ class Dashboard extends BaseController
             ->where('users.lokasi', $lokasiUser)
             ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
             ->get();
+        $utang = Utang::join('users', 'utangs.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('utangs.*') // Sesuaikan dengan nama kolom pada utangs
+            ->get();
 
         $dataFees = FeeManajement::all();
         $lokasiUser = auth()->user()->lokasi;
@@ -74,6 +78,7 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+        $totalUtang = 0;
 
         $operasional = 0;
 
@@ -104,7 +109,11 @@ class Dashboard extends BaseController
             $operasional += $row_operasional->sisa_tagihan;
         }
 
-        $totalPo = $subTotalPo + $totalNonVendor;
+        foreach ($utang as $row_utang) {
+            $totalUtang += $row_utang->tagihan;
+        }
+
+        $totalPo = $subTotalPo + $totalNonVendor + $totalUtang;
         $piutang = $totalBudget - $totalPo + $totalFee;
         $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
         return view('dashboard.admin', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
@@ -134,6 +143,10 @@ class Dashboard extends BaseController
             ->where('users.lokasi', $lokasiUser)
             ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
             ->get();
+        $utang = Utang::join('users', 'utangs.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('utangs.*') // Sesuaikan dengan nama kolom pada utangs
+            ->get();
 
         $dataFees = FeeManajement::all();
         $lokasiUser = auth()->user()->lokasi;
@@ -159,6 +172,7 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+        $totalUtang = 0;
 
         $operasional = 0;
 
@@ -189,7 +203,11 @@ class Dashboard extends BaseController
             $operasional += $row_operasional->sisa_tagihan;
         }
 
-        $totalPo = $subTotalPo + $totalNonVendor;
+        foreach ($utang as $row_utang) {
+            $totalUtang += $row_utang->tagihan;
+        }
+
+        $totalPo = $subTotalPo + $totalNonVendor + $totalUtang;
         $piutang = $totalBudget - $totalPo + $totalFee;
         $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
         return view('dashboard.procurement', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
@@ -219,6 +237,10 @@ class Dashboard extends BaseController
             ->where('users.lokasi', $lokasiUser)
             ->select('saldo_awals.*') // Sesuaikan dengan nama kolom pada saldo_awals
             ->get();
+        $utang = Utang::join('users', 'utangs.uuid_user', '=', 'users.uuid')
+            ->where('users.lokasi', $lokasiUser)
+            ->select('utangs.*') // Sesuaikan dengan nama kolom pada utangs
+            ->get();
 
         $dataFees = FeeManajement::all();
         $lokasiUser = auth()->user()->lokasi;
@@ -244,6 +266,7 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+        $totalUtang = 0;
 
         $operasional = 0;
 
@@ -274,7 +297,11 @@ class Dashboard extends BaseController
             $operasional += $row_operasional->sisa_tagihan;
         }
 
-        $totalPo = $subTotalPo + $totalNonVendor;
+        foreach ($utang as $row_utang) {
+            $totalUtang += $row_utang->tagihan;
+        }
+
+        $totalPo = $subTotalPo + $totalNonVendor + $totalUtang;
         $piutang = $totalBudget - $totalPo + $totalFee;
         $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
         return view('dashboard.finance', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));
@@ -290,6 +317,8 @@ class Dashboard extends BaseController
         $saldo = SaldoAwal::all();
         $fee = FeeManajement::all();
 
+        $utang = Utang::all();
+
         $dataOperasional = OperasionalKantor::all();
 
         $totalInvoice = 0;
@@ -299,6 +328,8 @@ class Dashboard extends BaseController
         $totalPersetujuan = 0;
         $totalNonVendor = 0;
         $totalFee = 0;
+
+        $totalUtang = 0;
 
         $operasional = 0;
 
@@ -329,7 +360,11 @@ class Dashboard extends BaseController
             $operasional += $row_operasional->sisa_tagihan;
         }
 
-        $totalPo = $subTotalPo + $totalNonVendor;
+        foreach ($utang as $row_utang) {
+            $totalUtang += $row_utang->tagihan;
+        }
+
+        $totalPo = $subTotalPo + $totalNonVendor + $totalUtang;
         $piutang = $totalBudget - $totalPo + $totalFee;
         $kas = $totalSaldo + $totalInvoice - $totalPo - $operasional;
         return view('dashboard.direktur', compact('module', 'totalInvoice', 'totalPo', 'piutang', 'kas', 'operasional'));

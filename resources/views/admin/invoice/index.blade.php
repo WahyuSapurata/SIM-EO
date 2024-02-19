@@ -58,7 +58,7 @@
                                             <th>Jatuh Tempo</th>
                                             <th>Client</th>
                                             <th>Alamat Perusahaan</th>
-                                            <th>Nomor Perusahaan</th>
+                                            <th>No Telp Perusahaan</th>
                                             <th>Deskripsi</th>
                                             <th>Total</th>
                                             <th>Pajak</th>
@@ -178,7 +178,7 @@
                     </div>
 
                     <div class="mb-10">
-                        <label class="form-label">Nomor Perusahaan</label>
+                        <label class="form-label">No Telp Perusahaan</label>
                         <input type="text" id="no_perusahaan" class="form-control" name="no_perusahaan">
                         <small class="text-danger no_perusahaan_error"></small>
                     </div>
