@@ -56,6 +56,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/show-datavendor/{params}', 'DataVendorController@show')->name('show-datavendor');
             Route::post('/update-datavendor/{params}', 'DataVendorController@update')->name('update-datavendor');
             Route::delete('/delete-datavendor/{params}', 'DataVendorController@delete')->name('delete-datavendor');
+            Route::post('/import-datavendor', 'DataVendorController@import_data_vendor')->name('import-datavendor');
 
             Route::get('/datapajak', 'DataPajakController@index')->name('datapajak');
             Route::get('/get-datapajak', 'DataPajakController@get')->name('get-datapajak');

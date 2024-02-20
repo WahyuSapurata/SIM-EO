@@ -59,9 +59,11 @@ class InvoiceController extends BaseController
             if ($pajak) {
                 // Menambahkan data user ke dalam setiap item absen
                 $item->pajak = $pajak->deskripsi_pajak ?? null;
+                $item->nilai_pajak = $pajak->pajak ?? null;
             } else {
                 // Jika $data kosong, berikan nilai default atau kosong
                 $item->pajak = null;
+                $item->nilai_pajak = null;
             }
 
             return $item;

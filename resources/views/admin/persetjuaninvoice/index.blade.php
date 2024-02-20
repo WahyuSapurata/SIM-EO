@@ -348,7 +348,12 @@
                         data: null,
                         className: 'text-center',
                         render: function(data, type, row, meta) {
-                            const value = numeral(row.total).format(
+                            let hasilPajak = 0; // Gunakan let agar variabel dapat diubah nilainya
+                            if (row.nilai_pajak) {
+                                const totalPajak = parseFloat(row.nilai_pajak) / 100;
+                                hasilPajak = parseFloat(row.total) * totalPajak;
+                            }
+                            const value = numeral(parseFloat(row.total) + hasilPajak).format(
                                 '0,0'); // Format to rupiah
                             return 'Rp ' + value;
                         }

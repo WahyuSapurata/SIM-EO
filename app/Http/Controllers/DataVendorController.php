@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDataVendorRequest;
 use App\Http\Requests\UpdateDataVendorRequest;
+use App\Imports\DataVendor as ImportsDataVendor;
 use App\Models\DataVendor;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DataVendorController extends BaseController
 {
@@ -43,6 +46,22 @@ class DataVendorController extends BaseController
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);
         }
         return $this->sendResponse($data, 'Added data success');
+    }
+
+    public function import_data_vendor(Request $request)
+    {
+        try {
+            $request->validate([
+                'file_excel' => 'nullable|mimes:xls,xlsx,csv|max:20048', // Batas ukuran file diatur menjadi 2MB (sesuaikan sesuai kebutuhan)
+            ]);
+
+            $file = $request->file('file_excel');
+            Excel::import(new ImportsDataVendor, $file);
+
+            return $this->sendResponse('success', 'Excel data uploaded and saved successfully');
+        } catch (\Exception $e) {
+            return $this->sendError('Peringatan: Perbaiki Format Excel', $e->getMessage(), 200);
+        }
     }
 
     public function show($params)
