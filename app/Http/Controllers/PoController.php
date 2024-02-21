@@ -11,6 +11,7 @@ use App\Models\Penjualan;
 use App\Models\PersetujuanPo;
 use App\Models\Po;
 use App\Models\RealCost;
+use App\Models\User;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,9 +33,33 @@ class PoController extends BaseController
     public function get()
     {
         // Mengambil semua data pengguna
-        $dataFull = Po::all();
+        $dataFull = PO::all();
+        $realCost = RealCost::all();
+
+        $lokasiUser = auth()->user()->lokasi;
+        $dataUser = User::all();
+
+        $combinedData = $dataFull->map(function ($item) use ($realCost, $dataUser) {
+            $data = $realCost->where('uuid', $item->uuid_penjualan)->first();
+            if ($data) {
+                $user = $dataUser->where('uuid', $data->uuid_user)->first();
+                if ($user) {
+                    $item->lokasi_user = $user->lokasi;
+                }
+            }
+            return $item;
+        });
+
+        // Mengambil data penjualan berdasarkan parameter
+        if (auth()->user()->role === 'direktur') {
+            $dataCombined = $dataFull;
+        } else {
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
+            $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
+        }
+
         // Mengembalikan response berdasarkan data yang sudah disaring
-        return $this->sendResponse($dataFull, 'Get data success');
+        return $this->sendResponse($dataCombined, 'Get data success');
     }
 
     public function store(Request $request)

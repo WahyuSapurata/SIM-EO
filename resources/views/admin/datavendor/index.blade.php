@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form class="form-data" enctype="multipart/form-data">
+                    <form class="" enctype="multipart/form-data">
 
                         <input type="hidden" name="id">
                         <input type="hidden" name="uuid">
@@ -296,11 +296,14 @@
         $(document).on('click', ".btn-submit-import", function(e) {
             e.preventDefault();
 
-            control.submitFormMultipartData('/admin/master-data/import-datavendor', 'Tambah',
+            let formData = new FormData();
+            formData.append('file_excel', $('#file_excel')[0].files[0]); // Mengambil file dari input file
+            control.submitForm('/admin/master-data/import-datavendor', 'Tambah',
                 'Data Vendor',
-                'POST');
+                'POST', formData);
             $('#kt_modal_1').modal('hide');
         });
+
 
         $(document).on('click', '.button-update', function(e) {
             e.preventDefault();

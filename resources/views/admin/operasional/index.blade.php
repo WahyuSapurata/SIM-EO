@@ -62,6 +62,7 @@
                                             <th>Freq</th>
                                             <th>Satuan</th>
                                             <th>Total</th>
+                                            <th>Area</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -71,7 +72,7 @@
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <td style="text-align: left !important;" colspan="9">TOTAL PENGAJUAN KANTOR
                                             </td>
-                                            <td style="text-align: left !important;" colspan="2" id="total-subtotal">
+                                            <td style="text-align: left !important;" colspan="3" id="total-subtotal">
                                                 Rp 0
                                             </td>
                                         </tr>
@@ -321,6 +322,9 @@
                                 '0,0'); // Format to rupiah
                             return 'Rp ' + value;
                         }
+                    }, {
+                        data: 'lokasi_user',
+                        className: 'text-center',
                     },
                     {
                         data: 'uuid',

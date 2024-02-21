@@ -38,10 +38,10 @@ class PersetujuanPo extends BaseController
         $dataUser = User::all();
 
         $combinedData = $dataFull->map(function ($item) use ($dataClient, $dataUser) {
-            $uuidArray = explode(',', $item->uuid_penjualan);
-            $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
-            $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
-            $user = $dataUser->where('uuid', $data->uuid_user)->first();
+            // $uuidArray = explode(',', $item->uuid_penjualan);
+            // $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
+            // $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
+            $user = $dataUser->where('uuid', $item->uuid_user)->first();
             $item->lokasi_user = $user->lokasi;
             return $item;
         });
@@ -113,10 +113,10 @@ class PersetujuanPo extends BaseController
         $dataUser = User::all();
 
         $combinedData = $dataFull->map(function ($item) use ($dataClient, $dataUser) {
-            $uuidArray = explode(',', $item->uuid_penjualan);
-            $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
-            $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
-            $user = $dataUser->where('uuid', $data->uuid_user)->first();
+            // $uuidArray = explode(',', $item->uuid_penjualan);
+            // $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
+            // $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
+            $user = $dataUser->where('uuid', $item->uuid_user)->first();
             $item->lokasi_user = $user->lokasi;
             return $item;
         });

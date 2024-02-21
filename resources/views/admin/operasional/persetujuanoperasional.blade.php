@@ -120,6 +120,7 @@
                                             <th>Freq</th>
                                             <th>Satuan</th>
                                             <th>Total Kalkulasi</th>
+                                            <th>Area</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -329,6 +330,9 @@
                             '0,0'); // Format to rupiah
                         return 'Rp ' + value;
                     }
+                }, {
+                    data: 'lokasi_user',
+                    className: 'text-center',
                 }, {
                     data: 'uuid',
                 }],
