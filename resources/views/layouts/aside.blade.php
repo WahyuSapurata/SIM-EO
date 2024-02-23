@@ -166,6 +166,47 @@
                     <!--end::Menu sub-->
 
                 </div>
+
+                <div class="menu-item menu-link-indention menu-accordion {{ $path[1] == 'data-laporan' ? 'show' : '' }}"
+                    data-kt-menu-trigger="click">
+                    <!--begin::Menu link-->
+                    <a href="#" class="menu-link py-3 {{ $path[1] == 'data-laporan' ? 'active' : '' }}">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <img src="{{ $path[1] == 'data-laporan' ? url('admin/assets/media/icons/aside/masterdataact.svg') : url('/admin/assets/media/icons/aside/masterdatadef.svg') }}"
+                                    alt="">
+                            </span>
+                            <!--end::Svg Icon-->
+                        </span>
+                        <span class="menu-title"
+                            style="{{ $path[1] == 'data-laporan' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Laporan</span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <!--end::Menu link-->
+
+                    <!--begin::Menu sub-->
+                    <div class="menu-sub gap-2 menu-sub-accordion my-2">
+                        <!--begin::Menu item-->
+                        <div class="menu-item pe-0">
+                            <a class="menu-link {{ isset($path[2]) && $path[2] === 'laporan-fee' ? 'active' : '' }}"
+                                href="{{ route('admin.laporan-fee') }}">
+                                <span class="menu-icon">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <img src="{{ isset($path[2]) && $path[2] === 'laporan-fee' ? url('admin/assets/media/icons/aside/laporanact.svg') : url('/admin/assets/media/icons/aside/laporandef.svg') }}"
+                                            alt="">
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </span>
+                                <span class="menu-title"
+                                    style="{{ isset($path[2]) && $path[2] === 'laporan-fee' ? 'color: #F4BE2A' : 'color: #FFFFFF' }}">Laporan
+                                    Event</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+                    </div>
+                </div>
             @endif
 
             @if ($role === 'admin')
@@ -190,7 +231,8 @@
 
                 <!--begin::Menu item-->
                 <div class="menu-item">
-                    <a class="menu-link {{ $path[1] === 'po' ? 'active' : '' }}" href="{{ route('procurement.po') }}">
+                    <a class="menu-link {{ $path[1] === 'po' ? 'active' : '' }}"
+                        href="{{ route('procurement.po') }}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen025.svg-->
                             <span class="svg-icon svg-icon-2">
