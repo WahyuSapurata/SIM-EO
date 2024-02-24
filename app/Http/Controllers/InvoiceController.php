@@ -131,15 +131,15 @@ class InvoiceController extends BaseController
 
             // return view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
             if ($kop === 'CV. INIEVENT LANCAR JAYA') {
-                $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+                $html = view('admin.invoice.pdf_invoice', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
             } elseif ($kop === 'DoubleHelix Indonesia') {
-                $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+                $html = view('admin.invoice.pdf_invoice_2', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
             } elseif ($kop === 'PT. LINGKARAN GANDA BERKARYA') {
-                $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak'))->render();
+                $html = view('admin.invoice.pdf_invoice_3', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
             } elseif ($kop === 'Kop Kosong') {
-                $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+                $html = view('admin.invoice.pdf_invoice_kopkosong', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
             } elseif ($kop === 'PT. MAHAKARYA KREASI SOLUSI') {
-                $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan'))->render();
+                $html = view('admin.invoice.pdf_invoice_4', compact('no_inv', 'tanggal_invoice', 'dataClient', 'deskripsi', 'total', 'huruf', 'dataBank', 'penanggung_jawab', 'jabatan', 'dataPajak', 'alamat_perusahaan', 'no_perusahaan'))->render();
             }
 
             $pdfFileName = 'Purchase Invoice ' . $deskripsi . ' ' . time() . '.pdf';

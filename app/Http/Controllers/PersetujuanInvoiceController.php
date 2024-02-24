@@ -48,13 +48,16 @@ class PersetujuanInvoiceController extends BaseController
 
             // Perbarui tagihan pada Invoice berdasarkan $params
             $invoice = Invoice::where('uuid', $params)->first();
+            $pajak = DataPajak::where('uuid', $invoice->uuid_pajak)->first();
+            $nilaiPajak = $pajak->pajak / 100;
+            $nilaiTotal = $invoice->total * $nilaiPajak;
             $invoice->update(['tagihan' => $numericValue === 0 ? $invoice->total : $numericValue]);
 
             if ($numericValue != 0 && $numericValue != $invoice->total) {
                 $utang = new Piutang();
                 $utang->uuid_user = auth()->user()->uuid;
                 $utang->uuid_persetujuanInvoice = $data->uuid;
-                $utang->utang = $invoice->total - $numericValue;
+                $utang->utang = $invoice->total + $nilaiTotal - $numericValue;
                 $utang->save();
             }
         } catch (\Exception $e) {
