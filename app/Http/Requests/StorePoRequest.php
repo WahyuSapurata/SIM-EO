@@ -24,7 +24,7 @@ class StorePoRequest extends FormRequest
         return [
             'vendor' => 'required',
             'tempo' => 'required',
-            'no_invoice' => 'required|unique:pos,file',
+            'no_invoice' => 'required',
         ];
     }
 
