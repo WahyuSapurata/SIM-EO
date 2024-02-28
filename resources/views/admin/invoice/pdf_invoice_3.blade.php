@@ -106,7 +106,7 @@
             </div>
 
             <table class="table">
-                <thead style="background-color: #548ed4; color: #fff;">
+                <thead style="background-color: #e36c09; color: #fff;">
                     <tr class="tr">
                         <th class="th">DESCRIPTION</th>
                         <th class="th" style="width: 150px">TOTAL PRICE (Rp)</th>
