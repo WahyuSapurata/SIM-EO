@@ -648,7 +648,7 @@ class Control {
             method: "GET",
             success: function (res) {
                 $(element).html("");
-                let html = "<option selected disabled>Pilih</option>";
+                let html = "<option selected disabled>Pilih jenis inputan</option>";
                 $.each(res.data, function (x, y) {
                     html += `<option value="${y.uuid}">${y.nama_perusahaan}</option>`;
                 });

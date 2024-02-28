@@ -69,7 +69,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title">Buat Invoice Po</h3>
-
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
                         aria-label="Close">
@@ -86,8 +85,9 @@
 
                         <div class="mb-10">
                             <label class="form-label">Vendor</label>
-                            <select name="vendor" class="form-select" data-control="select2" id="from_select"
-                                data-placeholder="Pilih jenis inputan">
+                            <select name="vendor" class="form-select" id="from_select" data-control="select2"
+                                data-dropdown-parent="#kt_modal_1" data-placeholder="Pilih jenis inputan"
+                                data-allow-clear="true">
                             </select>
                             <small class="text-danger vendor_error"></small>
                         </div>

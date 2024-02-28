@@ -95,6 +95,7 @@
                                     <thead class="text-center">
                                         <tr class="fw-bolder fs-6 text-gray-800">
                                             <th>No</th>
+                                            <th>Lokasi</th>
                                             <th>Tanggal</th>
                                             <th>Keterangan</th>
                                             <th>Keluar</th>
@@ -106,7 +107,7 @@
                                     </tbody>
                                     <tfoot class="bg-primary rounded">
                                         <tr class="fw-bolder fs-6 text-gray-800">
-                                            <td style="text-align: left !important;" colspan="5">Total Saldo</td>
+                                            <td style="text-align: left !important;" colspan="6">Total Saldo</td>
                                             <td style="text-align: left !important;" colspan="1" id="total-saldo">
                                                 Rp 0
                                             </td>
@@ -204,6 +205,9 @@
                 render: function(data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 }
+            }, {
+                data: 'lokasi_user',
+                className: 'text-center',
             }, {
                 data: 'tanggal',
                 className: 'text-center',

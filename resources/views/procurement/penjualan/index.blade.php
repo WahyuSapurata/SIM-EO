@@ -83,6 +83,7 @@
                 </div>
                 <div class="modal-body">
                     <select name="event" class="form-select" data-control="select2" id="event_select"
+                        data-dropdown-parent="#staticBackdrop_modal" data-allow-clear="true"
                         data-placeholder="Pilih jenis event">
                     </select>
                 </div>
