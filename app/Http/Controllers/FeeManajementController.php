@@ -86,13 +86,13 @@ class FeeManajementController extends BaseController
                 $jumlah_realCost += $realCost->qty * $realCost->freq * $realCost->satuan_real_cost;
             }
 
-            $keuntungan = $jumlah_budget - $jumlah_realCost;
+            $keuntungan = $jumlah_budget + optional($fee)->total_fee ?? 0 - $jumlah_realCost - ($jumlah_budget + optional($fee)->total_fee ?? 0 * 0.02);
 
             // Anda dapat menghapus baris berikut jika dd() di atas dihapus
             $item->budget = $jumlah_budget + optional($fee)->total_fee ?? 0;
             $item->real_cost = $jumlah_realCost;
             $item->keuntungan = $keuntungan;
-            $item->persentase_keuntungan = ($jumlah_realCost != 0) ? ($keuntungan / $jumlah_realCost * 100) : 0;
+            $item->persentase_keuntungan = ($jumlah_realCost != 0) ? ($keuntungan / $jumlah_budget * 100) : 0;
 
             return $item;
         });
