@@ -93,7 +93,7 @@ class FeeManajementController extends BaseController
             $item->budget = $jumlah_budget + ($fee ? $fee->total_fee : 0);
             $item->real_cost = $jumlah_realCost;
             $item->keuntungan = $keuntungan;
-            $item->persentase_keuntungan = ($jumlah_realCost != 0) ? ($keuntungan / $jumlah_budget * 100) : 0;
+            $item->persentase_keuntungan = ($jumlah_budget + ($fee ? $fee->total_fee : 0) != 0) ? ($keuntungan / ($jumlah_budget + ($fee ? $fee->total_fee : 0)) * 100) : 0;
 
             return $item;
         });
