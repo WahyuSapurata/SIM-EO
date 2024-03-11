@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('satuan');
             $table->string('harga_satuan')->nullable();
             $table->string('ket')->nullable();
+            $table->string('marker')->nullable();
             $table->timestamps();
         });
     }

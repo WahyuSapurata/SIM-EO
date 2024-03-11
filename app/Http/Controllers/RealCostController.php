@@ -39,6 +39,7 @@ class RealCostController extends BaseController
             $data->satuan_kegiatan = $storeRealCostRequest->satuan_kegiatan;
             $data->freq = $storeRealCostRequest->freq;
             $data->satuan = $storeRealCostRequest->satuan;
+            $data->marker = $storeRealCostRequest->markerValue;
 
             $data->save();
         } catch (\Exception $e) {
@@ -86,6 +87,7 @@ class RealCostController extends BaseController
         } else {
             $pajak = $storeRealCostRequest->pajak_po;
         }
+
         try {
             $data = RealCost::where('uuid', $params)->first();
             $data->satuan_real_cost = $numericValue;
@@ -99,6 +101,7 @@ class RealCostController extends BaseController
             $data->satuan_kegiatan = $storeRealCostRequest->satuan_kegiatan;
             $data->freq = $storeRealCostRequest->freq;
             $data->satuan = $storeRealCostRequest->satuan;
+            $data->marker = $storeRealCostRequest->markerValue;
             $data->save();
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), $e->getMessage(), 400);

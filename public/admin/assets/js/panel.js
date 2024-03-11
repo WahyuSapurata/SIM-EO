@@ -109,6 +109,7 @@ class Control {
             $("#img-foto").attr("src", ""); // Gantilah "gambar-preview" dengan id elemen gambar Anda
         } else {
             $(".form-data").attr("data-type", "update");
+            $(".form-data")[0].reset();
             $.ajax({
                 url: url,
                 method: "GET",
@@ -156,6 +157,12 @@ class Control {
                                 $("select[name='" + x + "']").val(y);
                                 $("textarea[name='" + x + "']").val(y);
                                 $("select[name='" + x + "']").trigger("change");
+                            }
+
+                            if (y !== null && y !== 'off') { // Memeriksa apakah nilai tidak null dan tidak 'off'
+                                if ($("input[name='" + x + "']").is(":checkbox")) {
+                                    $("input[name='" + x + "'][value='" + y + "']").prop("checked", true);
+                                }
                             }
 
                             if (res.data.no_invoice) {
@@ -885,17 +892,21 @@ class Control {
 
                 // Calculate total for 'harga_satuan' column
                 api.column(6, { search: 'applied' }).data().each(function (value) {
-                    // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotal += parseFloat(value.harga_satuan === null ? 0 : value.harga_satuan) * value.freq * value.qty;
+                    if (value.marker !== "on") {
+                        // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                        subtotalTotal += parseFloat(value.harga_satuan || 0) * value.freq * value.qty;
+                    }
                 });
 
-                // Calculate total for 'harga_satuan' column
+                // Calculate total for 'satuan_real_cost' column
                 api.column(8, { search: 'applied' }).data().each(function (value) {
-                    // Periksa apakah satuan_real_cost bernilai null, dan jika iya, setel nilainya menjadi 0
-                    value.satuan_real_cost = value.satuan_real_cost !== null ? value.satuan_real_cost : 0;
+                    if (value.marker !== "on") {
+                        // Periksa apakah satuan_real_cost bernilai null, dan jika iya, setel nilainya menjadi 0
+                        value.satuan_real_cost = value.satuan_real_cost !== null ? value.satuan_real_cost : 0;
 
-                    // Harga satuan diubah menjadi float dan dikalikan dengan freq
-                    subtotalTotalRealCost += parseFloat(value.satuan_real_cost) * value.freq * value.qty;
+                        // Harga satuan diubah menjadi float dan dikalikan dengan freq
+                        subtotalTotalRealCost += parseFloat(value.satuan_real_cost || 0) * value.freq * value.qty;
+                    }
                 });
 
                 // Update the total row in the footer

@@ -348,6 +348,13 @@
                         <small class="text-danger disc_item_error"></small>
                     </div>
 
+                    <div class="form-check form-check-custom form-check-solid">
+                        <input name="marker" class="form-check-input" type="checkbox" id="marker" />
+                        <label class="form-check-label" for="marker">
+                            Marker
+                        </label>
+                    </div>
+
                     <div class="separator separator-dashed mt-8 mb-5"></div>
                     <div class="d-flex gap-5">
                         <button type="submit" class="btn btn-primary btn-sm btn-submit d-flex align-items-center"><i
@@ -532,8 +539,25 @@
         $(document).on('submit', ".form-data", function(e) {
             e.preventDefault();
 
+            // Inisialisasi formArray sebagai array kosong
+            var formArray = [];
+
+            var checkbox = $('#marker')[0];
+            // Menyimpan status checked ke dalam formArray
+            var checkedValue = checkbox ? (checkbox.checked ? 'on' : 'off') : null;
+            var checkedField = {
+                name: 'markerValue',
+                value: checkedValue
+            };
+            formArray.push(checkedField);
+
             // Menambahkan data formulir ke FormData menggunakan serializeArray
-            var formArray = $(".form-data").serializeArray();
+            var formDataArray = $(".form-data").serializeArray();
+            $.each(formDataArray, function(i, field) {
+                formArray.push(field); // Tambahkan setiap field dari form ke formArray
+            });
+
+            // Gunakan formArray untuk FormData
             $.each(formArray, function(i, field) {
                 formDataRealCost.append(field.name, field.value);
             });

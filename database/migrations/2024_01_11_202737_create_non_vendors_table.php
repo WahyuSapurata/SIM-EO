@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->uuid('uuid_user');
-            $table->string('uuid_realCost');
+            $table->text('uuid_realCost');
             $table->string('no_po');
             $table->string('jatuh_tempo');
             $table->string('client');
