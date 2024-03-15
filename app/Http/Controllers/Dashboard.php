@@ -155,10 +155,10 @@ class Dashboard extends BaseController
         $dataFee = $dataFees->map(function ($item) use ($dataUser) {
             $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
             $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
-            dd($user);
             $item->lokasi_user = $user->lokasi;
             return $item;
         });
+        dd($dataFee);
         $fee = $dataFee->where('lokasi_user', $lokasiUser)->values();
 
         $dataOperasional = OperasionalKantor::join('users', 'operasional_kantors.uuid_user', '=', 'users.uuid')
