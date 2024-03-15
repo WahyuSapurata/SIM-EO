@@ -60,8 +60,8 @@ class Dashboard extends BaseController
         // Menampilkan OperasionalKantor berdasarkan lokasi user dengan melakukan join
         $dataFee = $dataFees->map(function ($item) use ($dataUser) {
             $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
-            $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
-            $item->lokasi_user = $user->lokasi;
+            $user = optional($dataUser)->where('uuid', optional($dataClient)->uuid_user)->first();
+            $item->lokasi_user = optional($user)->lokasi;
             return $item;
         });
         $fee = $dataFee->where('lokasi_user', $lokasiUser)->values();
