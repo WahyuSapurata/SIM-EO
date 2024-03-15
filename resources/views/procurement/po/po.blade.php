@@ -348,12 +348,12 @@
                         <small class="text-danger disc_item_error"></small>
                     </div>
 
-                    <div class="form-check form-check-custom form-check-solid">
+                    {{-- <div class="form-check form-check-custom form-check-solid">
                         <input name="marker" class="form-check-input" type="checkbox" id="marker" />
                         <label class="form-check-label" for="marker">
                             Marker
                         </label>
-                    </div>
+                    </div> --}}
 
                     <div class="separator separator-dashed mt-8 mb-5"></div>
                     <div class="d-flex gap-5">

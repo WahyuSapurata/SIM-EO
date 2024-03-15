@@ -28,7 +28,7 @@ class RealCost extends Model
         'satuan',
         'harga_satuan',
         'ket',
-        'marker',
+        // 'marker',
     ];
 
     protected static function boot()

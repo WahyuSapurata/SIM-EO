@@ -44,8 +44,11 @@ class NonVendorController extends BaseController
             $uuidArray = explode(',', $item->uuid_realCost);
             $dataRealCost = RealCost::whereIn('uuid', $uuidArray)->first();
             $data = $dataClient->where('uuid', $dataRealCost->uuid_client)->first();
-            $user = $dataUser->where('uuid', $data->uuid_user)->first();
-            $item->lokasi_user = $user->lokasi;
+            // $user = $dataUser->where('uuid', $data->uuid_user)->first();
+            // $item->lokasi_user = $user->lokasi;
+
+            $user = optional($dataUser)->where('uuid', optional($data)->uuid_user)->first();
+            $item->lokasi_user = optional($user)->lokasi;
             return $item;
         });
 
