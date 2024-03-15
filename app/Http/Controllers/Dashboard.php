@@ -155,6 +155,7 @@ class Dashboard extends BaseController
         $dataFee = $dataFees->map(function ($item) use ($dataUser) {
             $dataClient = DataClient::where('uuid', $item->uuid_client)->first();
             $user = $dataUser->where('uuid', $dataClient->uuid_user)->first();
+            dd($user);
             $item->lokasi_user = $user->lokasi;
             return $item;
         });
