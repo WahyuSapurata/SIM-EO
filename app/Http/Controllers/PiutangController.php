@@ -34,18 +34,17 @@ class PiutangController extends BaseController
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = optional($dataPersetujuanInvoice)->where('uuid', optional($item->uuid_persetujuanInvoice))->first();
-            $invoice = optional($dataInvoice)->where('uuid', optional($persetujuanInvoice->uuid_invoice))->first();
-            $client = optional($dataClient)->where('uuid', optional($invoice->uuid_vendor))->first();
+            $invoice = optional($dataInvoice)->where('uuid', optional($persetujuanInvoice)->uuid_invoice)->first();
+            $client = optional($dataClient)->where('uuid', optional($invoice)->uuid_vendor)->first();
 
-            $item->no_invoice = $invoice->no_invoice;
-            $item->tanggal_invoice = $invoice->tanggal_invoice;
-            $item->client = $client->nama_client;
-            $item->deskripsi = $invoice->deskripsi;
-            $item->file = $invoice->file;
-            $item->lokasi_user = $dataUser->lokasi;
+            $item->no_invoice = optional($invoice)->no_invoice;
+            $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
+            $item->client = optional($client)->nama_client;
+            $item->deskripsi = optional($invoice)->deskripsi;
+            $item->file = optional($invoice)->file;
+            $item->lokasi_user = optional($dataUser)->lokasi;
             return $item;
         });
-        dd($combinedData);
 
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
