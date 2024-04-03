@@ -31,21 +31,22 @@ class PiutangController extends BaseController
         $dataInvoice = Invoice::all();
         $dataClient = DataClient::all();
 
-        $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'))->all();
-        dd($persetujuanInvoice);
+        $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'));
+        $invoice = $dataInvoice->whereIn('uuid', $persetujuanInvoice->pluck('uuid_invoice'))->all();
+        dd($invoice);
 
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
-            $persetujuanInvoice = optional($dataPersetujuanInvoice)->where('uuid', optional($item->uuid_persetujuanInvoice))->first();
-            $invoice = optional($dataInvoice)->where('uuid', optional($persetujuanInvoice)->uuid_invoice)->first();
-            $client = optional($dataClient)->where('uuid', optional($invoice)->uuid_vendor)->first();
+            $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
+            $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice)->first();
+            $client = $dataClient->where('uuid', $invoice->uuid_vendor)->first();
 
-            $item->no_invoice = optional($invoice)->no_invoice;
-            $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
-            $item->client = optional($client)->nama_client;
-            $item->deskripsi = optional($invoice)->deskripsi;
-            $item->file = optional($invoice)->file;
-            $item->lokasi_user = optional($dataUser)->lokasi;
+            $item->no_invoice = $invoice->no_invoice;
+            $item->tanggal_invoice = $invoice->tanggal_invoice;
+            $item->client = $client->nama_client;
+            $item->deskripsi = $invoice->deskripsi;
+            $item->file = $invoice->file;
+            $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
 
