@@ -126,6 +126,7 @@ class PiutangController extends BaseController
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
             $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
+        dd($dataCombined);
 
         // Buat objek Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -178,17 +179,17 @@ class PiutangController extends BaseController
 
         foreach ($dataCombined as $index => $lap) {
             $sheet->setCellValue('A' . $row, $index + 1);
-            $sheet->setCellValue('B' . $row, $lap['no_invoice']);
-            $sheet->setCellValue('C' . $row, $lap['tanggal_invoice']);
-            $sheet->setCellValue('D' . $row, $lap['client']);
-            $sheet->setCellValue('E' . $row, $lap['deskripsi']);
-            $sheet->setCellValue('F' . $row, $lap['utang'] === 0 ? '-' : "Rp " . number_format($lap['utang'], 0, ',', '.'));
-            $sheet->setCellValue('G' . $row, $lap['tagihan'] === 0 ? '-' : "Rp " . number_format($lap['tagihan'], 0, ',', '.'));
-            $sheet->setCellValue('H' . $row, $lap['ket']);
+            $sheet->setCellValue('B' . $row, $lap->no_invoice);
+            $sheet->setCellValue('C' . $row, $lap->tanggal_invoice);
+            $sheet->setCellValue('D' . $row, $lap->client);
+            $sheet->setCellValue('E' . $row, $lap->deskripsi);
+            $sheet->setCellValue('F' . $row, $lap->utang === 0 ? '-' : "Rp " . number_format($lap->utang, 0, ',', '.'));
+            $sheet->setCellValue('G' . $row, $lap->tagihan === 0 ? '-' : "Rp " . number_format($lap->tagihan, 0, ',', '.'));
+            $sheet->setCellValue('H' . $row, $lap->ket);
 
             // Format rupiah pada kolom H
-            $subtotal += $lap['utang'];
-            $subtotalTagihan += $lap['tagihan'];
+            $subtotal += $lap->utang;
+            $subtotalTagihan += $lap->tagihan;
 
             $row++;
         }
