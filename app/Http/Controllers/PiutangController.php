@@ -106,16 +106,16 @@ class PiutangController extends BaseController
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
-            $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice)->first();
-            $client = $dataClient->where('uuid', $invoice->uuid_vendor)->first();
+            $invoiceUUIDs = $persetujuanInvoice ? $persetujuanInvoice->pluck('uuid_invoice') : [];
+            $invoice = $dataInvoice->whereIn('uuid', $invoiceUUIDs)->first();
+            $client = $dataClient->where('uuid', optional($invoice)->uuid_vendor)->first();
 
-            $item->no_invoice = $invoice->no_invoice;
-            $item->tanggal_invoice = $invoice->tanggal_invoice;
-            $item->client = $client->nama_client;
-            $item->deskripsi = $invoice->deskripsi;
-            $item->file = $invoice->file;
-            $item->lokasi_user = $dataUser->lokasi;
-            return $item;
+            $item->no_invoice = optional($invoice)->no_invoice;
+            $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
+            $item->client = optional($client)->nama_client;
+            $item->deskripsi = optional($invoice)->deskripsi;
+            $item->file = optional($invoice)->file;
+            $item->lokasi_user = optional($dataUser)->lokasi;
         });
 
         // Mengambil data penjualan berdasarkan parameter
@@ -178,17 +178,17 @@ class PiutangController extends BaseController
 
         foreach ($dataCombined as $index => $lap) {
             $sheet->setCellValue('A' . $row, $index + 1);
-            $sheet->setCellValue('B' . $row, $lap->no_invoice);
-            $sheet->setCellValue('C' . $row, $lap->tanggal_invoice);
-            $sheet->setCellValue('D' . $row, $lap->client);
-            $sheet->setCellValue('E' . $row, $lap->deskripsi);
-            $sheet->setCellValue('F' . $row, $lap->utang === 0 ? '-' : "Rp " . number_format($lap->utang, 0, ',', '.'));
-            $sheet->setCellValue('G' . $row, $lap->tagihan === 0 ? '-' : "Rp " . number_format($lap->tagihan, 0, ',', '.'));
-            $sheet->setCellValue('H' . $row, $lap->ket);
+            $sheet->setCellValue('B' . $row, $lap['no_invoice']);
+            $sheet->setCellValue('C' . $row, $lap['tanggal_invoice']);
+            $sheet->setCellValue('D' . $row, $lap['client']);
+            $sheet->setCellValue('E' . $row, $lap['deskripsi']);
+            $sheet->setCellValue('F' . $row, $lap['utang'] === 0 ? '-' : "Rp " . number_format($lap['utang'], 0, ',', '.'));
+            $sheet->setCellValue('G' . $row, $lap['tagihan'] === 0 ? '-' : "Rp " . number_format($lap['tagihan'], 0, ',', '.'));
+            $sheet->setCellValue('H' . $row, $lap['ket']);
 
             // Format rupiah pada kolom H
-            $subtotal += $lap->utang;
-            $subtotalTagihan += $lap->tagihan;
+            $subtotal += $lap['utang'];
+            $subtotalTagihan += $lap['tagihan'];
 
             $row++;
         }
