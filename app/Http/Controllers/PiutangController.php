@@ -116,6 +116,8 @@ class PiutangController extends BaseController
             $item->deskripsi = optional($invoice)->deskripsi;
             $item->file = optional($invoice)->file;
             $item->lokasi_user = optional($dataUser)->lokasi;
+
+            return $item;
         });
 
         // Mengambil data penjualan berdasarkan parameter
@@ -126,7 +128,6 @@ class PiutangController extends BaseController
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
             $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
-        dd($dataCombined);
 
         // Buat objek Spreadsheet
         $spreadsheet = new Spreadsheet();
