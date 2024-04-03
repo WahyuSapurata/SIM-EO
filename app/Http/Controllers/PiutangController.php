@@ -45,6 +45,7 @@ class PiutangController extends BaseController
             $item->lokasi_user = $dataUser->lokasi;
             return $item;
         });
+        dd($combinedData);
 
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
