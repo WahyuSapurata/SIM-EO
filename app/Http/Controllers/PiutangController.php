@@ -31,7 +31,7 @@ class PiutangController extends BaseController
         $dataInvoice = Invoice::all();
         $dataClient = DataClient::all();
 
-        $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $dataFull->pluck('uuid_persetujuanInvoice'))->all();
+        $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'))->all();
         dd($persetujuanInvoice);
 
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
