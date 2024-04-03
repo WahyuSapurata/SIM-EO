@@ -31,15 +31,15 @@ class PiutangController extends BaseController
         $dataInvoice = Invoice::all();
         $dataClient = DataClient::all();
 
-        $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'));
-        $invoice = $dataInvoice->whereIn('uuid', $persetujuanInvoice->pluck('uuid_invoice'))->all();
-        dd($invoice);
+        // $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'));
+        // $invoice = $dataInvoice->whereIn('uuid', $persetujuanInvoice->pluck('uuid_invoice'))->all();
+        // dd($invoice);
 
         $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
-            $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
-            $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice)->first();
-            $client = $dataClient->where('uuid', $invoice->uuid_vendor)->first();
+            $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice);
+            $invoice = $dataInvoice->where('uuid', $persetujuanInvoice->uuid_invoice);
+            $client = $dataClient->where('uuid', $invoice->uuid_vendor);
 
             $item->no_invoice = $invoice->no_invoice;
             $item->tanggal_invoice = $invoice->tanggal_invoice;
