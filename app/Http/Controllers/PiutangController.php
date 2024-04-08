@@ -51,6 +51,7 @@ class PiutangController extends BaseController
 
             return $item;
         });
+        dd($combinedData);
 
 
         // Mengambil data penjualan berdasarkan parameter
