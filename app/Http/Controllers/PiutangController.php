@@ -91,16 +91,12 @@ class PiutangController extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = Piutang::all();
-        $dataPersetujuanInvoice = PersetujuanInvoice::all();
-        $dataInvoice = Invoice::all();
-        $dataClient = DataClient::all();
 
-        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
+        $combinedData = $dataFull->map(function ($item) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
-            $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
-            $invoiceUUIDs = $persetujuanInvoice ? $persetujuanInvoice->pluck('uuid_invoice') : [];
-            $invoice = $dataInvoice->whereIn('uuid', $invoiceUUIDs)->first();
-            $client = $dataClient->where('uuid', optional($invoice)->uuid_vendor)->first();
+            $persetujuanInvoice = PersetujuanInvoice::where('uuid', $item->uuid_persetujuanInvoice)->first();
+            $invoice = Invoice::where('uuid', optional($persetujuanInvoice)->uuid_invoice)->first();
+            $client = DataClient::where('uuid', optional($invoice)->uuid_vendor)->first();
 
             $item->no_invoice = optional($invoice)->no_invoice;
             $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
