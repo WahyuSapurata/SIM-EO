@@ -32,8 +32,8 @@ class PiutangController extends BaseController
             $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = PersetujuanInvoice::where('uuid', $item->uuid_persetujuanInvoice)->first();
             $invoice = Invoice::where('uuid', $persetujuanInvoice->uuid_invoice)->first();
-            dd($invoice);
             $client = DataClient::where('uuid', optional($invoice)->uuid_vendor)->first();
+            dd($client);
 
             $item->no_invoice = optional($invoice)->no_invoice;
             $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
