@@ -27,20 +27,13 @@ class PiutangController extends BaseController
     {
         // Mengambil semua data pengguna
         $dataFull = Piutang::all();
-        $dataPersetujuanInvoice = PersetujuanInvoice::all();
-        $dataInvoice = Invoice::all();
-        $dataClient = DataClient::all();
 
-        // $persetujuanInvoice = $dataPersetujuanInvoice->whereIn('uuid', $dataFull->pluck('uuid_persetujuanInvoice'));
-        // $invoice = $dataInvoice->whereIn('uuid', $persetujuanInvoice->pluck('uuid_invoice'))->all();
-        // dd($invoice);
-
-        $combinedData = $dataFull->map(function ($item) use ($dataPersetujuanInvoice, $dataInvoice, $dataClient) {
+        $combinedData = $dataFull->map(function ($item) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
-            $persetujuanInvoice = $dataPersetujuanInvoice->where('uuid', $item->uuid_persetujuanInvoice)->first();
-            $invoiceUUIDs = $persetujuanInvoice ? $persetujuanInvoice->pluck('uuid_invoice') : [];
-            $invoice = $dataInvoice->whereIn('uuid', $invoiceUUIDs)->first();
-            $client = $dataClient->where('uuid', optional($invoice)->uuid_vendor)->first();
+            $persetujuanInvoice = PersetujuanInvoice::where('uuid', $item->uuid_persetujuanInvoice)->first();
+            $invoiceUUIDs = $persetujuanInvoice ? $persetujuanInvoice->pluck('uuid_invoice') : collect();
+            $invoice = Invoice::whereIn('uuid', $invoiceUUIDs)->first();
+            $client = DataClient::where('uuid', optional($invoice)->uuid_vendor)->first();
 
             $item->no_invoice = optional($invoice)->no_invoice;
             $item->tanggal_invoice = optional($invoice)->tanggal_invoice;
@@ -53,7 +46,6 @@ class PiutangController extends BaseController
         });
         dd($combinedData);
 
-
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
             $dataCombined = $combinedData;
@@ -62,7 +54,6 @@ class PiutangController extends BaseController
             // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
             $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
         }
-        //
 
         // Mengembalikan response berdasarkan data yang sudah disaring
         return $this->sendResponse($dataCombined, 'Get data success');
