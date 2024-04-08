@@ -31,6 +31,7 @@ class PiutangController extends BaseController
         $combinedData = $dataFull->map(function ($item) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = PersetujuanInvoice::where('uuid', $item->uuid_persetujuanInvoice)->first();
+            dd($persetujuanInvoice);
             $invoiceUUIDs = $persetujuanInvoice ? $persetujuanInvoice->pluck('uuid_invoice') : collect();
             $invoice = Invoice::whereIn('uuid', $invoiceUUIDs)->first();
             $client = DataClient::where('uuid', optional($invoice)->uuid_vendor)->first();
@@ -44,7 +45,6 @@ class PiutangController extends BaseController
 
             return $item;
         });
-        dd($combinedData);
 
         // Mengambil data penjualan berdasarkan parameter
         if (auth()->user()->role === 'direktur') {
