@@ -31,7 +31,7 @@ class PiutangController extends BaseController
         $combinedData = $dataFull->map(function ($item) {
             $dataUser = User::where('uuid', $item->uuid_user)->first();
             $persetujuanInvoice = PersetujuanInvoice::where('uuid', $item->uuid_persetujuanInvoice)->first();
-            $invoice = Invoice::where('uuid', $persetujuanInvoice->uuid_invoice)->first();
+            $invoice = Invoice::where('uuid', optional($persetujuanInvoice)->uuid_invoice)->first();
             $client = DataClient::where('uuid', optional($invoice)->uuid_vendor)->first();
 
             $item->no_invoice = optional($invoice)->no_invoice;
@@ -49,8 +49,10 @@ class PiutangController extends BaseController
             $dataCombined = $combinedData;
         } else {
             $lokasiUser = auth()->user()->lokasi;
-            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan join
-            $dataCombined = $combinedData->where('lokasi_user', $lokasiUser)->values();
+            // Menampilkan Penjualan berdasarkan lokasi user dengan melakukan filter
+            $dataCombined = $combinedData->filter(function ($item) use ($lokasiUser) {
+                return $item->lokasi_user === $lokasiUser;
+            })->values();
         }
 
         // Mengembalikan response berdasarkan data yang sudah disaring
