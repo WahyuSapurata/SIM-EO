@@ -345,7 +345,7 @@ class Dashboard extends BaseController
         }
 
         foreach ($budgetClient as $row_budget) {
-            $totalBudget += $row_budget->harga_satuan * $row_budget->qty * $row_budget->freq;
+            $totalBudget += (float)$row_budget->harga_satuan * (float)$row_budget->qty * (float)$row_budget->freq;
         }
 
         foreach ($saldo as $row_saldo) {
