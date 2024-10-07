@@ -127,6 +127,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
             Route::get('/laporan-fee', 'FeeManajementController@index')->name('laporan-fee');
             Route::get('/get-laporan-fee', 'FeeManajementController@get_laporanFee')->name('get-laporan-fee');
             // Route::get('/export-laporan-fee/{params}', 'Laporan@exportToExcel')->name('export-laporan-fee');
+
+            Route::get('/laporan-laba', 'LaporanLabaController@index')->name('laporan-laba');
+            Route::get('/get-laporan-laba', 'LaporanLabaController@get')->name('get-laporan-laba');
+            Route::post('/add-laporan-laba', 'LaporanLabaController@store')->name('add-laporan-laba');
+            Route::get('/show-laporan-laba/{params}', 'LaporanLabaController@show')->name('show-laporan-laba');
+            Route::post('/update-laporan-laba/{params}', 'LaporanLabaController@update')->name('update-laporan-laba');
+            Route::delete('/delete-laporan-laba/{params}', 'LaporanLabaController@delete')->name('delete-laporan-laba');
         });
 
         Route::prefix('data-operasional')->group(function () {
